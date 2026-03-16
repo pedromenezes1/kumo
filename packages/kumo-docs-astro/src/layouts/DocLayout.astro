@@ -19,12 +19,20 @@ const baseUIUrl = baseUIComponent
   ? `https://base-ui.com/react/components/${baseUIComponent}`
   : null;
 
-// Extract the component name from the path (e.g., "components/button" -> "button")
-// and construct the direct file URL (e.g., "components/button/button.tsx")
+// Construct the GitHub source URL from the sourceFile path.
+// If sourceFile already includes a file extension, use it as a direct path
+// (e.g., "components/loader/skeleton-line.tsx" for components that don't have
+// their own directory). Otherwise, assume the standard convention where the
+// component name matches the directory name
+// (e.g., "components/button" -> "components/button/button.tsx").
 const githubSourceUrl = sourceFile
   ? (() => {
+      const base = `https://github.com/cloudflare/kumo/blob/main/packages/kumo/src/`;
+      if (/\.\w+$/.test(sourceFile)) {
+        return `${base}${sourceFile}`;
+      }
       const componentName = sourceFile.split("/").pop();
-      return `https://github.com/cloudflare/kumo/blob/main/packages/kumo/src/${sourceFile}/${componentName}.tsx`;
+      return `${base}${sourceFile}/${componentName}.tsx`;
     })()
   : null;
 ---
