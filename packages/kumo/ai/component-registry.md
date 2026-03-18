@@ -277,7 +277,6 @@ Primary action trigger. Supports multiple variants, sizes, shapes, icons, and lo
   - `"sm"`: Small button for secondary actions
   - `"base"`: Default button size
   - `"lg"`: Large button for primary CTAs
-- `compactSize`: enum
 - `variant`: enum [default: secondary]
   - `"primary"`: High-emphasis button for primary actions
   - `"secondary"`: Default button style for most actions
@@ -303,10 +302,19 @@ Primary action trigger. Supports multiple variants, sizes, shapes, icons, and lo
     - `not-disabled`: `not-disabled:hover:border-secondary! not-disabled:hover:bg-kumo-base`
     - `disabled`: `disabled:bg-kumo-base/50 disabled:!text-kumo-danger/70`
     - `data-state`: `data-[state=open]:bg-kumo-base`
-- `className`: string
-  Additional CSS classes
 - `children`: ReactNode
-  Child elements
+- `className`: string
+- `icon`: ReactNode
+  Icon from `@phosphor-icons/react` or a React element. Rendered before children.
+- `loading`: boolean
+  Shows a loading spinner and disables interaction.
+- `id`: string
+- `lang`: string
+- `title`: string
+- `disabled`: boolean
+- `name`: string
+- `type`: enum
+- `value`: string | string[] | number
 
 **Colors (kumo tokens used):**
 
@@ -1180,7 +1188,7 @@ Combobox — autocomplete input with filterable dropdown list.  Compound compone
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `bg-kumo-fill-hover`, `bg-kumo-overlay`, `bg-kumo-tint`, `border-kumo-line`, `ring-kumo-line`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
+`bg-kumo-control`, `bg-kumo-fill-hover`, `bg-kumo-overlay`, `border-kumo-line`, `ring-kumo-line`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
 
 **Sub-Components:**
 
@@ -2006,7 +2014,7 @@ Dialog component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `text-kumo-default`
+`bg-kumo-base`, `bg-kumo-overlay`, `text-kumo-default`
 
 **Styling:**
 
@@ -2969,6 +2977,328 @@ Input component
 
 ---
 
+### InputGroup
+
+InputGroup component
+
+**Type:** component
+
+**Import:** `import { InputGroup } from "@cloudflare/kumo";`
+
+**Category:** Input
+
+**Props:**
+
+- `label`: ReactNode
+  The label content — can be a string or any React node.
+- `description`: ReactNode
+  Helper text displayed below the control (hidden when `error` is present).
+- `error`: object
+  Validation error with a message and a browser `ValidityState` match key.
+- `required`: boolean
+  When explicitly `false`, shows gray "(optional)" text after the label. When `true` or `undefined`, no indicator is shown.
+- `labelTooltip`: ReactNode
+  Tooltip content displayed next to the label via an info icon.
+- `className`: string
+- `size`: enum
+- `disabled`: boolean
+- `focusMode`: enum
+
+**Colors (kumo tokens used):**
+
+`ring-kumo-danger`, `ring-kumo-ring`
+
+**Sub-Components:**
+
+This is a compound component. Use these sub-components:
+
+#### InputGroup.Input
+
+Input sub-component
+
+#### InputGroup.Button
+
+Button sub-component
+
+#### InputGroup.Addon
+
+Addon sub-component
+
+Props:
+- `align`: "start" | "end"
+- `className`: string
+- `children`: ReactNode
+
+#### InputGroup.Suffix
+
+Suffix sub-component
+
+Props:
+- `className`: string
+- `children`: ReactNode
+
+
+**Examples:**
+
+```tsx
+<WorkersSuffixInput defaultValue="kumo" />
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
+      <InputGroup>
+        <InputGroup.Addon>
+          <LinkIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input
+          placeholder="Paste a link..."
+          aria-label="Link"
+          {...demoInputProps}
+        />
+      </InputGroup>
+
+      <InputGroup>
+        <InputGroup.Input
+          placeholder="Add a tag..."
+          aria-label="Tag"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <TagIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+      </InputGroup>
+
+      <InputGroup>
+        <InputGroup.Addon>
+          <AirplaneTakeoffIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input
+          placeholder="IATA airport code (e.g. GRU, AMS)"
+          aria-label="IATA airport code"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <InfoIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+      </InputGroup>
+    </div>
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
+      <InputGroup>
+        <InputGroup.Addon>@</InputGroup.Addon>
+        <InputGroup.Input
+          placeholder="username"
+          aria-label="Username"
+          {...demoInputProps}
+        />
+      </InputGroup>
+
+      <InputGroup>
+        <InputGroup.Input
+          placeholder="email"
+          aria-label="Email"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
+      </InputGroup>
+
+      <InputGroup>
+        <InputGroup.Addon>/api/</InputGroup.Addon>
+        <InputGroup.Input
+          placeholder="endpoint"
+          aria-label="API path"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">.json</InputGroup.Addon>
+      </InputGroup>
+    </div>
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
+      <InputGroup>
+        <InputGroup.Input
+          type={show ? "text" : "password"}
+          defaultValue="password"
+          aria-label="Password"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <InputGroup.Button
+            variant="ghost"
+            size="sm"
+            aria-label={show ? "Hide password" : "Show password"}
+            onClick={() => setShow(!show)}
+          >
+            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
+          </InputGroup.Button>
+        </InputGroup.Addon>
+      </InputGroup>
+
+      <InputGroup>
+        <InputGroup.Input
+          placeholder="Filter by name..."
+          aria-label="Filter"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <InputGroup.Button variant="secondary">Apply</InputGroup.Button>
+        </InputGroup.Addon>
+      </InputGroup>
+
+      <InputGroup>
+        <InputGroup.Input
+          placeholder="example.com"
+          aria-label="Domain"
+          {...demoInputProps}
+        />
+        <InputGroup.Button variant="primary">Submit</InputGroup.Button>
+      </InputGroup>
+    </div>
+```
+
+```tsx
+<InputGroup className="w-xs">
+      <InputGroup.Addon>
+        <MagnifyingGlassIcon className="text-kumo-subtle" />
+      </InputGroup.Addon>
+      <InputGroup.Input
+        placeholder="Search..."
+        aria-label="Search"
+        {...demoInputProps}
+      />
+      <InputGroup.Addon align="end">
+        <kbd className="rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle">
+          ⌘K
+        </kbd>
+      </InputGroup.Addon>
+    </InputGroup>
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
+      {/* Spinner at end */}
+      <InputGroup>
+        <InputGroup.Input
+          placeholder="Searching..."
+          aria-label="Searching"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <Loader />
+        </InputGroup.Addon>
+      </InputGroup>
+
+      {/* Spinner at start */}
+      <InputGroup>
+        <InputGroup.Addon>
+          <SpinnerIcon className="animate-spin" />
+        </InputGroup.Addon>
+        <InputGroup.Input
+          placeholder="Thinking..."
+          aria-label="Thinking"
+          {...demoInputProps}
+        />
+      </InputGroup>
+
+      {/* Text + spinner at end */}
+      <InputGroup>
+        <InputGroup.Input
+          placeholder="Saving changes..."
+          aria-label="Saving changes"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <span>Saving...</span>
+          <Loader />
+        </InputGroup.Addon>
+      </InputGroup>
+    </div>
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
+      <InputGroup size="xs" label="Extra Small">
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input placeholder="Extra small input" {...demoInputProps} />
+      </InputGroup>
+
+      <InputGroup size="sm" label="Small">
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input placeholder="Small input" {...demoInputProps} />
+      </InputGroup>
+
+      <InputGroup label="Base (default)">
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input placeholder="Base input" {...demoInputProps} />
+      </InputGroup>
+
+      <InputGroup size="lg" label="Large">
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input placeholder="Large input" {...demoInputProps} />
+      </InputGroup>
+    </div>
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
+      <InputGroup
+        label="Error State"
+        error={{ message: "Please enter a valid email address", match: true }}
+      >
+        <InputGroup.Input
+          type="email"
+          defaultValue="invalid-email"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
+      </InputGroup>
+
+      <InputGroup label="Disabled" disabled>
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
+        <InputGroup.Input placeholder="Search..." {...demoInputProps} />
+        <InputGroup.Button variant="primary">Search</InputGroup.Button>
+      </InputGroup>
+
+      <InputGroup
+        label="With Description"
+        description="Must be at least 8 characters"
+        labelTooltip="Your password is stored securely"
+      >
+        <InputGroup.Input
+          type={show ? "text" : "password"}
+          placeholder="Enter password"
+          {...demoInputProps}
+        />
+        <InputGroup.Addon align="end">
+          <InputGroup.Button
+            variant="ghost"
+            size="sm"
+            aria-label={show ? "Hide password" : "Show password"}
+            onClick={() => setShow(!show)}
+          >
+            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
+          </InputGroup.Button>
+        </InputGroup.Addon>
+      </InputGroup>
+    </div>
+```
+
+
+---
+
 ### Label
 
 Label component for form fields.  Provides a standardized way to display labels with optional indicators: - Optional indicator: gray "(optional)" text when `showOptional={true}` - Tooltip: info icon with hover tooltip for additional context
@@ -3071,7 +3401,7 @@ LayerCard component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `bg-kumo-elevated`, `bg-kumo-recessed`, `ring-kumo-fill`, `ring-kumo-line`, `text-kumo-strong`
+`bg-kumo-base`, `bg-kumo-elevated`, `ring-kumo-fill`, `ring-kumo-line`, `text-kumo-strong`
 
 **Styling:**
 
@@ -3816,34 +4146,6 @@ Radio — radio button group for single-select choices.  Compound component: `Ra
 
 `bg-kumo-base`, `bg-kumo-contrast`, `bg-kumo-tint`, `border-kumo-danger`, `border-kumo-interact`, `border-kumo-line`, `border-kumo-ring`, `ring-kumo-danger`, `ring-kumo-line`, `ring-kumo-ring`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
 
-**Sub-Components:**
-
-This is a compound component. Use these sub-components:
-
-#### Radio.Item
-
-Item sub-component
-
-#### Radio.Group
-
-Group sub-component
-
-Props:
-- `legend`: string (required)
-- `children`: ReactNode (required)
-- `orientation`: "vertical" | "horizontal"
-- `appearance`: KumoRadioAppearance
-- `error`: string
-- `description`: ReactNode
-- `value`: string
-- `disabled`: boolean
-- `label`: "start" (default) puts radio before label (required)
-- `Note`: In card appearance (required)
-- `controlPosition`: RadioControlPosition
-- `name`: string
-- `className`: string
-
-
 **Examples:**
 
 ```tsx
@@ -4074,7 +4376,7 @@ Select component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `bg-kumo-tint`, `ring-kumo-ring`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
+`bg-kumo-control`, `bg-kumo-overlay`, `ring-kumo-line`, `ring-kumo-ring`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
 
 **Styling:**
 
@@ -4335,7 +4637,7 @@ Password/secret input that masks its value by default and reveals on click. Incl
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-brand`, `bg-kumo-control`, `outline-kumo-ring`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-subtle`
+`bg-kumo-brand`, `bg-kumo-control`, `outline-kumo-ring`, `text-kumo-default`, `text-kumo-subtle`
 
 **Examples:**
 
@@ -4405,481 +4707,6 @@ Password/secret input that masks its value by default and reveals on click. Incl
         description="Keep this value secure and don't share it"
       />
     </div>
-```
-
-
----
-
-### Sidebar
-
-Sidebar — responsive navigation panel with expand/collapse support.  Compound component: `Sidebar` (root `<aside>`), `.Provider`, `.Header`, `.Content`, `.Footer`, `.Group`, `.GroupLabel`, `.GroupContent`, `.Menu`, `.MenuItem`, `.MenuButton`, `.MenuAction`, `.MenuBadge`, `.MenuSub`, `.MenuSubItem`, `.MenuSubButton`, `.Separator`, `.Input`, `.Trigger`, `.Rail`, `.MenuChevron`, `.Collapsible`, `.CollapsibleTrigger`, `.CollapsibleContent`.  Built on `@base-ui/react/collapsible` + `@base-ui/react/dialog`.
-
-**Type:** component
-
-**Import:** `import { Sidebar } from "@cloudflare/kumo";`
-
-**Category:** Other
-
-**Props:**
-
-- `defaultOpen`: boolean
-  Initial open state when uncontrolled.
-- `open`: boolean
-  Controlled open state.
-- `variant`: enum [default: sidebar]
-  - `"sidebar"`: Standard sidebar with border separator
-  - `"floating"`: Floating sidebar with shadow and rounded corners
-  - `"inset"`: Inset sidebar within the content area
-- `side`: enum [default: left]
-  - `"left"`: Left-aligned sidebar
-  - `"right"`: Right-aligned sidebar
-- `collapsible`: enum [default: icon]
-  - `"icon"`: Collapses to show icons only
-  - `"offcanvas"`: Slides off screen when collapsed
-  - `"none"`: Cannot be collapsed
-- `resizable`: boolean
-  Enable drag-to-resize on the sidebar edge.
-- `defaultWidth`: number
-  Initial width in pixels when resizable.
-- `minWidth`: number
-  Minimum width in pixels when resizing.
-- `maxWidth`: number
-  Maximum width in pixels when resizing.
-- `children`: ReactNode
-  Content — typically `<Sidebar>` + main content.
-- `className`: string
-  Additional CSS classes for the wrapper div.
-
-**Colors (kumo tokens used):**
-
-`bg-kumo-base`, `bg-kumo-brand`, `bg-kumo-line`, `bg-kumo-overlay`, `bg-kumo-recessed`, `bg-kumo-tint`, `border-kumo-line`, `ring-kumo-line`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
-
-**Styling:**
-
-
-**Sub-Components:**
-
-This is a compound component. Use these sub-components:
-
-#### Sidebar.Provider
-
-Provider sub-component
-
-Props:
-- `defaultOpen`: boolean
-- `open`: boolean
-- `variant`: SidebarVariant
-- `side`: SidebarSide
-- `collapsible`: "icon" | "offcanvas" | "none"
-- `resizable`: boolean
-- `defaultWidth`: number
-- `minWidth`: number
-- `maxWidth`: number
-- `children`: ReactNode (required)
-- `className`: string
-
-#### Sidebar.Header
-
-Header sub-component
-
-#### Sidebar.Content
-
-Content sub-component
-
-#### Sidebar.Footer
-
-Footer sub-component
-
-#### Sidebar.Group
-
-Group sub-component
-
-#### Sidebar.GroupLabel
-
-GroupLabel sub-component
-
-#### Sidebar.GroupContent
-
-GroupContent sub-component
-
-#### Sidebar.Menu
-
-Menu sub-component
-
-#### Sidebar.MenuItem
-
-MenuItem sub-component
-
-#### Sidebar.MenuButton
-
-MenuButton sub-component
-
-#### Sidebar.MenuAction
-
-MenuAction sub-component
-
-#### Sidebar.MenuBadge
-
-MenuBadge sub-component
-
-#### Sidebar.MenuSub
-
-MenuSub sub-component
-
-#### Sidebar.MenuSubItem
-
-MenuSubItem sub-component
-
-#### Sidebar.MenuSubButton
-
-MenuSubButton sub-component
-
-#### Sidebar.Separator
-
-Separator sub-component
-
-#### Sidebar.Input
-
-Input sub-component
-
-#### Sidebar.Trigger
-
-Trigger sub-component
-
-#### Sidebar.Rail
-
-Rail sub-component
-
-#### Sidebar.ResizeHandle
-
-ResizeHandle sub-component
-
-#### Sidebar.MenuChevron
-
-MenuChevron sub-component
-
-#### Sidebar.Collapsible
-
-Collapsible sub-component
-
-#### Sidebar.CollapsibleTrigger
-
-CollapsibleTrigger sub-component
-
-#### Sidebar.CollapsibleContent
-
-CollapsibleContent sub-component
-
-
-**Examples:**
-
-```tsx
-<DemoContainer>
-      <Sidebar.Provider defaultOpen className="min-h-0! h-full">
-        <Sidebar>
-          <Sidebar.Content>
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Overview</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuButton icon={HouseIcon} active>
-                  Home
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={ChartBarIcon}>
-                  Analytics
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={GlobeIcon}>
-                  Domains
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Build</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuItem>
-                  <Sidebar.Collapsible defaultOpen>
-                    <Sidebar.CollapsibleTrigger
-                      render={
-                        <Sidebar.MenuButton icon={CodeIcon}>
-                          Compute
-                          <Sidebar.MenuChevron />
-                        </Sidebar.MenuButton>
-                      }
-                    />
-                    <Sidebar.CollapsibleContent>
-                      <Sidebar.MenuSub>
-                        <Sidebar.MenuSubButton>
-                          Workers & Pages
-                        </Sidebar.MenuSubButton>
-                        <Sidebar.MenuSubButton>
-                          Durable Objects
-                        </Sidebar.MenuSubButton>
-                      </Sidebar.MenuSub>
-                    </Sidebar.CollapsibleContent>
-                  </Sidebar.Collapsible>
-                </Sidebar.MenuItem>
-                <Sidebar.MenuButton icon={DatabaseIcon}>
-                  Storage
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-          </Sidebar.Content>
-        </Sidebar>
-        <DemoMain />
-      </Sidebar.Provider>
-    </DemoContainer>
-```
-
-```tsx
-<DemoContainer>
-      <Sidebar.Provider defaultOpen className="min-h-0! h-full">
-        <Sidebar>
-          <Sidebar.Content>
-            {/* GroupContent is required for collapsible groups (provides grid-rows animation) */}
-            <Sidebar.Group collapsible defaultOpen>
-              <Sidebar.GroupLabel>Overview</Sidebar.GroupLabel>
-              <Sidebar.GroupContent>
-                <Sidebar.Menu>
-                  <Sidebar.MenuButton icon={HouseIcon} active>
-                    Home
-                  </Sidebar.MenuButton>
-                  <Sidebar.MenuButton icon={ChartBarIcon}>
-                    Analytics
-                  </Sidebar.MenuButton>
-                  <Sidebar.MenuButton icon={GlobeIcon}>
-                    Domains
-                  </Sidebar.MenuButton>
-                </Sidebar.Menu>
-              </Sidebar.GroupContent>
-            </Sidebar.Group>
-
-            <Sidebar.Group collapsible defaultOpen>
-              <Sidebar.GroupLabel>Build</Sidebar.GroupLabel>
-              <Sidebar.GroupContent>
-                <Sidebar.Menu>
-                  <Sidebar.MenuButton icon={CodeIcon}>
-                    Compute
-                  </Sidebar.MenuButton>
-                  <Sidebar.MenuButton icon={DatabaseIcon}>
-                    Storage
-                  </Sidebar.MenuButton>
-                </Sidebar.Menu>
-              </Sidebar.GroupContent>
-            </Sidebar.Group>
-
-            <Sidebar.Group collapsible defaultOpen={false}>
-              <Sidebar.GroupLabel>Protect & Connect</Sidebar.GroupLabel>
-              <Sidebar.GroupContent>
-                <Sidebar.Menu>
-                  <Sidebar.MenuButton icon={ShieldCheckIcon}>
-                    Security
-                  </Sidebar.MenuButton>
-                  <Sidebar.MenuButton icon={LockIcon}>
-                    Zero Trust
-                  </Sidebar.MenuButton>
-                </Sidebar.Menu>
-              </Sidebar.GroupContent>
-            </Sidebar.Group>
-          </Sidebar.Content>
-        </Sidebar>
-        <DemoMain />
-      </Sidebar.Provider>
-    </DemoContainer>
-```
-
-```tsx
-<DemoContainer>
-      <Sidebar.Provider defaultOpen className="min-h-0! h-full">
-        <Sidebar>
-          <Sidebar.Header>
-            <BrandLogo />
-          </Sidebar.Header>
-          <Sidebar.Content>
-            <Sidebar.Group>
-              <Sidebar.Menu>
-                <Sidebar.MenuButton icon={HouseIcon} tooltip="Home" active>
-                  Home
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={ChartBarIcon} tooltip="Analytics">
-                  Analytics
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={CodeIcon} tooltip="Compute">
-                  Compute
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={DatabaseIcon} tooltip="Storage">
-                  Storage
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-          </Sidebar.Content>
-          <Sidebar.Footer>
-            <Sidebar.Trigger />
-          </Sidebar.Footer>
-        </Sidebar>
-        <DemoMain>
-          <ToggleButton />
-          <p className="text-sm">
-            Click the button or the sidebar trigger to toggle
-          </p>
-        </DemoMain>
-      </Sidebar.Provider>
-    </DemoContainer>
-```
-
-```tsx
-<DemoContainer>
-      <Sidebar.Provider defaultOpen className="min-h-0! h-full">
-        <Sidebar>
-          <Sidebar.Header>
-            <AccountSwitcher />
-          </Sidebar.Header>
-
-          <Sidebar.Content>
-            <div className="px-1 pb-2">
-              <Sidebar.Input placeholder="Quick search..." shortcut="⌘K" />
-            </div>
-
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Overview</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuButton icon={HouseIcon} active>
-                  Home
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={ChartBarIcon}>
-                  Analytics & Logs
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={GlobeIcon}>
-                  Domains
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-
-            <Sidebar.Separator />
-
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Build</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuItem>
-                  <Sidebar.Collapsible defaultOpen>
-                    <Sidebar.CollapsibleTrigger
-                      render={
-                        <Sidebar.MenuButton icon={CodeIcon}>
-                          Compute
-                          <Sidebar.MenuChevron />
-                        </Sidebar.MenuButton>
-                      }
-                    />
-                    <Sidebar.CollapsibleContent>
-                      <Sidebar.MenuSub>
-                        <Sidebar.MenuSubButton>
-                          Workers & Pages
-                        </Sidebar.MenuSubButton>
-                        <Sidebar.MenuSubButton>
-                          Durable Objects
-                        </Sidebar.MenuSubButton>
-                        <Sidebar.MenuSubButton>
-                          Containers
-                          <Sidebar.MenuBadge>Beta</Sidebar.MenuBadge>
-                        </Sidebar.MenuSubButton>
-                      </Sidebar.MenuSub>
-                    </Sidebar.CollapsibleContent>
-                  </Sidebar.Collapsible>
-                </Sidebar.MenuItem>
-                <Sidebar.MenuButton icon={DatabaseIcon}>
-                  Storage
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Protect & Connect</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuButton icon={ShieldCheckIcon}>
-                  Security
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={LockIcon}>
-                  Zero Trust
-                  <Sidebar.MenuBadge>Beta</Sidebar.MenuBadge>
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-          </Sidebar.Content>
-
-          <Sidebar.Footer>
-            <Sidebar.MenuButton icon={GearIcon}>
-              Manage account
-            </Sidebar.MenuButton>
-          </Sidebar.Footer>
-        </Sidebar>
-        <DemoMain />
-      </Sidebar.Provider>
-    </DemoContainer>
-```
-
-```tsx
-<DemoContainer>
-      <Sidebar.Provider
-        defaultOpen
-        resizable
-        defaultWidth={240}
-        minWidth={180}
-        maxWidth={400}
-        className="min-h-0! h-full"
-      >
-        <Sidebar>
-          <Sidebar.Header>
-            <BrandLogo />
-          </Sidebar.Header>
-          <Sidebar.Content>
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Overview</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuButton icon={HouseIcon} active>
-                  Home
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={ChartBarIcon}>
-                  Analytics
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={DatabaseIcon}>
-                  Storage
-                </Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-          </Sidebar.Content>
-          <Sidebar.Footer>
-            <Sidebar.Trigger />
-          </Sidebar.Footer>
-          <Sidebar.ResizeHandle />
-        </Sidebar>
-        <DemoMain>
-          <p className="text-sm">Drag the sidebar edge to resize</p>
-        </DemoMain>
-      </Sidebar.Provider>
-    </DemoContainer>
-```
-
-```tsx
-<DemoContainer>
-      <Sidebar.Provider defaultOpen side="right" className="min-h-0! h-full">
-        <DemoMain />
-        <Sidebar>
-          <Sidebar.Content>
-            <Sidebar.Group>
-              <Sidebar.GroupLabel>Details</Sidebar.GroupLabel>
-              <Sidebar.Menu>
-                <Sidebar.MenuButton icon={GearIcon} active>
-                  Properties
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={ChartBarIcon}>
-                  Metrics
-                </Sidebar.MenuButton>
-                <Sidebar.MenuButton icon={BellIcon}>Alerts</Sidebar.MenuButton>
-              </Sidebar.Menu>
-            </Sidebar.Group>
-          </Sidebar.Content>
-        </Sidebar>
-      </Sidebar.Provider>
-    </DemoContainer>
 ```
 
 
@@ -4962,8 +4789,8 @@ Switch component
 **Props:**
 
 - `variant`: enum [default: default]
-  - `"default"`: Default switch with squircle shape and brand blue color
-  - `"neutral"`: Monochrome switch with squircle shape for subtle toggles
+  - `"default"`: Default switch appearance
+  - `"error"`: Error state for validation failures
 - `label`: ReactNode
   Label content for the switch (Field wrapper is built-in) - can be a string or any React node. Optional when used standalone for visual-only purposes.
 - `labelTooltip`: ReactNode
@@ -4991,7 +4818,7 @@ Switch component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `border-kumo-line`, `ring-kumo-line`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
+`bg-kumo-brand`, `bg-kumo-brand-hover`, `bg-kumo-danger`, `bg-kumo-interact`, `bg-kumo-recessed`, `border-kumo-line`, `ring-kumo-danger`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
 
 **Sub-Components:**
 
@@ -5023,77 +4850,6 @@ Props:
 
 ```tsx
 <Switch label="Disabled" checked={false} disabled />
-```
-
-```tsx
-<Switch
-      label="Neutral switch"
-      variant="neutral"
-      checked={checked}
-      onCheckedChange={setChecked}
-    />
-```
-
-```tsx
-<div className="flex flex-col gap-4">
-      <Switch
-        label="Neutral off"
-        variant="neutral"
-        checked={false}
-        onCheckedChange={() => {}}
-      />
-      <Switch
-        label="Neutral on"
-        variant="neutral"
-        checked={true}
-        onCheckedChange={() => {}}
-      />
-      <Switch
-        label="Neutral disabled"
-        variant="neutral"
-        checked={false}
-        disabled
-      />
-    </div>
-```
-
-```tsx
-<div className="flex flex-col gap-4">
-      <Switch
-        label="Default variant"
-        checked={true}
-        onCheckedChange={() => {}}
-      />
-      <Switch
-        label="Neutral variant"
-        variant="neutral"
-        checked={true}
-        onCheckedChange={() => {}}
-      />
-    </div>
-```
-
-```tsx
-<div className="flex flex-col gap-4">
-      <Switch
-        label="Small"
-        size="sm"
-        checked={true}
-        onCheckedChange={() => {}}
-      />
-      <Switch
-        label="Base (default)"
-        size="base"
-        checked={true}
-        onCheckedChange={() => {}}
-      />
-      <Switch
-        label="Large"
-        size="lg"
-        checked={true}
-        onCheckedChange={() => {}}
-      />
-    </div>
 ```
 
 
@@ -5458,7 +5214,7 @@ Tab navigation component with segmented or underline style. Built on Base UI Tab
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `bg-kumo-brand`, `bg-kumo-recessed`, `bg-kumo-surface`, `bg-kumo-tint`, `border-kumo-ring`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
+`bg-kumo-brand`, `bg-kumo-overlay`, `bg-kumo-tint`, `border-kumo-line`, `ring-kumo-fill-hover`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
 
 **Styling:**
 
@@ -5687,10 +5443,8 @@ Toasty — toast notification provider and viewport.  Renders a `Toast.Provider`
 
 - `variant`: enum [default: default]
   - `"default"`: Default toast style
-  - `"success"`: Success toast for confirmations and positive outcomes
   - `"error"`: Error toast for critical issues
   - `"warning"`: Warning toast for cautionary messages
-  - `"info"`: Info toast for neutral informational messages
 - `className`: string
   Additional CSS classes
 - `children`: ReactNode
@@ -5698,7 +5452,7 @@ Toasty — toast notification provider and viewport.  Renders a `Toast.Provider`
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-contrast`, `bg-kumo-control`, `bg-kumo-danger-tint`, `bg-kumo-fill-hover`, `bg-kumo-info-tint`, `bg-kumo-success-tint`, `bg-kumo-warning-tint`, `border-kumo-danger`, `border-kumo-fill`, `border-kumo-info`, `border-kumo-success`, `border-kumo-warning`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-info`, `text-kumo-strong`, `text-kumo-subtle`, `text-kumo-success`, `text-kumo-warning`
+`bg-kumo-contrast`, `bg-kumo-control`, `bg-kumo-fill-hover`, `border-kumo-fill`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
 
 **Styling:**
 
@@ -5802,8 +5556,8 @@ Multi-line textarea input with Input variants and InputArea-specific dimensions
 - **Display:** Badge, Breadcrumbs, Code, Collapsible, Empty, LayerCard, Meter, Text
 - **Feedback:** Banner, Loader, Toasty
 - **Action:** Button, ClipboardText
-- **Input:** Checkbox, Combobox, DateRangePicker, Field, Input, Radio, Select, Switch
-- **Other:** CloudflareLogo, DatePicker, Label, Link, SensitiveInput, Sidebar, Table, DeleteResource
+- **Input:** Checkbox, Combobox, DateRangePicker, Field, Input, InputGroup, Radio, Select, Switch
+- **Other:** CloudflareLogo, DatePicker, Label, Link, SensitiveInput, Table, DeleteResource
 - **Navigation:** CommandPalette, MenuBar, Pagination, Tabs
 - **Overlay:** Dialog, DropdownMenu, Popover, Tooltip
 - **Layout:** Grid, Surface, PageHeader, ResourceListPage

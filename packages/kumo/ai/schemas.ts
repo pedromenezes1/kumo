@@ -135,10 +135,18 @@ export const BreadcrumbsPropsSchema = z.object({
 export const ButtonPropsSchema = z.object({
   shape: z.enum(["base", "square", "circle"]).optional(),
   size: z.enum(["xs", "sm", "base", "lg"]).optional(),
-  compactSize: z.enum(["xs", "sm", "base", "lg"]).optional(),
   variant: z.enum(["primary", "secondary", "ghost", "destructive", "secondary-destructive", "outline"]).optional(),
-  className: z.string().optional(), // Additional CSS classes
-  children: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Child elements
+  children: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(),
+  className: z.string().optional(),
+  icon: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Icon from `@phosphor-icons/react` or a React element. Rendered before children.
+  loading: z.boolean().optional(), // Shows a loading spinner and disables interaction.
+  id: z.string().optional(),
+  lang: z.string().optional(),
+  title: z.string().optional(),
+  disabled: z.boolean().optional(),
+  name: z.string().optional(),
+  type: z.enum(["submit", "reset", "button"]).optional(),
+  value: z.unknown().optional(),
 });
 
 export const CheckboxPropsSchema = z.object({
@@ -523,6 +531,18 @@ export const InputPropsSchema = z.object({
 
 export const InputAreaPropsSchema = z.object({});
 
+export const InputGroupPropsSchema = z.object({
+  label: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // The label content — can be a string or any React node.
+  description: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Helper text displayed below the control (hidden when `error` is present).
+  error: z.unknown().optional(), // Validation error with a message and a browser `ValidityState` match key.
+  required: z.boolean().optional(), // When explicitly `false`, shows gray "(optional)" text after the label. When `true` or `undefined`, no indicator is shown.
+  labelTooltip: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Tooltip content displayed next to the label via an info icon.
+  className: z.string().optional(),
+  size: z.enum(["xs", "sm", "base", "lg"]).optional(),
+  disabled: z.boolean().optional(),
+  focusMode: z.enum(["container", "individual"]).optional(),
+});
+
 export const LabelPropsSchema = z.object({
   children: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // The label content — can be a string or any React node.
   showOptional: z.boolean().optional(), // When `true`, shows gray "(optional)" text after the label.
@@ -651,20 +671,6 @@ export const SensitiveInputPropsSchema = z.object({
   error: z.unknown().optional(), // Error message or validation error object
 });
 
-export const SidebarPropsSchema = z.object({
-  defaultOpen: z.boolean().optional(), // Initial open state when uncontrolled.
-  open: z.boolean().optional(), // Controlled open state.
-  variant: z.enum(["sidebar", "floating", "inset"]).optional(), // Sidebar layout variant.
-  side: z.enum(["left", "right"]).optional(), // Which side the sidebar is on.
-  collapsible: z.enum(["icon", "offcanvas", "none"]).optional(),
-  resizable: z.boolean().optional(), // Enable drag-to-resize on the sidebar edge.
-  defaultWidth: z.number().optional(), // Initial width in pixels when resizable.
-  minWidth: z.number().optional(), // Minimum width in pixels when resizing.
-  maxWidth: z.number().optional(), // Maximum width in pixels when resizing.
-  children: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Content — typically `<Sidebar>` + main content.
-  className: z.string().optional(), // Additional CSS classes for the wrapper div.
-});
-
 export const SurfacePropsSchema = z.object({
   as: z.unknown().optional(), // The HTML element type to render as (e.g. `"div"`, `"section"`, `"article"`).
   className: z.string().optional(), // Additional CSS classes merged via `cn()`.
@@ -672,7 +678,7 @@ export const SurfacePropsSchema = z.object({
 });
 
 export const SwitchPropsSchema = z.object({
-  variant: z.enum(["default", "neutral"]).optional(), // Visual variant: "default" (pill, brand color) or "neutral" (squircle, monochrome)
+  variant: z.enum(["default", "error"]).optional(), // Visual variant: "default" or "error" for validation failures (visual only, no error text)
   label: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Label content for the switch (Field wrapper is built-in) - can be a string or any React node. Optional when used standalone for visual-only purposes.
   labelTooltip: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Tooltip content to display next to the label via an info icon
   required: z.boolean().optional(), // Whether the switch is required. When explicitly false, shows "(optional)" text after the label.
@@ -719,7 +725,7 @@ export const TextPropsSchema = z.object({
 });
 
 export const ToastyPropsSchema = z.object({
-  variant: z.enum(["default", "success", "error", "warning", "info"]).optional(),
+  variant: z.enum(["default", "error", "warning"]).optional(),
   className: z.string().optional(), // Additional CSS classes
   children: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Child elements
 });
@@ -738,7 +744,7 @@ export const TooltipPropsSchema = z.object({
 /**
  * All valid component type names
  */
-export type KumoComponentType = "Badge" | "Banner" | "Breadcrumbs" | "Button" | "Checkbox" | "ClipboardText" | "CloudflareLogo" | "Code" | "Collapsible" | "Combobox" | "CommandPalette" | "DatePicker" | "DateRangePicker" | "Dialog" | "DropdownMenu" | "Empty" | "Field" | "Grid" | "Input" | "InputArea" | "Label" | "LayerCard" | "Link" | "Loader" | "MenuBar" | "Meter" | "Pagination" | "Popover" | "Radio" | "Select" | "SensitiveInput" | "Sidebar" | "Surface" | "Switch" | "Table" | "Tabs" | "Text" | "Toasty" | "Tooltip";
+export type KumoComponentType = "Badge" | "Banner" | "Breadcrumbs" | "Button" | "Checkbox" | "ClipboardText" | "CloudflareLogo" | "Code" | "Collapsible" | "Combobox" | "CommandPalette" | "DatePicker" | "DateRangePicker" | "Dialog" | "DropdownMenu" | "Empty" | "Field" | "Grid" | "Input" | "InputArea" | "InputGroup" | "Label" | "LayerCard" | "Link" | "Loader" | "MenuBar" | "Meter" | "Pagination" | "Popover" | "Radio" | "Select" | "SensitiveInput" | "Surface" | "Switch" | "Table" | "Tabs" | "Text" | "Toasty" | "Tooltip";
 
 export const KumoComponentTypeSchema = z.enum([
   "Badge",
@@ -761,6 +767,7 @@ export const KumoComponentTypeSchema = z.enum([
   "Grid",
   "Input",
   "InputArea",
+  "InputGroup",
   "Label",
   "LayerCard",
   "Link",
@@ -772,7 +779,6 @@ export const KumoComponentTypeSchema = z.enum([
   "Radio",
   "Select",
   "SensitiveInput",
-  "Sidebar",
   "Surface",
   "Switch",
   "Table",
@@ -806,6 +812,7 @@ export const ComponentPropsSchemas = {
   Grid: GridPropsSchema,
   Input: InputPropsSchema,
   InputArea: InputAreaPropsSchema,
+  InputGroup: InputGroupPropsSchema,
   Label: LabelPropsSchema,
   LayerCard: LayerCardPropsSchema,
   Link: LinkPropsSchema,
@@ -817,7 +824,6 @@ export const ComponentPropsSchemas = {
   Radio: RadioPropsSchema,
   Select: SelectPropsSchema,
   SensitiveInput: SensitiveInputPropsSchema,
-  Sidebar: SidebarPropsSchema,
   Surface: SurfacePropsSchema,
   Switch: SwitchPropsSchema,
   Table: TablePropsSchema,
@@ -881,4 +887,4 @@ export function validateUITree(tree: unknown): SafeParseResult<UITree> {
 /**
  * List of all component names (for catalog generation)
  */
-export const KUMO_COMPONENT_NAMES = ["Badge", "Banner", "Breadcrumbs", "Button", "Checkbox", "ClipboardText", "CloudflareLogo", "Code", "Collapsible", "Combobox", "CommandPalette", "DatePicker", "DateRangePicker", "Dialog", "DropdownMenu", "Empty", "Field", "Grid", "Input", "InputArea", "Label", "LayerCard", "Link", "Loader", "MenuBar", "Meter", "Pagination", "Popover", "Radio", "Select", "SensitiveInput", "Sidebar", "Surface", "Switch", "Table", "Tabs", "Text", "Toasty", "Tooltip"] as const;
+export const KUMO_COMPONENT_NAMES = ["Badge", "Banner", "Breadcrumbs", "Button", "Checkbox", "ClipboardText", "CloudflareLogo", "Code", "Collapsible", "Combobox", "CommandPalette", "DatePicker", "DateRangePicker", "Dialog", "DropdownMenu", "Empty", "Field", "Grid", "Input", "InputArea", "InputGroup", "Label", "LayerCard", "Link", "Loader", "MenuBar", "Meter", "Pagination", "Popover", "Radio", "Select", "SensitiveInput", "Surface", "Switch", "Table", "Tabs", "Text", "Toasty", "Tooltip"] as const;
