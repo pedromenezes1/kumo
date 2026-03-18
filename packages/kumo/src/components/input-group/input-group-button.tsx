@@ -37,6 +37,7 @@ export function Button({
 
   return (
     <ButtonExternal
+      type="button"
       {...props}
       data-slot="input-group-button"
       size={size ?? context?.size}
