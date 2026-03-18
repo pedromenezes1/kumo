@@ -1938,7 +1938,13 @@
           "description": "Additional CSS classes merged via `cn()`."
         }
       },
-      "examples": [],
+      "examples": [
+        "<CodeBlock\n      lang=\"tsx\"\n      code={`const greeting = \"Hello, World!\";\nconsole.log(greeting);`}\n    />",
+        "<CodeBlock\n      lang=\"tsx\"\n      code={`interface User {\n  id: string;\n  name: string;\n  email: string;\n}\n\nconst user: User = {\n  id: \"1\",\n  name: \"John Doe\",\n  email: \"john@example.com\"\n};`}\n    />",
+        "<CodeBlock\n      lang=\"bash\"\n      code={`npm install @cloudflare/kumo\npnpm add @cloudflare/kumo`}\n    />",
+        "<CodeBlock\n      lang=\"jsonc\"\n      code={`{\n  \"name\": \"kumo\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"react\": \"^19.0.0\"\n  }\n}`}\n    />",
+        "<Code\n      lang=\"bash\"\n      code=\"export API_KEY={{apiKey}}\"\n      values={{\n        apiKey: { value: \"sk_live_123\", highlight: true },\n      }}\n    />"
+      ],
       "colors": [
         "bg-kumo-base",
         "border-kumo-fill",
@@ -2124,9 +2130,10 @@
         "<div className=\"flex flex-wrap items-center gap-4\">\n      <Combobox\n        size=\"sm\"\n        value={smValue}\n        onValueChange={(v) => setSmValue(v as Language)}\n        items={languages}\n      >\n        <Combobox.TriggerValue className=\"w-[160px]\" />\n        <Combobox.Content>\n          <Combobox.Input placeholder=\"Search\" />\n          <Combobox.Empty />\n          <Combobox.List>\n            {(item: Language) => (\n              <Combobox.Item key={item.value} value={item}>\n                {item.emoji} {item.label}\n              </Combobox.Item>\n            )}\n          </Combobox.List>\n        </Combobox.Content>\n      </Combobox>\n      <Combobox\n        size=\"base\"\n        value={baseValue}\n        onValueChange={(v) => setBaseValue(v as Language)}\n        items={languages}\n      >\n        <Combobox.TriggerValue className=\"w-[180px]\" />\n        <Combobox.Content>\n          <Combobox.Input placeholder=\"Search\" />\n          <Combobox.Empty />\n          <Combobox.List>\n            {(item: Language) => (\n              <Combobox.Item key={item.value} value={item}>\n                {item.emoji} {item.label}\n              </Combobox.Item>\n            )}\n          </Combobox.List>\n        </Combobox.Content>\n      </Combobox>\n    </div>"
       ],
       "colors": [
-        "bg-kumo-control",
+        "bg-kumo-base",
         "bg-kumo-fill-hover",
         "bg-kumo-overlay",
+        "bg-kumo-tint",
         "border-kumo-line",
         "ring-kumo-line",
         "text-kumo-default",
@@ -2467,7 +2474,6 @@
       ],
       "colors": [
         "bg-kumo-base",
-        "bg-kumo-overlay",
         "text-kumo-default"
       ],
       "subComponents": {
@@ -3083,125 +3089,6 @@
         }
       }
     },
-    "InputGroup": {
-      "name": "InputGroup",
-      "type": "component",
-      "description": "InputGroup component",
-      "importPath": "@cloudflare/kumo",
-      "category": "Input",
-      "props": {
-        "label": {
-          "type": "ReactNode",
-          "optional": true,
-          "description": "The label content — can be a string or any React node."
-        },
-        "description": {
-          "type": "ReactNode",
-          "optional": true,
-          "description": "Helper text displayed below the control (hidden when `error` is present)."
-        },
-        "error": {
-          "type": "object",
-          "optional": true,
-          "description": "Validation error with a message and a browser `ValidityState` match key."
-        },
-        "required": {
-          "type": "boolean",
-          "optional": true,
-          "description": "When explicitly `false`, shows gray \"(optional)\" text after the label. When `true` or `undefined`, no indicator is shown."
-        },
-        "labelTooltip": {
-          "type": "ReactNode",
-          "optional": true,
-          "description": "Tooltip content displayed next to the label via an info icon."
-        },
-        "className": {
-          "type": "string",
-          "optional": true
-        },
-        "size": {
-          "type": "enum",
-          "optional": true,
-          "values": [
-            "xs",
-            "sm",
-            "base",
-            "lg"
-          ]
-        },
-        "disabled": {
-          "type": "boolean",
-          "optional": true
-        },
-        "focusMode": {
-          "type": "enum",
-          "optional": true,
-          "values": [
-            "container",
-            "individual"
-          ]
-        }
-      },
-      "examples": [
-        "<WorkersSuffixInput defaultValue=\"kumo\" />",
-        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup>\n        <InputGroup.Addon>\n          <LinkIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"Paste a link...\"\n          aria-label=\"Link\"\n          {...demoInputProps}\n        />\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Add a tag...\"\n          aria-label=\"Tag\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <TagIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Addon>\n          <AirplaneTakeoffIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"IATA airport code (e.g. GRU, AMS)\"\n          aria-label=\"IATA airport code\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InfoIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n      </InputGroup>\n    </div>",
-        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup>\n        <InputGroup.Addon>@</InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"username\"\n          aria-label=\"Username\"\n          {...demoInputProps}\n        />\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"email\"\n          aria-label=\"Email\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">@example.com</InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Addon>/api/</InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"endpoint\"\n          aria-label=\"API path\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">.json</InputGroup.Addon>\n      </InputGroup>\n    </div>",
-        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup>\n        <InputGroup.Input\n          type={show ? \"text\" : \"password\"}\n          defaultValue=\"password\"\n          aria-label=\"Password\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InputGroup.Button\n            variant=\"ghost\"\n            size=\"sm\"\n            aria-label={show ? \"Hide password\" : \"Show password\"}\n            onClick={() => setShow(!show)}\n          >\n            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}\n          </InputGroup.Button>\n        </InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Filter by name...\"\n          aria-label=\"Filter\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InputGroup.Button variant=\"secondary\">Apply</InputGroup.Button>\n        </InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"example.com\"\n          aria-label=\"Domain\"\n          {...demoInputProps}\n        />\n        <InputGroup.Button variant=\"primary\">Submit</InputGroup.Button>\n      </InputGroup>\n    </div>",
-        "<InputGroup className=\"w-xs\">\n      <InputGroup.Addon>\n        <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n      </InputGroup.Addon>\n      <InputGroup.Input\n        placeholder=\"Search...\"\n        aria-label=\"Search\"\n        {...demoInputProps}\n      />\n      <InputGroup.Addon align=\"end\">\n        <kbd className=\"rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle\">\n          ⌘K\n        </kbd>\n      </InputGroup.Addon>\n    </InputGroup>",
-        "<div className=\"flex w-xs flex-col gap-4\">\n      {/* Spinner at end */}\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Searching...\"\n          aria-label=\"Searching\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <Loader />\n        </InputGroup.Addon>\n      </InputGroup>\n\n      {/* Spinner at start */}\n      <InputGroup>\n        <InputGroup.Addon>\n          <SpinnerIcon className=\"animate-spin\" />\n        </InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"Thinking...\"\n          aria-label=\"Thinking\"\n          {...demoInputProps}\n        />\n      </InputGroup>\n\n      {/* Text + spinner at end */}\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Saving changes...\"\n          aria-label=\"Saving changes\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <span>Saving...</span>\n          <Loader />\n        </InputGroup.Addon>\n      </InputGroup>\n    </div>",
-        "<WorkersSuffixInput defaultValue=\"kumo\" />",
-        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup size=\"xs\" label=\"Extra Small\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Extra small input\" {...demoInputProps} />\n      </InputGroup>\n\n      <InputGroup size=\"sm\" label=\"Small\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Small input\" {...demoInputProps} />\n      </InputGroup>\n\n      <InputGroup label=\"Base (default)\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Base input\" {...demoInputProps} />\n      </InputGroup>\n\n      <InputGroup size=\"lg\" label=\"Large\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Large input\" {...demoInputProps} />\n      </InputGroup>\n    </div>",
-        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup\n        label=\"Error State\"\n        error={{ message: \"Please enter a valid email address\", match: true }}\n      >\n        <InputGroup.Input\n          type=\"email\"\n          defaultValue=\"invalid-email\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">@example.com</InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup label=\"Disabled\" disabled>\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Search...\" {...demoInputProps} />\n        <InputGroup.Button variant=\"primary\">Search</InputGroup.Button>\n      </InputGroup>\n\n      <InputGroup\n        label=\"With Description\"\n        description=\"Must be at least 8 characters\"\n        labelTooltip=\"Your password is stored securely\"\n      >\n        <InputGroup.Input\n          type={show ? \"text\" : \"password\"}\n          placeholder=\"Enter password\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InputGroup.Button\n            variant=\"ghost\"\n            size=\"sm\"\n            aria-label={show ? \"Hide password\" : \"Show password\"}\n            onClick={() => setShow(!show)}\n          >\n            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}\n          </InputGroup.Button>\n        </InputGroup.Addon>\n      </InputGroup>\n    </div>"
-      ],
-      "colors": [
-        "ring-kumo-danger",
-        "ring-kumo-ring"
-      ],
-      "subComponents": {
-        "Input": {
-          "name": "Input",
-          "description": "Input sub-component",
-          "props": {}
-        },
-        "Button": {
-          "name": "Button",
-          "description": "Button sub-component",
-          "props": {}
-        },
-        "Addon": {
-          "name": "Addon",
-          "description": "Addon sub-component",
-          "props": {
-            "align": {
-              "type": "\"start\" | \"end\"",
-              "optional": true
-            },
-            "className": {
-              "type": "string",
-              "optional": true
-            },
-            "children": {
-              "type": "ReactNode",
-              "optional": true
-            }
-          }
-        },
-        "Suffix": {
-          "name": "Suffix",
-          "description": "Suffix sub-component",
-          "props": {
-            "className": {
-              "type": "string",
-              "optional": true
-            },
-            "children": {
-              "type": "ReactNode",
-              "optional": true
-            }
-          }
-        }
-      }
-    },
     "Label": {
       "name": "Label",
       "type": "component",
@@ -3278,6 +3165,7 @@
       "colors": [
         "bg-kumo-base",
         "bg-kumo-elevated",
+        "bg-kumo-recessed",
         "ring-kumo-fill",
         "ring-kumo-line",
         "text-kumo-strong"
@@ -3466,8 +3354,7 @@
       "examples": [
         "<Loader />",
         "<div className=\"flex items-center gap-4\">\n      <Loader size=\"sm\" />\n      <Loader size=\"base\" />\n      <Loader size=\"lg\" />\n    </div>",
-        "<Loader size={24} />",
-        "<Loader className=\"text-kumo-subtle\" />"
+        "<Loader size={24} />"
       ],
       "colors": []
     },
@@ -3500,9 +3387,9 @@
         }
       },
       "examples": [
-        "<MenuBar\n      isActive={active}\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => setActive(active === \"bold\" ? undefined : \"bold\"),\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => setActive(active === \"italic\" ? undefined : \"italic\"),\n        },\n      ]}\n    />",
-        "<MenuBar\n      isActive={active}\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => setActive(active === \"bold\" ? undefined : \"bold\"),\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => setActive(active === \"italic\" ? undefined : \"italic\"),\n        },\n      ]}\n    />",
-        "<MenuBar\n      isActive={active}\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => setActive(active === \"bold\" ? undefined : \"bold\"),\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => setActive(active === \"italic\" ? undefined : \"italic\"),\n        },\n      ]}\n    />"
+        "<MenuBar\n      isActive=\"bold\"\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => {},\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => {},\n        },\n      ]}\n    />",
+        "<MenuBar\n      isActive=\"bold\"\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => {},\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => {},\n        },\n      ]}\n    />",
+        "<MenuBar\n      isActive=\"\"\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => {},\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => {},\n        },\n      ]}\n    />"
       ],
       "colors": [
         "bg-kumo-base",
@@ -3574,7 +3461,7 @@
         "<Meter label=\"Progress\" value={40} showValue={false} />",
         "<Meter label=\"Quota reached\" value={100} />",
         "<Meter label=\"Memory usage\" value={15} />",
-        "<Meter\n      label=\"Upload progress\"\n      value={80}\n      indicatorClassName=\"from-kumo-success via-kumo-success to-kumo-success\"\n    />"
+        "<Meter\n      label=\"Upload progress\"\n      value={80}\n      indicatorClassName=\"from-green-500 via-green-500 to-green-500\"\n    />"
       ],
       "colors": [
         "bg-kumo-fill",
@@ -4010,9 +3897,8 @@
         "<Select\n      label=\"Author\"\n      description=\"Select the primary author for this document\"\n      className=\"w-[200px]\"\n      onValueChange={(v) => setValue(v as (typeof authors)[0] | null)}\n      value={value}\n      isItemEqualToValue={(item, value) => item?.id === value?.id}\n      renderValue={(author) => {\n        return author?.name ?? \"Select an author\";\n      }}\n    >\n      {authors.map((author) => (\n        <Select.Option key={author.id} value={author}>\n          <div className=\"flex w-[300px] items-center justify-between gap-2\">\n            <Text>{author.name}</Text>\n            <Text variant=\"secondary\">{author.title}</Text>\n          </div>\n        </Select.Option>\n      ))}\n    </Select>"
       ],
       "colors": [
-        "bg-kumo-control",
-        "bg-kumo-overlay",
-        "ring-kumo-line",
+        "bg-kumo-base",
+        "bg-kumo-tint",
         "ring-kumo-ring",
         "text-kumo-danger",
         "text-kumo-default",
@@ -4198,6 +4084,7 @@
         "bg-kumo-brand",
         "bg-kumo-control",
         "outline-kumo-ring",
+        "ring-kumo-ring",
         "text-kumo-default",
         "text-kumo-subtle"
       ]
@@ -4245,17 +4132,14 @@
         "variant": {
           "type": "enum",
           "optional": true,
-          "description": "Visual variant: \"default\" or \"error\" for validation failures (visual only, no error text)",
+          "description": "Visual variant: \"default\" (pill, brand color) or \"neutral\" (squircle, monochrome)",
           "values": [
             "default",
-            "error"
+            "neutral"
           ],
           "descriptions": {
-            "default": "Default switch appearance",
-            "error": "Error state for validation failures"
-          },
-          "classes": {
-            "error": "ring-kumo-danger"
+            "default": "Default switch with squircle shape and brand blue color",
+            "neutral": "Monochrome switch with squircle shape for subtle toggles"
           },
           "default": "default"
         },
@@ -4354,16 +4238,16 @@
         "<Switch label=\"Switch\" checked={checked} onCheckedChange={setChecked} />",
         "<Switch label=\"Switch\" checked={false} onCheckedChange={() => {}} />",
         "<Switch label=\"Switch\" checked={true} onCheckedChange={() => {}} />",
-        "<Switch label=\"Disabled\" checked={false} disabled />"
+        "<Switch label=\"Disabled\" checked={false} disabled />",
+        "<Switch\n      label=\"Neutral switch\"\n      variant=\"neutral\"\n      checked={checked}\n      onCheckedChange={setChecked}\n    />",
+        "<div className=\"flex flex-col gap-4\">\n      <Switch\n        label=\"Neutral off\"\n        variant=\"neutral\"\n        checked={false}\n        onCheckedChange={() => {}}\n      />\n      <Switch\n        label=\"Neutral on\"\n        variant=\"neutral\"\n        checked={true}\n        onCheckedChange={() => {}}\n      />\n      <Switch\n        label=\"Neutral disabled\"\n        variant=\"neutral\"\n        checked={false}\n        disabled\n      />\n    </div>",
+        "<div className=\"flex flex-col gap-4\">\n      <Switch\n        label=\"Default variant\"\n        checked={true}\n        onCheckedChange={() => {}}\n      />\n      <Switch\n        label=\"Neutral variant\"\n        variant=\"neutral\"\n        checked={true}\n        onCheckedChange={() => {}}\n      />\n    </div>",
+        "<div className=\"flex flex-col gap-4\">\n      <Switch\n        label=\"Small\"\n        size=\"sm\"\n        checked={true}\n        onCheckedChange={() => {}}\n      />\n      <Switch\n        label=\"Base (default)\"\n        size=\"base\"\n        checked={true}\n        onCheckedChange={() => {}}\n      />\n      <Switch\n        label=\"Large\"\n        size=\"lg\"\n        checked={true}\n        onCheckedChange={() => {}}\n      />\n    </div>"
       ],
       "colors": [
-        "bg-kumo-brand",
-        "bg-kumo-brand-hover",
-        "bg-kumo-danger",
-        "bg-kumo-interact",
-        "bg-kumo-recessed",
+        "bg-kumo-base",
         "border-kumo-line",
-        "ring-kumo-danger",
+        "ring-kumo-line",
         "text-kumo-danger",
         "text-kumo-default",
         "text-kumo-subtle"
@@ -4581,11 +4465,12 @@
         "<Tabs\n      tabs={[\n        {\n          value: \"tab1\",\n          label: \"Regular Tab\",\n        },\n        {\n          value: \"tab2\",\n          label: \"Link Tab\",\n          render: (props) => <a {...props} href=\"#tab2\" />,\n        },\n        {\n          value: \"tab3\",\n          label: \"Cloudflare\",\n          render: (props) => (\n            <a {...props} href=\"https://cloudflare.com\" target=\"_blank\" />\n          ),\n        },\n      ]}\n      selectedValue=\"tab1\"\n    />"
       ],
       "colors": [
+        "bg-kumo-base",
         "bg-kumo-brand",
-        "bg-kumo-overlay",
+        "bg-kumo-recessed",
+        "bg-kumo-surface",
         "bg-kumo-tint",
-        "border-kumo-line",
-        "ring-kumo-fill-hover",
+        "border-kumo-ring",
         "ring-kumo-ring",
         "text-kumo-default",
         "text-kumo-strong",
@@ -5134,7 +5019,6 @@
         "DateRangePicker",
         "Field",
         "Input",
-        "InputGroup",
         "Radio",
         "Select",
         "Switch"
@@ -5188,7 +5072,6 @@
       "Field",
       "Grid",
       "Input",
-      "InputGroup",
       "Label",
       "LayerCard",
       "Link",
@@ -5231,7 +5114,6 @@
         "Field",
         "Grid",
         "Input",
-        "InputGroup",
         "Label",
         "LayerCard",
         "Link",

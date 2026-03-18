@@ -1077,6 +1077,27 @@ Props:
 - `lang`: CodeLang
 
 
+**Examples:**
+
+```tsx
+<CodeBlock
+      lang="tsx"
+      code={`const greeting = "Hello, World!";
+console.log(greeting);`}
+    />
+```
+
+```tsx
+<Code
+      lang="bash"
+      code="export API_KEY={{apiKey}}"
+      values={{
+        apiKey: { value: "sk_live_123", highlight: true },
+      }}
+    />
+```
+
+
 ---
 
 ### Collapsible
@@ -1188,7 +1209,7 @@ Combobox — autocomplete input with filterable dropdown list.  Compound compone
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-control`, `bg-kumo-fill-hover`, `bg-kumo-overlay`, `border-kumo-line`, `ring-kumo-line`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
+`bg-kumo-base`, `bg-kumo-fill-hover`, `bg-kumo-overlay`, `bg-kumo-tint`, `border-kumo-line`, `ring-kumo-line`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
 
 **Sub-Components:**
 
@@ -2014,7 +2035,7 @@ Dialog component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `bg-kumo-overlay`, `text-kumo-default`
+`bg-kumo-base`, `text-kumo-default`
 
 **Styling:**
 
@@ -2977,328 +2998,6 @@ Input component
 
 ---
 
-### InputGroup
-
-InputGroup component
-
-**Type:** component
-
-**Import:** `import { InputGroup } from "@cloudflare/kumo";`
-
-**Category:** Input
-
-**Props:**
-
-- `label`: ReactNode
-  The label content — can be a string or any React node.
-- `description`: ReactNode
-  Helper text displayed below the control (hidden when `error` is present).
-- `error`: object
-  Validation error with a message and a browser `ValidityState` match key.
-- `required`: boolean
-  When explicitly `false`, shows gray "(optional)" text after the label. When `true` or `undefined`, no indicator is shown.
-- `labelTooltip`: ReactNode
-  Tooltip content displayed next to the label via an info icon.
-- `className`: string
-- `size`: enum
-- `disabled`: boolean
-- `focusMode`: enum
-
-**Colors (kumo tokens used):**
-
-`ring-kumo-danger`, `ring-kumo-ring`
-
-**Sub-Components:**
-
-This is a compound component. Use these sub-components:
-
-#### InputGroup.Input
-
-Input sub-component
-
-#### InputGroup.Button
-
-Button sub-component
-
-#### InputGroup.Addon
-
-Addon sub-component
-
-Props:
-- `align`: "start" | "end"
-- `className`: string
-- `children`: ReactNode
-
-#### InputGroup.Suffix
-
-Suffix sub-component
-
-Props:
-- `className`: string
-- `children`: ReactNode
-
-
-**Examples:**
-
-```tsx
-<WorkersSuffixInput defaultValue="kumo" />
-```
-
-```tsx
-<div className="flex w-xs flex-col gap-4">
-      <InputGroup>
-        <InputGroup.Addon>
-          <LinkIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="Paste a link..."
-          aria-label="Link"
-          {...demoInputProps}
-        />
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Add a tag..."
-          aria-label="Tag"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <TagIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Addon>
-          <AirplaneTakeoffIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="IATA airport code (e.g. GRU, AMS)"
-          aria-label="IATA airport code"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <InfoIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-      </InputGroup>
-    </div>
-```
-
-```tsx
-<div className="flex w-xs flex-col gap-4">
-      <InputGroup>
-        <InputGroup.Addon>@</InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="username"
-          aria-label="Username"
-          {...demoInputProps}
-        />
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="email"
-          aria-label="Email"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Addon>/api/</InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="endpoint"
-          aria-label="API path"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">.json</InputGroup.Addon>
-      </InputGroup>
-    </div>
-```
-
-```tsx
-<div className="flex w-xs flex-col gap-4">
-      <InputGroup>
-        <InputGroup.Input
-          type={show ? "text" : "password"}
-          defaultValue="password"
-          aria-label="Password"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <InputGroup.Button
-            variant="ghost"
-            size="sm"
-            aria-label={show ? "Hide password" : "Show password"}
-            onClick={() => setShow(!show)}
-          >
-            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
-          </InputGroup.Button>
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Filter by name..."
-          aria-label="Filter"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <InputGroup.Button variant="secondary">Apply</InputGroup.Button>
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="example.com"
-          aria-label="Domain"
-          {...demoInputProps}
-        />
-        <InputGroup.Button variant="primary">Submit</InputGroup.Button>
-      </InputGroup>
-    </div>
-```
-
-```tsx
-<InputGroup className="w-xs">
-      <InputGroup.Addon>
-        <MagnifyingGlassIcon className="text-kumo-subtle" />
-      </InputGroup.Addon>
-      <InputGroup.Input
-        placeholder="Search..."
-        aria-label="Search"
-        {...demoInputProps}
-      />
-      <InputGroup.Addon align="end">
-        <kbd className="rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle">
-          ⌘K
-        </kbd>
-      </InputGroup.Addon>
-    </InputGroup>
-```
-
-```tsx
-<div className="flex w-xs flex-col gap-4">
-      {/* Spinner at end */}
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Searching..."
-          aria-label="Searching"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <Loader />
-        </InputGroup.Addon>
-      </InputGroup>
-
-      {/* Spinner at start */}
-      <InputGroup>
-        <InputGroup.Addon>
-          <SpinnerIcon className="animate-spin" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="Thinking..."
-          aria-label="Thinking"
-          {...demoInputProps}
-        />
-      </InputGroup>
-
-      {/* Text + spinner at end */}
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Saving changes..."
-          aria-label="Saving changes"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <span>Saving...</span>
-          <Loader />
-        </InputGroup.Addon>
-      </InputGroup>
-    </div>
-```
-
-```tsx
-<div className="flex w-xs flex-col gap-4">
-      <InputGroup size="xs" label="Extra Small">
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input placeholder="Extra small input" {...demoInputProps} />
-      </InputGroup>
-
-      <InputGroup size="sm" label="Small">
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input placeholder="Small input" {...demoInputProps} />
-      </InputGroup>
-
-      <InputGroup label="Base (default)">
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input placeholder="Base input" {...demoInputProps} />
-      </InputGroup>
-
-      <InputGroup size="lg" label="Large">
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input placeholder="Large input" {...demoInputProps} />
-      </InputGroup>
-    </div>
-```
-
-```tsx
-<div className="flex w-xs flex-col gap-4">
-      <InputGroup
-        label="Error State"
-        error={{ message: "Please enter a valid email address", match: true }}
-      >
-        <InputGroup.Input
-          type="email"
-          defaultValue="invalid-email"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup label="Disabled" disabled>
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input placeholder="Search..." {...demoInputProps} />
-        <InputGroup.Button variant="primary">Search</InputGroup.Button>
-      </InputGroup>
-
-      <InputGroup
-        label="With Description"
-        description="Must be at least 8 characters"
-        labelTooltip="Your password is stored securely"
-      >
-        <InputGroup.Input
-          type={show ? "text" : "password"}
-          placeholder="Enter password"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <InputGroup.Button
-            variant="ghost"
-            size="sm"
-            aria-label={show ? "Hide password" : "Show password"}
-            onClick={() => setShow(!show)}
-          >
-            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
-          </InputGroup.Button>
-        </InputGroup.Addon>
-      </InputGroup>
-    </div>
-```
-
-
----
-
 ### Label
 
 Label component for form fields.  Provides a standardized way to display labels with optional indicators: - Optional indicator: gray "(optional)" text when `showOptional={true}` - Tooltip: info icon with hover tooltip for additional context
@@ -3401,7 +3100,7 @@ LayerCard component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-base`, `bg-kumo-elevated`, `ring-kumo-fill`, `ring-kumo-line`, `text-kumo-strong`
+`bg-kumo-base`, `bg-kumo-elevated`, `bg-kumo-recessed`, `ring-kumo-fill`, `ring-kumo-line`, `text-kumo-strong`
 
 **Styling:**
 
@@ -3617,10 +3316,6 @@ Animated circular spinner for indicating loading states.
 <Loader size={24} />
 ```
 
-```tsx
-<Loader className="text-kumo-subtle" />
-```
-
 
 ---
 
@@ -3656,20 +3351,20 @@ MenuBar — horizontal icon-button toolbar with keyboard arrow-key navigation.  
 
 ```tsx
 <MenuBar
-      isActive={active}
+      isActive="bold"
       optionIds
       options={[
         {
           icon: <TextBolderIcon />,
           id: "bold",
           tooltip: "Bold",
-          onClick: () => setActive(active === "bold" ? undefined : "bold"),
+          onClick: () => {},
         },
         {
           icon: <TextItalicIcon />,
           id: "italic",
           tooltip: "Italic",
-          onClick: () => setActive(active === "italic" ? undefined : "italic"),
+          onClick: () => {},
         },
       ]}
     />
@@ -3729,7 +3424,7 @@ Progress bar showing a measured value within a known range (e.g. quota usage).
 <Meter
       label="Upload progress"
       value={80}
-      indicatorClassName="from-kumo-success via-kumo-success to-kumo-success"
+      indicatorClassName="from-green-500 via-green-500 to-green-500"
     />
 ```
 
@@ -4376,7 +4071,7 @@ Select component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-control`, `bg-kumo-overlay`, `ring-kumo-line`, `ring-kumo-ring`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
+`bg-kumo-base`, `bg-kumo-tint`, `ring-kumo-ring`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
 
 **Styling:**
 
@@ -4637,7 +4332,7 @@ Password/secret input that masks its value by default and reveals on click. Incl
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-brand`, `bg-kumo-control`, `outline-kumo-ring`, `text-kumo-default`, `text-kumo-subtle`
+`bg-kumo-brand`, `bg-kumo-control`, `outline-kumo-ring`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-subtle`
 
 **Examples:**
 
@@ -4789,8 +4484,8 @@ Switch component
 **Props:**
 
 - `variant`: enum [default: default]
-  - `"default"`: Default switch appearance
-  - `"error"`: Error state for validation failures
+  - `"default"`: Default switch with squircle shape and brand blue color
+  - `"neutral"`: Monochrome switch with squircle shape for subtle toggles
 - `label`: ReactNode
   Label content for the switch (Field wrapper is built-in) - can be a string or any React node. Optional when used standalone for visual-only purposes.
 - `labelTooltip`: ReactNode
@@ -4818,7 +4513,7 @@ Switch component
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-brand`, `bg-kumo-brand-hover`, `bg-kumo-danger`, `bg-kumo-interact`, `bg-kumo-recessed`, `border-kumo-line`, `ring-kumo-danger`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
+`bg-kumo-base`, `border-kumo-line`, `ring-kumo-line`, `text-kumo-danger`, `text-kumo-default`, `text-kumo-subtle`
 
 **Sub-Components:**
 
@@ -4850,6 +4545,77 @@ Props:
 
 ```tsx
 <Switch label="Disabled" checked={false} disabled />
+```
+
+```tsx
+<Switch
+      label="Neutral switch"
+      variant="neutral"
+      checked={checked}
+      onCheckedChange={setChecked}
+    />
+```
+
+```tsx
+<div className="flex flex-col gap-4">
+      <Switch
+        label="Neutral off"
+        variant="neutral"
+        checked={false}
+        onCheckedChange={() => {}}
+      />
+      <Switch
+        label="Neutral on"
+        variant="neutral"
+        checked={true}
+        onCheckedChange={() => {}}
+      />
+      <Switch
+        label="Neutral disabled"
+        variant="neutral"
+        checked={false}
+        disabled
+      />
+    </div>
+```
+
+```tsx
+<div className="flex flex-col gap-4">
+      <Switch
+        label="Default variant"
+        checked={true}
+        onCheckedChange={() => {}}
+      />
+      <Switch
+        label="Neutral variant"
+        variant="neutral"
+        checked={true}
+        onCheckedChange={() => {}}
+      />
+    </div>
+```
+
+```tsx
+<div className="flex flex-col gap-4">
+      <Switch
+        label="Small"
+        size="sm"
+        checked={true}
+        onCheckedChange={() => {}}
+      />
+      <Switch
+        label="Base (default)"
+        size="base"
+        checked={true}
+        onCheckedChange={() => {}}
+      />
+      <Switch
+        label="Large"
+        size="lg"
+        checked={true}
+        onCheckedChange={() => {}}
+      />
+    </div>
 ```
 
 
@@ -5214,7 +4980,7 @@ Tab navigation component with segmented or underline style. Built on Base UI Tab
 
 **Colors (kumo tokens used):**
 
-`bg-kumo-brand`, `bg-kumo-overlay`, `bg-kumo-tint`, `border-kumo-line`, `ring-kumo-fill-hover`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
+`bg-kumo-base`, `bg-kumo-brand`, `bg-kumo-recessed`, `bg-kumo-surface`, `bg-kumo-tint`, `border-kumo-ring`, `ring-kumo-ring`, `text-kumo-default`, `text-kumo-strong`, `text-kumo-subtle`
 
 **Styling:**
 
@@ -5556,7 +5322,7 @@ Multi-line textarea input with Input variants and InputArea-specific dimensions
 - **Display:** Badge, Breadcrumbs, Code, Collapsible, Empty, LayerCard, Meter, Text
 - **Feedback:** Banner, Loader, Toasty
 - **Action:** Button, ClipboardText
-- **Input:** Checkbox, Combobox, DateRangePicker, Field, Input, InputGroup, Radio, Select, Switch
+- **Input:** Checkbox, Combobox, DateRangePicker, Field, Input, Radio, Select, Switch
 - **Other:** CloudflareLogo, DatePicker, Label, Link, SensitiveInput, Table, DeleteResource
 - **Navigation:** CommandPalette, MenuBar, Pagination, Tabs
 - **Overlay:** Dialog, DropdownMenu, Popover, Tooltip
