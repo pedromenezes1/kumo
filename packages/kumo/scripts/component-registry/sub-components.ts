@@ -5,7 +5,8 @@
  * like Dialog.Root, Dialog.Trigger, etc.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { dirname, join } from "node:path";
 import type { SubComponentConfig, PropSchema } from "./types.js";
 import { extractBalancedBraces } from "./utils.js";
 import { shouldSkipProp } from "./props-filter.js";
@@ -184,9 +185,20 @@ export function extractSubComponentProps(
   }
 
   try {
-    const content = readFileSync(filePath, "utf-8");
+    let content = readFileSync(filePath, "utf-8");
     const funcName = subComponent.name;
     const props: Record<string, PropSchema> = {};
+
+    // If the sub-component function isn't in the main file (e.g. split into
+    // separate files), read all sibling .ts/.tsx files in the same directory.
+    const funcPattern = new RegExp(`(?:function|const)\\s+${funcName}\\b`);
+    if (!funcPattern.test(content)) {
+      const dir = dirname(filePath);
+      const siblings = readdirSync(dir)
+        .filter((f) => /\.(tsx?|ts)$/.test(f) && join(dir, f) !== filePath)
+        .map((f) => readFileSync(join(dir, f), "utf-8"));
+      content = [content, ...siblings].join("\n");
+    }
 
     // Pattern 1: Inline object type in function signature
     // Matches: function Foo({ ... }: { prop: Type }) or ({ ... }: PropsWithChildren<{ prop: Type }>)
