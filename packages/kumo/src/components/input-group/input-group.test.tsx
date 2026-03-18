@@ -187,6 +187,30 @@ describe("InputGroup", () => {
     });
   });
 
+  describe("error handling", () => {
+    it("sets aria-invalid on input when error is present", () => {
+      render(
+        <InputGroup error={{ message: "Invalid input", match: true }}>
+          <InputGroup.Input aria-label="Test input" />
+        </InputGroup>,
+      );
+
+      const input = screen.getByRole("textbox");
+      expect(input.getAttribute("aria-invalid")).toBe("true");
+    });
+
+    it("does not set aria-invalid when no error is present", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test input" />
+        </InputGroup>,
+      );
+
+      const input = screen.getByRole("textbox");
+      expect(input.getAttribute("aria-invalid")).toBeFalsy();
+    });
+  });
+
   describe("size variants", () => {
     it("applies size to input", () => {
       const { rerender } = render(
@@ -238,6 +262,43 @@ describe("InputGroup", () => {
         </InputGroup>,
       );
       expect(screen.getByRole("group")).toBeTruthy();
+    });
+  });
+
+  describe("Field integration", () => {
+    it("renders label when label prop is provided", () => {
+      render(
+        <InputGroup label="Email address">
+          <InputGroup.Input />
+        </InputGroup>,
+      );
+
+      expect(screen.getByText("Email address")).toBeTruthy();
+      // The input should be associated with the label
+      expect(screen.getByLabelText("Email address")).toBeTruthy();
+    });
+
+    it("renders description when description prop is provided", () => {
+      render(
+        <InputGroup label="Email" description="We'll never share your email">
+          <InputGroup.Input />
+        </InputGroup>,
+      );
+
+      expect(screen.getByText("We'll never share your email")).toBeTruthy();
+    });
+
+    it("renders error message when error prop is provided with label", () => {
+      render(
+        <InputGroup
+          label="Email"
+          error={{ message: "Invalid email", match: true }}
+        >
+          <InputGroup.Input />
+        </InputGroup>,
+      );
+
+      expect(screen.getByText("Invalid email")).toBeTruthy();
     });
   });
 });
