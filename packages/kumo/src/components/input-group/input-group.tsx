@@ -224,7 +224,7 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
                   // Focus state must come AFTER inputVariants to override ring-kumo-line
                   "focus-within:ring-kumo-ring",
                   // Native focus outline on container when any child has focus-visible
-                  "has-[:focus-visible]:outline-2 has-[:focus-visible]:-outline-offset-2 has-[:focus-visible]:outline-[-webkit-focus-ring-color]",
+                  "has-[:focus-visible]:outline-2 has-[:focus-visible]:-outline-offset-2 has-[:focus-visible]:outline-[-webkit-focus-ring-color] has-[:focus-visible]:ring-transparent",
                 ],
             // Error state must also come after inputVariants
             "has-[input[aria-invalid=true]]:ring-kumo-danger",
