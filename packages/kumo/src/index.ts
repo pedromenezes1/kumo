@@ -87,6 +87,10 @@ export {
   Textarea,
   type InputAreaProps,
   InputGroup,
+  type InputGroupRootProps,
+  type InputGroupAddonProps,
+  type InputGroupSuffixProps,
+  type InputGroupInputProps,
 } from "./components/input";
 export { LayerCard } from "./components/layer-card";
 export {

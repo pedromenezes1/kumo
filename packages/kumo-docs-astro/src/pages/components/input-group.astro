@@ -1,0 +1,499 @@
+---
+import DocLayout from "../../layouts/DocLayout.astro";
+import Heading from "../../components/docs/Heading.astro";
+import ComponentSection from "../../components/docs/ComponentSection.astro";
+import ComponentExample from "../../components/docs/ComponentExample.astro";
+import CodeBlock from "../../components/docs/CodeBlock.astro";
+import PropsTable from "../../components/docs/PropsTable.astro";
+import {
+  InputGroupHeroDemo,
+  InputGroupIconsDemo,
+  InputGroupTextDemo,
+  InputGroupButtonsDemo,
+  InputGroupKbdDemo,
+  InputGroupLoadingDemo,
+  InputGroupSuffixDemo,
+  InputGroupSizesDemo,
+  InputGroupStatesDemo,
+} from "../../components/demos/InputGroupDemo";
+---
+
+<DocLayout
+  title="InputGroup"
+  description="Compose inputs with addons, icons, buttons, and text for rich form fields."
+  sourceFile="components/input"
+>
+  <!-- Hero -->
+  <ComponentSection>
+    <ComponentExample
+      code={`<InputGroup>
+  <InputGroup.Input aria-label="Subdomain" maxLength={24} />
+  <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
+</InputGroup>`}
+    >
+      <InputGroupHeroDemo client:visible />
+    </ComponentExample>
+  </ComponentSection>
+
+  <!-- Installation -->
+  <ComponentSection>
+    <Heading level={2}>Installation</Heading>
+    <Heading level={3} class="mb-2 text-lg">Barrel</Heading>
+    <CodeBlock
+      code={`import { InputGroup } from "@cloudflare/kumo";`}
+      lang="tsx"
+    />
+    <Heading level={3} class="mb-2 mt-4 text-lg">Granular</Heading>
+    <CodeBlock
+      code={`import { InputGroup } from "@cloudflare/kumo/components/input";`}
+      lang="tsx"
+    />
+  </ComponentSection>
+
+  <!-- Usage -->
+  <ComponentSection>
+    <Heading level={2}>Usage</Heading>
+    <CodeBlock
+      code={`import { InputGroup } from "@cloudflare/kumo";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
+
+export default function Example() {
+  return (
+    <InputGroup>
+      <InputGroup.Addon>
+        <MagnifyingGlassIcon className="text-kumo-subtle" />
+      </InputGroup.Addon>
+      <InputGroup.Input placeholder="Search..." aria-label="Search" />
+    </InputGroup>
+  );
+}`}
+      lang="tsx"
+    />
+  </ComponentSection>
+
+  <!-- Examples -->
+  <ComponentSection>
+    <Heading level={2} class="mb-6">Examples</Heading>
+
+    <div class="space-y-8">
+      <div>
+        <Heading level={3}>Icon</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Use Addon to place icons at the start or end of the input.
+        </p>
+        <ComponentExample
+          code={`<>
+  {/* Start icon */}
+  <InputGroup>
+    <InputGroup.Addon>
+      <LinkIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Paste a link..." aria-label="Link" />
+  </InputGroup>
+
+  {/* End icon */}
+  <InputGroup>
+    <InputGroup.Input placeholder="Add a tag..." aria-label="Tag" />
+    <InputGroup.Addon align="end">
+      <TagIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+  </InputGroup>
+
+  {/* Both sides */}
+  <InputGroup>
+    <InputGroup.Addon>
+      <AirplaneTakeoffIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="IATA airport code (e.g. GRU, AMS)" aria-label="IATA airport code" />
+    <InputGroup.Addon align="end">
+      <InfoIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+  </InputGroup>
+</>`}
+        >
+          <InputGroupIconsDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>Text</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Use Addon to place text prefixes or suffixes alongside the input.
+        </p>
+        <ComponentExample
+          code={`<>
+  {/* Start only */}
+  <InputGroup>
+    <InputGroup.Addon>@</InputGroup.Addon>
+    <InputGroup.Input placeholder="username" aria-label="Username" />
+  </InputGroup>
+
+  {/* End only */}
+  <InputGroup>
+    <InputGroup.Input placeholder="email" aria-label="Email" />
+    <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
+  </InputGroup>
+
+  {/* Both sides */}
+  <InputGroup>
+    <InputGroup.Addon>/api/</InputGroup.Addon>
+    <InputGroup.Input placeholder="endpoint" aria-label="API path" />
+    <InputGroup.Addon align="end">.json</InputGroup.Addon>
+  </InputGroup>
+</>`}
+        >
+          <InputGroupTextDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>Button</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Place InputGroup.Button inside an Addon for compact inset buttons, or directly as a child for a full-height flush button.
+        </p>
+        <ComponentExample
+          code={`<>
+  {/* Icon button inside Addon (compact, inset) */}
+  <InputGroup>
+    <InputGroup.Input
+      type={show ? "text" : "password"}
+      defaultValue="password"
+      aria-label="Password"
+    />
+    <InputGroup.Addon align="end">
+      <InputGroup.Button
+        variant="ghost"
+        size="sm"
+        aria-label={show ? "Hide password" : "Show password"}
+        onClick={() => {}}
+      >
+        {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
+      </InputGroup.Button>
+    </InputGroup.Addon>
+  </InputGroup>
+
+  {/* Text button inside Addon (compact, inset) */}
+  <InputGroup>
+    <InputGroup.Input placeholder="Filter by name..." aria-label="Filter" />
+    <InputGroup.Addon align="end">
+      <InputGroup.Button variant="secondary">Apply</InputGroup.Button>
+    </InputGroup.Addon>
+  </InputGroup>
+
+  {/* Button as direct child (full-height, flush) */}
+  <InputGroup>
+    <InputGroup.Input placeholder="example.com" aria-label="Domain" />
+    <InputGroup.Button variant="primary">Submit</InputGroup.Button>
+  </InputGroup>
+</>`}
+        >
+          <InputGroupButtonsDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>Kbd</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Place a keyboard shortcut hint inside an end Addon.
+        </p>
+        <ComponentExample
+          code={`<InputGroup className="w-xs">
+  <InputGroup.Addon>
+    <MagnifyingGlassIcon className="text-kumo-subtle" />
+  </InputGroup.Addon>
+  <InputGroup.Input placeholder="Search..." aria-label="Search" />
+  <InputGroup.Addon align="end">
+    <kbd className="rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle">
+      ⌘K
+    </kbd>
+  </InputGroup.Addon>
+</InputGroup>`}
+        >
+          <InputGroupKbdDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>Loading</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Place a Loader inside an Addon at the start or end. Combine with a text span for a status label.
+        </p>
+        <ComponentExample
+          code={`<>
+  {/* Spinner at end */}
+  <InputGroup>
+    <InputGroup.Input placeholder="Searching..." aria-label="Searching" />
+    <InputGroup.Addon align="end">
+      <Loader />
+    </InputGroup.Addon>
+  </InputGroup>
+
+  {/* Spinner at start */}
+  <InputGroup>
+    <InputGroup.Addon>
+      <SpinnerIcon className="animate-spin" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Thinking..." aria-label="Thinking" />
+  </InputGroup>
+
+  {/* Text + spinner at end */}
+  <InputGroup>
+    <InputGroup.Input placeholder="Saving changes..." aria-label="Saving changes" />
+    <InputGroup.Addon align="end">
+      <span>Saving...</span>
+      <Loader />
+    </InputGroup.Addon>
+  </InputGroup>
+</>`}
+        >
+          <InputGroupLoadingDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>Inline Suffix</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Suffix renders text that flows seamlessly next to the typed value — useful for domain inputs like <code>.workers.dev</code>. Truncates with ellipsis when space is limited.
+        </p>
+        <ComponentExample
+          code={`<InputGroup className="w-xs">
+  <InputGroup.Input aria-label="Subdomain" maxLength={24} />
+  <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
+  <InputGroup.Addon align="end">
+    <CheckCircleIcon weight="duotone" className="text-kumo-brand" />
+  </InputGroup.Addon>
+</InputGroup>`}
+        >
+          <InputGroupSuffixDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>Sizes</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Four sizes: <code>xs</code>, <code>sm</code>, <code>base</code> (default), and <code>lg</code>. The size applies to the entire group. Use the <code>label</code> prop on <code>InputGroup</code> for built-in Field support.
+        </p>
+        <ComponentExample
+          code={`<>
+  {/* Extra small */}
+  <InputGroup size="xs" label="Extra Small">
+    <InputGroup.Addon>
+      <MagnifyingGlassIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Extra small input" />
+  </InputGroup>
+
+  {/* Small */}
+  <InputGroup size="sm" label="Small">
+    <InputGroup.Addon>
+      <MagnifyingGlassIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Small input" />
+  </InputGroup>
+
+  {/* Base (default) */}
+  <InputGroup label="Base (default)">
+    <InputGroup.Addon>
+      <MagnifyingGlassIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Base input" />
+  </InputGroup>
+
+  {/* Large */}
+  <InputGroup size="lg" label="Large">
+    <InputGroup.Addon>
+      <MagnifyingGlassIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Large input" />
+  </InputGroup>
+</>`}
+        >
+          <InputGroupSizesDemo client:visible />
+        </ComponentExample>
+      </div>
+
+      <div>
+        <Heading level={3}>States</Heading>
+        <p class="mb-4 text-sm text-kumo-strong">
+          Various input states including error, disabled, and with description. Pass <code>label</code>, <code>error</code>, and <code>description</code> props directly to <code>InputGroup</code>.
+        </p>
+        <ComponentExample
+          code={`<>
+  {/* Error state */}
+  <InputGroup
+    label="Error State"
+    error={{ message: "Please enter a valid email address", match: true }}
+  >
+    <InputGroup.Input
+      type="email"
+      defaultValue="invalid-email"
+    />
+    <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
+  </InputGroup>
+
+  {/* Disabled */}
+  <InputGroup label="Disabled" disabled>
+    <InputGroup.Addon>
+      <MagnifyingGlassIcon className="text-kumo-subtle" />
+    </InputGroup.Addon>
+    <InputGroup.Input placeholder="Search..." />
+    <InputGroup.Button variant="primary">Search</InputGroup.Button>
+  </InputGroup>
+
+  {/* With description and tooltip */}
+  <InputGroup
+    label="With Description"
+    description="Must be at least 8 characters"
+    labelTooltip="Your password is stored securely"
+  >
+    <InputGroup.Input
+      type={show ? "text" : "password"}
+      placeholder="Enter password"
+    />
+    <InputGroup.Addon align="end">
+      <InputGroup.Button
+        variant="ghost"
+        size="sm"
+        aria-label={show ? "Hide password" : "Show password"}
+        onClick={() => {}}
+      >
+        {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
+      </InputGroup.Button>
+    </InputGroup.Addon>
+  </InputGroup>
+</>`}
+        >
+          <InputGroupStatesDemo client:visible />
+        </ComponentExample>
+      </div>
+    </div>
+  </ComponentSection>
+
+  <!-- API Reference -->
+  <ComponentSection>
+    <Heading level={2}>API Reference</Heading>
+
+    <div class="space-y-8">
+      <div>
+        <h3 class="mb-3 text-lg font-semibold font-mono">InputGroup</h3>
+        <p class="mb-3 text-sm text-kumo-strong">
+          The root container that provides context to all child components. Accepts Field props
+          (<code class="rounded bg-kumo-control px-1 py-0.5 text-xs">label</code>,
+          <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">description</code>,
+          <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">error</code>) and wraps content in a Field when label is provided.
+        </p>
+        <PropsTable component="InputGroup" />
+      </div>
+
+      <div>
+        <h3 class="mb-3 text-lg font-semibold font-mono">InputGroup.Input</h3>
+        <p class="mb-3 text-sm text-kumo-strong">
+          The text input element. Inherits <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">size</code>,
+          <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">disabled</code>, and
+          <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">error</code> from InputGroup context.
+          Accepts all standard input attributes except Field-related props which are handled by the parent.
+        </p>
+        <PropsTable component="InputGroup.Input" />
+      </div>
+
+      <div>
+        <h3 class="mb-3 text-lg font-semibold font-mono">InputGroup.Addon</h3>
+        <p class="mb-3 text-sm text-kumo-strong">
+          Container for icons, text, or compact buttons positioned at the start or end of the input.
+        </p>
+        <PropsTable component="InputGroup.Addon" />
+      </div>
+
+      <div>
+        <h3 class="mb-3 text-lg font-semibold font-mono">InputGroup.Suffix</h3>
+        <p class="mb-3 text-sm text-kumo-strong">
+          Inline text that flows seamlessly next to the typed value (e.g., <code class="rounded bg-kumo-control px-1 py-0.5 text-xs">.workers.dev</code>).
+          The input width adjusts automatically as the user types.
+        </p>
+        <PropsTable component="InputGroup.Suffix" />
+      </div>
+    </div>
+
+    <h3 class="mb-2 mt-8 text-lg font-semibold">Validation Error Types</h3>
+    <p class="mb-4 text-sm text-kumo-strong">
+      When using <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">error</code> as
+      an object, the <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">match</code>
+      property corresponds to HTML5 ValidityState values:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-kumo-line">
+            <th class="px-4 py-3 text-left font-semibold">Match</th>
+            <th class="px-4 py-3 text-left font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody class="text-kumo-strong">
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">valueMissing</td>
+            <td class="px-4 py-3 text-xs">Required field is empty</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">typeMismatch</td>
+            <td class="px-4 py-3 text-xs">Value doesn't match type (e.g., invalid email)</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">patternMismatch</td>
+            <td class="px-4 py-3 text-xs">Value doesn't match pattern attribute</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">tooShort</td>
+            <td class="px-4 py-3 text-xs">Value shorter than minLength</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">tooLong</td>
+            <td class="px-4 py-3 text-xs">Value longer than maxLength</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">rangeUnderflow</td>
+            <td class="px-4 py-3 text-xs">Value less than min</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">rangeOverflow</td>
+            <td class="px-4 py-3 text-xs">Value greater than max</td>
+          </tr>
+          <tr class="border-b border-kumo-line">
+            <td class="px-4 py-3 font-mono text-xs">true</td>
+            <td class="px-4 py-3 text-xs">Always show error (for server-side validation)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ComponentSection>
+
+  <!-- Accessibility -->
+  <ComponentSection>
+    <Heading level={2}>Accessibility</Heading>
+    <div class="space-y-4 text-sm">
+      <div>
+        <h3 class="mb-2 font-semibold">Label Requirement</h3>
+        <p class="text-kumo-strong">InputGroup requires an accessible name via one of:</p>
+        <ul class="mt-2 ml-4 list-disc space-y-1 text-kumo-strong">
+          <li>
+            <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">label</code> prop on InputGroup (renders a visible label with built-in Field support)
+          </li>
+          <li>
+            <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">aria-label</code> on InputGroup.Input for inputs without a visible label
+          </li>
+          <li>
+            <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">aria-labelledby</code> on InputGroup.Input for custom label association
+          </li>
+        </ul>
+        <p class="mt-2 text-kumo-strong">
+          Missing accessible names trigger console warnings in development.
+        </p>
+      </div>
+      <div>
+        <h3 class="mb-2 font-semibold">Group Role</h3>
+        <p class="text-kumo-strong">
+          InputGroup automatically renders with <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">role="group"</code>, which semantically associates the input with its addons for assistive technologies.
+        </p>
+      </div>
+    </div>
+  </ComponentSection>
+</DocLayout>

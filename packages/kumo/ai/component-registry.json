@@ -2128,7 +2128,6 @@
         "bg-kumo-fill-hover",
         "bg-kumo-overlay",
         "border-kumo-line",
-        "fill-kumo-subtle",
         "ring-kumo-line",
         "text-kumo-default",
         "text-kumo-strong",
@@ -3084,6 +3083,125 @@
         }
       }
     },
+    "InputGroup": {
+      "name": "InputGroup",
+      "type": "component",
+      "description": "InputGroup component",
+      "importPath": "@cloudflare/kumo",
+      "category": "Input",
+      "props": {
+        "label": {
+          "type": "ReactNode",
+          "optional": true,
+          "description": "The label content — can be a string or any React node."
+        },
+        "description": {
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Helper text displayed below the control (hidden when `error` is present)."
+        },
+        "error": {
+          "type": "object",
+          "optional": true,
+          "description": "Validation error with a message and a browser `ValidityState` match key."
+        },
+        "required": {
+          "type": "boolean",
+          "optional": true,
+          "description": "When explicitly `false`, shows gray \"(optional)\" text after the label. When `true` or `undefined`, no indicator is shown."
+        },
+        "labelTooltip": {
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Tooltip content displayed next to the label via an info icon."
+        },
+        "className": {
+          "type": "string",
+          "optional": true
+        },
+        "size": {
+          "type": "enum",
+          "optional": true,
+          "values": [
+            "xs",
+            "sm",
+            "base",
+            "lg"
+          ]
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "focusMode": {
+          "type": "enum",
+          "optional": true,
+          "values": [
+            "container",
+            "individual"
+          ]
+        }
+      },
+      "examples": [
+        "<WorkersSuffixInput defaultValue=\"kumo\" />",
+        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup>\n        <InputGroup.Addon>\n          <LinkIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"Paste a link...\"\n          aria-label=\"Link\"\n          {...demoInputProps}\n        />\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Add a tag...\"\n          aria-label=\"Tag\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <TagIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Addon>\n          <AirplaneTakeoffIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"IATA airport code (e.g. GRU, AMS)\"\n          aria-label=\"IATA airport code\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InfoIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n      </InputGroup>\n    </div>",
+        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup>\n        <InputGroup.Addon>@</InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"username\"\n          aria-label=\"Username\"\n          {...demoInputProps}\n        />\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"email\"\n          aria-label=\"Email\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">@example.com</InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Addon>/api/</InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"endpoint\"\n          aria-label=\"API path\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">.json</InputGroup.Addon>\n      </InputGroup>\n    </div>",
+        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup>\n        <InputGroup.Input\n          type={show ? \"text\" : \"password\"}\n          defaultValue=\"password\"\n          aria-label=\"Password\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InputGroup.Button\n            variant=\"ghost\"\n            size=\"sm\"\n            aria-label={show ? \"Hide password\" : \"Show password\"}\n            onClick={() => setShow(!show)}\n          >\n            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}\n          </InputGroup.Button>\n        </InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Filter by name...\"\n          aria-label=\"Filter\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InputGroup.Button variant=\"secondary\">Apply</InputGroup.Button>\n        </InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"example.com\"\n          aria-label=\"Domain\"\n          {...demoInputProps}\n        />\n        <InputGroup.Button variant=\"primary\">Submit</InputGroup.Button>\n      </InputGroup>\n    </div>",
+        "<InputGroup className=\"w-xs\">\n      <InputGroup.Addon>\n        <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n      </InputGroup.Addon>\n      <InputGroup.Input\n        placeholder=\"Search...\"\n        aria-label=\"Search\"\n        {...demoInputProps}\n      />\n      <InputGroup.Addon align=\"end\">\n        <kbd className=\"rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle\">\n          ⌘K\n        </kbd>\n      </InputGroup.Addon>\n    </InputGroup>",
+        "<div className=\"flex w-xs flex-col gap-4\">\n      {/* Spinner at end */}\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Searching...\"\n          aria-label=\"Searching\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <Loader />\n        </InputGroup.Addon>\n      </InputGroup>\n\n      {/* Spinner at start */}\n      <InputGroup>\n        <InputGroup.Addon>\n          <SpinnerIcon className=\"animate-spin\" />\n        </InputGroup.Addon>\n        <InputGroup.Input\n          placeholder=\"Thinking...\"\n          aria-label=\"Thinking\"\n          {...demoInputProps}\n        />\n      </InputGroup>\n\n      {/* Text + spinner at end */}\n      <InputGroup>\n        <InputGroup.Input\n          placeholder=\"Saving changes...\"\n          aria-label=\"Saving changes\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <span>Saving...</span>\n          <Loader />\n        </InputGroup.Addon>\n      </InputGroup>\n    </div>",
+        "<WorkersSuffixInput defaultValue=\"kumo\" />",
+        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup size=\"xs\" label=\"Extra Small\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Extra small input\" {...demoInputProps} />\n      </InputGroup>\n\n      <InputGroup size=\"sm\" label=\"Small\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Small input\" {...demoInputProps} />\n      </InputGroup>\n\n      <InputGroup label=\"Base (default)\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Base input\" {...demoInputProps} />\n      </InputGroup>\n\n      <InputGroup size=\"lg\" label=\"Large\">\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Large input\" {...demoInputProps} />\n      </InputGroup>\n    </div>",
+        "<div className=\"flex w-xs flex-col gap-4\">\n      <InputGroup\n        label=\"Error State\"\n        error={{ message: \"Please enter a valid email address\", match: true }}\n      >\n        <InputGroup.Input\n          type=\"email\"\n          defaultValue=\"invalid-email\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">@example.com</InputGroup.Addon>\n      </InputGroup>\n\n      <InputGroup label=\"Disabled\" disabled>\n        <InputGroup.Addon>\n          <MagnifyingGlassIcon className=\"text-kumo-subtle\" />\n        </InputGroup.Addon>\n        <InputGroup.Input placeholder=\"Search...\" {...demoInputProps} />\n        <InputGroup.Button variant=\"primary\">Search</InputGroup.Button>\n      </InputGroup>\n\n      <InputGroup\n        label=\"With Description\"\n        description=\"Must be at least 8 characters\"\n        labelTooltip=\"Your password is stored securely\"\n      >\n        <InputGroup.Input\n          type={show ? \"text\" : \"password\"}\n          placeholder=\"Enter password\"\n          {...demoInputProps}\n        />\n        <InputGroup.Addon align=\"end\">\n          <InputGroup.Button\n            variant=\"ghost\"\n            size=\"sm\"\n            aria-label={show ? \"Hide password\" : \"Show password\"}\n            onClick={() => setShow(!show)}\n          >\n            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}\n          </InputGroup.Button>\n        </InputGroup.Addon>\n      </InputGroup>\n    </div>"
+      ],
+      "colors": [
+        "ring-kumo-danger",
+        "ring-kumo-ring"
+      ],
+      "subComponents": {
+        "Input": {
+          "name": "Input",
+          "description": "Input sub-component",
+          "props": {}
+        },
+        "Button": {
+          "name": "Button",
+          "description": "Button sub-component",
+          "props": {}
+        },
+        "Addon": {
+          "name": "Addon",
+          "description": "Addon sub-component",
+          "props": {
+            "align": {
+              "type": "\"start\" | \"end\"",
+              "optional": true
+            },
+            "className": {
+              "type": "string",
+              "optional": true
+            },
+            "children": {
+              "type": "ReactNode",
+              "optional": true
+            }
+          }
+        },
+        "Suffix": {
+          "name": "Suffix",
+          "description": "Suffix sub-component",
+          "props": {
+            "className": {
+              "type": "string",
+              "optional": true
+            },
+            "children": {
+              "type": "ReactNode",
+              "optional": true
+            }
+          }
+        }
+      }
+    },
     "Label": {
       "name": "Label",
       "type": "component",
@@ -3348,7 +3466,8 @@
       "examples": [
         "<Loader />",
         "<div className=\"flex items-center gap-4\">\n      <Loader size=\"sm\" />\n      <Loader size=\"base\" />\n      <Loader size=\"lg\" />\n    </div>",
-        "<Loader size={24} />"
+        "<Loader size={24} />",
+        "<Loader className=\"text-kumo-subtle\" />"
       ],
       "colors": []
     },
@@ -3381,9 +3500,9 @@
         }
       },
       "examples": [
-        "<MenuBar\n      isActive=\"bold\"\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => {},\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => {},\n        },\n      ]}\n    />",
-        "<MenuBar\n      isActive=\"bold\"\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => {},\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => {},\n        },\n      ]}\n    />",
-        "<MenuBar\n      isActive=\"\"\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => {},\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => {},\n        },\n      ]}\n    />"
+        "<MenuBar\n      isActive={active}\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => setActive(active === \"bold\" ? undefined : \"bold\"),\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => setActive(active === \"italic\" ? undefined : \"italic\"),\n        },\n      ]}\n    />",
+        "<MenuBar\n      isActive={active}\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => setActive(active === \"bold\" ? undefined : \"bold\"),\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => setActive(active === \"italic\" ? undefined : \"italic\"),\n        },\n      ]}\n    />",
+        "<MenuBar\n      isActive={active}\n      optionIds\n      options={[\n        {\n          icon: <TextBolderIcon />,\n          id: \"bold\",\n          tooltip: \"Bold\",\n          onClick: () => setActive(active === \"bold\" ? undefined : \"bold\"),\n        },\n        {\n          icon: <TextItalicIcon />,\n          id: \"italic\",\n          tooltip: \"Italic\",\n          onClick: () => setActive(active === \"italic\" ? undefined : \"italic\"),\n        },\n      ]}\n    />"
       ],
       "colors": [
         "bg-kumo-base",
@@ -3886,6 +4005,8 @@
         "<Select aria-label=\"Loading select\" className=\"w-[200px]\" loading />",
         "<Select\n      label=\"Assignee\"\n      className=\"w-[200px]\"\n      loading={loading}\n      value={value}\n      onValueChange={(v) => setValue(v as string | null)}\n      placeholder=\"Select assignee\"\n      items={items}\n    />",
         "<Select\n      label=\"Visible Columns\"\n      className=\"w-[250px]\"\n      multiple\n      renderValue={(value) => {\n        if (value.length > 3) {\n          return (\n            <span className=\"line-clamp-1\">\n              {value.slice(0, 2).join(\", \") + ` and ${value.length - 2} more`}\n            </span>\n          );\n        }\n        return <span>{value.join(\", \")}</span>;\n      }}\n      value={value}\n      onValueChange={(v) => setValue(v as string[])}\n    >\n      <Select.Option value=\"Name\">Name</Select.Option>\n      <Select.Option value=\"Location\">Location</Select.Option>\n      <Select.Option value=\"Size\">Size</Select.Option>\n      <Select.Option value=\"Read\">Read</Select.Option>\n      <Select.Option value=\"Write\">Write</Select.Option>\n      <Select.Option value=\"CreatedAt\">Created At</Select.Option>\n    </Select>",
+        "<Select\n      label=\"Compliance Frameworks\"\n      className=\"w-[280px]\"\n      multiple\n      value={value}\n      onValueChange={(v) => setValue(v as string[])}\n    >\n      <Select.Option value=\"European Union Privacy Regulation\">\n        European Union Privacy Regulation\n      </Select.Option>\n      <Select.Option value=\"California Consumer Protection Act\">\n        California Consumer Protection Act\n      </Select.Option>\n      <Select.Option value=\"Health Insurance Portability Act\">\n        Health Insurance Portability Act\n      </Select.Option>\n      <Select.Option value=\"Payment Card Industry Standard\">\n        Payment Card Industry Standard\n      </Select.Option>\n    </Select>",
+        "<Select\n      label=\"Issue Types\"\n      className=\"w-[220px]\"\n      multiple\n      renderValue={(selected) => (\n        <span className=\"flex items-center gap-2\">\n          <span>Issue Types</span>\n          {selected.length > 0 && (\n            <Badge variant=\"secondary\">{selected.length}</Badge>\n          )}\n        </span>\n      )}\n      value={value}\n      onValueChange={(v) => setValue(v as string[])}\n    >\n      {allOptions.map((option) => (\n        <Select.Option key={option.value} value={option.value}>\n          {option.label}\n        </Select.Option>\n      ))}\n    </Select>",
         "<Select\n      label=\"Author\"\n      description=\"Select the primary author for this document\"\n      className=\"w-[200px]\"\n      onValueChange={(v) => setValue(v as (typeof authors)[0] | null)}\n      value={value}\n      isItemEqualToValue={(item, value) => item?.id === value?.id}\n      renderValue={(author) => {\n        return author?.name ?? \"Select an author\";\n      }}\n    >\n      {authors.map((author) => (\n        <Select.Option key={author.id} value={author}>\n          <div className=\"flex w-[300px] items-center justify-between gap-2\">\n            <Text>{author.name}</Text>\n            <Text variant=\"secondary\">{author.title}</Text>\n          </div>\n        </Select.Option>\n      ))}\n    </Select>"
       ],
       "colors": [
@@ -5013,6 +5134,7 @@
         "DateRangePicker",
         "Field",
         "Input",
+        "InputGroup",
         "Radio",
         "Select",
         "Switch"
@@ -5066,6 +5188,7 @@
       "Field",
       "Grid",
       "Input",
+      "InputGroup",
       "Label",
       "LayerCard",
       "Link",
@@ -5108,6 +5231,7 @@
         "Field",
         "Grid",
         "Input",
+        "InputGroup",
         "Label",
         "LayerCard",
         "Link",

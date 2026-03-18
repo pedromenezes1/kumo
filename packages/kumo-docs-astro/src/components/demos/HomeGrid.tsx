@@ -14,6 +14,7 @@ import {
   GridItem,
   Input,
   InputArea,
+  InputGroup,
   Label,
   LayerCard,
   Loader,
@@ -63,6 +64,7 @@ const componentRoutes: Record<string, string> = {
   empty: "/components/empty",
   grid: "/components/grid",
   input: "/components/input",
+  "input-group": "/components/input-group",
   "input-area": "/components/input",
   label: "/components/label",
   "layer-card": "/components/layer-card",
@@ -215,6 +217,16 @@ export function HomeGrid() {
           }}
           description="The email to send notifications to."
         />
+      ),
+    },
+    {
+      name: "InputGroup",
+      id: "input-group",
+      Component: (
+        <InputGroup className="max-w-xs">
+          <InputGroup.Input aria-label="Subdomain" defaultValue="kumo" />
+          <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
+        </InputGroup>
       ),
     },
     {

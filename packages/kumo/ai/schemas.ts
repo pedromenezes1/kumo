@@ -531,6 +531,18 @@ export const InputPropsSchema = z.object({
 
 export const InputAreaPropsSchema = z.object({});
 
+export const InputGroupPropsSchema = z.object({
+  label: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // The label content — can be a string or any React node.
+  description: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Helper text displayed below the control (hidden when `error` is present).
+  error: z.unknown().optional(), // Validation error with a message and a browser `ValidityState` match key.
+  required: z.boolean().optional(), // When explicitly `false`, shows gray "(optional)" text after the label. When `true` or `undefined`, no indicator is shown.
+  labelTooltip: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // Tooltip content displayed next to the label via an info icon.
+  className: z.string().optional(),
+  size: z.enum(["xs", "sm", "base", "lg"]).optional(),
+  disabled: z.boolean().optional(),
+  focusMode: z.enum(["container", "individual"]).optional(),
+});
+
 export const LabelPropsSchema = z.object({
   children: z.union([z.string(), z.number(), z.boolean(), z.null(), DynamicValueSchema]).optional(), // The label content — can be a string or any React node.
   showOptional: z.boolean().optional(), // When `true`, shows gray "(optional)" text after the label.
@@ -732,7 +744,7 @@ export const TooltipPropsSchema = z.object({
 /**
  * All valid component type names
  */
-export type KumoComponentType = "Badge" | "Banner" | "Breadcrumbs" | "Button" | "Checkbox" | "ClipboardText" | "CloudflareLogo" | "Code" | "Collapsible" | "Combobox" | "CommandPalette" | "DatePicker" | "DateRangePicker" | "Dialog" | "DropdownMenu" | "Empty" | "Field" | "Grid" | "Input" | "InputArea" | "Label" | "LayerCard" | "Link" | "Loader" | "MenuBar" | "Meter" | "Pagination" | "Popover" | "Radio" | "Select" | "SensitiveInput" | "Surface" | "Switch" | "Table" | "Tabs" | "Text" | "Toasty" | "Tooltip";
+export type KumoComponentType = "Badge" | "Banner" | "Breadcrumbs" | "Button" | "Checkbox" | "ClipboardText" | "CloudflareLogo" | "Code" | "Collapsible" | "Combobox" | "CommandPalette" | "DatePicker" | "DateRangePicker" | "Dialog" | "DropdownMenu" | "Empty" | "Field" | "Grid" | "Input" | "InputArea" | "InputGroup" | "Label" | "LayerCard" | "Link" | "Loader" | "MenuBar" | "Meter" | "Pagination" | "Popover" | "Radio" | "Select" | "SensitiveInput" | "Surface" | "Switch" | "Table" | "Tabs" | "Text" | "Toasty" | "Tooltip";
 
 export const KumoComponentTypeSchema = z.enum([
   "Badge",
@@ -755,6 +767,7 @@ export const KumoComponentTypeSchema = z.enum([
   "Grid",
   "Input",
   "InputArea",
+  "InputGroup",
   "Label",
   "LayerCard",
   "Link",
@@ -799,6 +812,7 @@ export const ComponentPropsSchemas = {
   Grid: GridPropsSchema,
   Input: InputPropsSchema,
   InputArea: InputAreaPropsSchema,
+  InputGroup: InputGroupPropsSchema,
   Label: LabelPropsSchema,
   LayerCard: LayerCardPropsSchema,
   Link: LinkPropsSchema,
@@ -873,4 +887,4 @@ export function validateUITree(tree: unknown): SafeParseResult<UITree> {
 /**
  * List of all component names (for catalog generation)
  */
-export const KUMO_COMPONENT_NAMES = ["Badge", "Banner", "Breadcrumbs", "Button", "Checkbox", "ClipboardText", "CloudflareLogo", "Code", "Collapsible", "Combobox", "CommandPalette", "DatePicker", "DateRangePicker", "Dialog", "DropdownMenu", "Empty", "Field", "Grid", "Input", "InputArea", "Label", "LayerCard", "Link", "Loader", "MenuBar", "Meter", "Pagination", "Popover", "Radio", "Select", "SensitiveInput", "Surface", "Switch", "Table", "Tabs", "Text", "Toasty", "Tooltip"] as const;
+export const KUMO_COMPONENT_NAMES = ["Badge", "Banner", "Breadcrumbs", "Button", "Checkbox", "ClipboardText", "CloudflareLogo", "Code", "Collapsible", "Combobox", "CommandPalette", "DatePicker", "DateRangePicker", "Dialog", "DropdownMenu", "Empty", "Field", "Grid", "Input", "InputArea", "InputGroup", "Label", "LayerCard", "Link", "Loader", "MenuBar", "Meter", "Pagination", "Popover", "Radio", "Select", "SensitiveInput", "Surface", "Switch", "Table", "Tabs", "Text", "Toasty", "Tooltip"] as const;
