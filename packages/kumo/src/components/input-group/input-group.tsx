@@ -212,17 +212,22 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
           data-disabled={disabled ? "" : undefined}
           className={cn(
             "relative w-full cursor-text",
-            "shadow-xs ring ring-kumo-ring",
-            "has-[input[aria-invalid=true]]:ring-kumo-danger",
+            // inputVariants provides base ring-kumo-line; must come before state overrides
+            inputVariants({ size }),
+            "shadow-xs",
             "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
             focusMode === "individual"
               ? "isolate overflow-visible"
               : [
                   "overflow-hidden",
                   "has-[[data-slot=input-group-button]]:overflow-visible",
-                  "has-[:focus-visible]:ring-kumo-ring",
+                  // Focus state must come AFTER inputVariants to override ring-kumo-line
+                  "focus-within:ring-kumo-ring",
+                  // Native focus outline on container when any child has focus-visible
+                  "has-[:focus-visible]:outline-2 has-[:focus-visible]:-outline-offset-2 has-[:focus-visible]:outline-[-webkit-focus-ring-color]",
                 ],
-            inputVariants({ size }),
+            // Error state must also come after inputVariants
+            "has-[input[aria-invalid=true]]:ring-kumo-danger",
             "px-0",
             hasSuffix
               ? "grid grid-cols-[auto_1fr] items-center gap-0"
