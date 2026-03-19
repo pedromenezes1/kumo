@@ -1,4 +1,4 @@
-import { useContext, type PropsWithChildren } from "react";
+import { forwardRef, useContext, type PropsWithChildren } from "react";
 import { cn } from "../../utils/cn";
 import { type ButtonProps, Button as ButtonExternal } from "../button/button";
 import { InputGroupContext } from "./context";
@@ -8,22 +8,22 @@ export type InputGroupButtonProps = ButtonProps;
 /**
  * Button that renders differently based on placement:
  * - Inside Addon: compact button for secondary actions (toggle, copy)
- * - Direct child: full-height flush button for primary actions (search, submit)
+ * - Direct child: full-height flush button rendered inside the container
  */
-export function Button({
-  children,
-  className,
-  size,
-  ...props
-}: PropsWithChildren<InputGroupButtonProps>) {
+export const Button = forwardRef<
+  HTMLButtonElement,
+  PropsWithChildren<InputGroupButtonProps>
+>(({ children, className, size, disabled, ...props }, ref) => {
   const context = useContext(InputGroupContext);
-
   const isInsideAddon = context?.insideAddon ?? false;
+  const isDisabled = disabled ?? context?.disabled;
 
   if (isInsideAddon) {
     return (
       <ButtonExternal
+        ref={ref}
         type="button"
+        disabled={isDisabled}
         {...props}
         size={size ?? "sm"}
         className={cn("pointer-events-auto", className)}
@@ -33,25 +33,19 @@ export function Button({
     );
   }
 
-  const isIndividualFocus = context?.focusMode === "individual";
-
+  // Flush button: rendered inside the container
   return (
     <ButtonExternal
+      ref={ref}
       type="button"
+      disabled={isDisabled}
       {...props}
       data-slot="input-group-button"
       size={size ?? context?.size}
-      className={cn(
-        // Flush button: extend beyond container to cover its ring
-        "relative z-10 -m-px h-[calc(100%+2px)]! rounded-none rounded-r-[inherit]",
-        "disabled:bg-kumo-tint disabled:text-kumo-inactive!",
-        isIndividualFocus &&
-          "ring ring-kumo-ring first:rounded-l-[inherit] last:rounded-r-[inherit] focus:z-1 focus:outline",
-        className,
-      )}
+      className={cn("h-full self-stretch rounded-none ring-0", className)}
     >
       {children}
     </ButtonExternal>
   );
-}
+});
 Button.displayName = "InputGroup.Button";
