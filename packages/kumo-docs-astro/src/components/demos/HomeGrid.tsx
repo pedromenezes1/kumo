@@ -10,6 +10,7 @@ import {
   DatePicker,
   Dialog,
   DropdownMenu,
+  Flow,
   Grid,
   GridItem,
   Input,
@@ -17,6 +18,7 @@ import {
   InputGroup,
   Label,
   LayerCard,
+  Link,
   Loader,
   MenuBar,
   Meter,
@@ -62,14 +64,16 @@ const componentRoutes: Record<string, string> = {
   dialog: "/components/dialog",
   dropdown: "/components/dropdown",
   empty: "/components/empty",
+  flow: "/components/flow",
   grid: "/components/grid",
   input: "/components/input",
   "input-area": "/components/input-area",
   "input-group": "/components/input-group",
   label: "/components/label",
   "layer-card": "/components/layer-card",
+  link: "/components/link",
   loader: "/components/loader",
-  menubar: "/components/menu-bar",
+  "menu-bar": "/components/menu-bar",
   meter: "/components/meter",
   pagination: "/components/pagination",
   popover: "/components/popover",
@@ -342,16 +346,14 @@ export function HomeGrid() {
       name: "CodeHighlighted",
       id: "code-highlighted",
       Component: (
-        <div className="w-full px-4">
-          <ShikiProvider engine="javascript" languages={["typescript"]}>
-            <CodeHighlighted
-              lang="typescript"
-              code={`const sum = (a: number, b: number) => {
+        <ShikiProvider engine="javascript" languages={["typescript"]}>
+          <CodeHighlighted
+            lang="typescript"
+            code={`const sum = (a: number, b: number) => {
   return a + b;
 };`}
-            />
-          </ShikiProvider>
-        </div>
+          />
+        </ShikiProvider>
       ),
     },
     {
@@ -417,7 +419,10 @@ export function HomeGrid() {
           perPage={10}
           totalCount={100}
           setPage={setPaginationPage}
-        />
+          className="w-auto"
+        >
+          <Pagination.Controls />
+        </Pagination>
       ),
     },
     {
@@ -429,14 +434,12 @@ export function HomeGrid() {
       name: "Meter",
       id: "meter",
       Component: (
-        <div className="w-full px-4">
-          <Meter value={75} label="My meter" customValue="100 / 5,000" />
-        </div>
+        <Meter value={75} label="My meter" customValue="100 / 5,000" />
       ),
     },
     {
       name: "MenuBar",
-      id: "menubar",
+      id: "menu-bar",
       Component: (
         <MenuBar
           isActive={menuBarActive}
@@ -461,7 +464,7 @@ export function HomeGrid() {
       name: "DatePicker",
       id: "date-picker",
       Component: (
-        <div className="scale-90">
+        <div className="-m-4 scale-85">
           <DatePicker mode="single" />
         </div>
       ),
@@ -489,6 +492,31 @@ export function HomeGrid() {
       id: "command-palette",
       Component: (
         <Button icon={MagnifyingGlassIcon}>Open Command Palette</Button>
+      ),
+    },
+    {
+      name: "Flow",
+      id: "flow",
+      Component: (
+        <Flow>
+          <Flow.Node>Step 1</Flow.Node>
+          <Flow.Node>Step 2</Flow.Node>
+        </Flow>
+      ),
+    },
+    {
+      name: "Link",
+      id: "link",
+      Component: (
+        <div className="flex flex-col gap-2 text-sm">
+          <Link href="#">Default link</Link>
+          <Link href="#" variant="current">
+            Current color link
+          </Link>
+          <Link href="#" variant="plain">
+            Plain link
+          </Link>
+        </div>
       ),
     },
     {
@@ -628,9 +656,11 @@ export function HomeGrid() {
                 {c.name}
               </span>
             )}
-            {c.Component ?? (
-              <p className="text-base font-medium text-kumo-subtle">TBD</p>
-            )}
+            <div className="flex w-full items-center justify-center p-8">
+              {c.Component ?? (
+                <p className="text-base font-medium text-kumo-subtle">TBD</p>
+              )}
+            </div>
           </li>
         );
       })}
