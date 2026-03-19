@@ -89,11 +89,11 @@ html {
   content: none;
 }
 
-/* Links — underline on hover only */
-.kumo-prose :where(a) {
+/* Links — underline on hover only (skip .not-prose where components control their own styles) */
+.kumo-prose :where(a):not(:where(.not-prose, .not-prose *)) {
   text-decoration: none;
 }
-.kumo-prose :where(a):hover {
+.kumo-prose :where(a):not(:where(.not-prose, .not-prose *)):hover {
   text-decoration: underline;
 }
 
