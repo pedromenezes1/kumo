@@ -185,6 +185,20 @@ describe("InputGroup", () => {
       await user.type(input, "hello");
       expect(handleChange).not.toHaveBeenCalled();
     });
+
+    it("disables button when InputGroup is disabled", () => {
+      render(
+        <InputGroup disabled>
+          <InputGroup.Input aria-label="Test input" />
+          <InputGroup.Button>Submit</InputGroup.Button>
+        </InputGroup>,
+      );
+
+      const button = screen.getByRole("button", {
+        name: "Submit",
+      }) as HTMLButtonElement;
+      expect(button.disabled).toBe(true);
+    });
   });
 
   describe("error handling", () => {
@@ -262,6 +276,20 @@ describe("InputGroup", () => {
         </InputGroup>,
       );
       expect(screen.getByRole("group")).toBeTruthy();
+    });
+  });
+
+  describe("Button", () => {
+    it("renders with specified variant", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test input" />
+          <InputGroup.Button variant="primary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+
+      const button = screen.getByRole("button", { name: "Search" });
+      expect(button.className).toContain("bg-kumo-brand");
     });
   });
 
