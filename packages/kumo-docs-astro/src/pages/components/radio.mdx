@@ -127,6 +127,91 @@ defaultValue="standard"
       <RadioDescriptionDemo client:visible />
     </ComponentExample>
 
+    <Heading level={3}>Control Position</Heading>
+    <p>
+      Use `controlPosition="end"` to place labels before radio buttons.
+    </p>
+    <ComponentExample
+      code={`<Radio.Group legend="Preferences" controlPosition="end" defaultValue="a">
+
+  <Radio.Item label="Label before radio" value="a" />
+  <Radio.Item label="Another option" value="b" />
+</Radio.Group>`}
+    >
+      <RadioControlPositionDemo client:visible />
+    </ComponentExample>
+
+    <Heading level={3}>Radio Card</Heading>
+    <p>
+      Use <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">appearance="card"</code> on the group to display each option as a selectable card. Combine with the <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">description</code> prop on each item for richer content.
+    </p>
+    <ComponentExample
+      code={`<Radio.Group legend="Choose a plan" appearance="card" defaultValue="free">
+
+  <Radio.Item
+    label="Free"
+    description="For personal or hobby projects that aren't business-critical."
+    value="free"
+  />
+  <Radio.Item
+    label="Pro"
+    description="For professional websites that aren't business-critical."
+    value="pro"
+  />
+  <Radio.Item
+    label="Business"
+    description="For small businesses operating online."
+    value="business"
+  />
+  <Radio.Item
+    label="Contract"
+    description="For mission-critical applications that are core to your business."
+    value="contract"
+  />
+</Radio.Group>`}
+    >
+      <RadioCardDemo client:visible />
+    </ComponentExample>
+
+    <Heading level={3}>Radio Card (Horizontal)</Heading>
+    <p>
+      Combine <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">appearance="card"</code> with <code class="rounded bg-kumo-control px-1 py-0.5 text-sm">orientation="horizontal"</code> for a side-by-side card layout.
+    </p>
+    <ComponentExample
+      code={`<Radio.Group
+
+legend="Choose a plan"
+appearance="card"
+orientation="horizontal"
+defaultValue="free"
+
+>
+
+  <Radio.Item
+    label="Free"
+    description="For personal or hobby projects that aren't business-critical."
+    value="free"
+  />
+  <Radio.Item
+    label="Pro"
+    description="For professional websites that aren't business-critical."
+    value="pro"
+  />
+  <Radio.Item
+    label="Business"
+    description="For small businesses operating online."
+    value="business"
+  />
+  <Radio.Item
+    label="Contract"
+    description="For mission-critical applications that are core to your business."
+    value="contract"
+  />
+</Radio.Group>`}
+    >
+      <RadioCardHorizontalDemo client:visible />
+    </ComponentExample>
+
     <Heading level={3}>With Error</Heading>
     <p>
       Show validation errors at the group level using the <code
@@ -165,91 +250,6 @@ error="Please select a payment method to continue"
 </Radio.Group>`}
     >
       <RadioDisabledDemo client:visible />
-    </ComponentExample>
-
-    <Heading level={3}>Control Position</Heading>
-    <p>
-      Use `controlPosition="end"` to place labels before radio buttons.
-    </p>
-    <ComponentExample
-      code={`<Radio.Group legend="Preferences" controlPosition="end" defaultValue="a">
-
-  <Radio.Item label="Label before radio" value="a" />
-  <Radio.Item label="Another option" value="b" />
-</Radio.Group>`}
-    >
-      <RadioControlPositionDemo client:visible />
-    </ComponentExample>
-
-    <Heading level={3}>Card Appearance</Heading>
-    <p>
-      Use `appearance="card"` for a more prominent card-style layout with descriptions.
-    </p>
-    <ComponentExample
-      code={`<Radio.Group legend="Choose a plan" appearance="card" defaultValue="free">
-
-  <Radio.Item
-    label="Free"
-    description="For personal or hobby projects that aren't business-critical."
-    value="free"
-  />
-  <Radio.Item
-    label="Pro"
-    description="For professional websites that aren't business-critical."
-    value="pro"
-  />
-  <Radio.Item
-    label="Business"
-    description="For small businesses operating online."
-    value="business"
-  />
-  <Radio.Item
-    label="Contract"
-    description="For mission-critical applications that are core to your business."
-    value="contract"
-  />
-</Radio.Group>`}
-    >
-      <RadioCardDemo client:visible />
-    </ComponentExample>
-
-    <Heading level={3}>Card Appearance (Horizontal)</Heading>
-    <p>
-      Combine `appearance="card"` with `orientation="horizontal"` for a horizontal card layout.
-    </p>
-    <ComponentExample
-      code={`<Radio.Group
-
-legend="Choose a plan"
-appearance="card"
-orientation="horizontal"
-defaultValue="free"
-
->
-
-  <Radio.Item
-    label="Free"
-    description="For personal or hobby projects that aren't business-critical."
-    value="free"
-  />
-  <Radio.Item
-    label="Pro"
-    description="For professional websites that aren't business-critical."
-    value="pro"
-  />
-  <Radio.Item
-    label="Business"
-    description="For small businesses operating online."
-    value="business"
-  />
-  <Radio.Item
-    label="Contract"
-    description="For mission-critical applications that are core to your business."
-    value="contract"
-  />
-</Radio.Group>`}
-    >
-      <RadioCardHorizontalDemo client:visible />
     </ComponentExample>
   </ComponentSection>
 
