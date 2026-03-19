@@ -209,6 +209,7 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
         <div
           ref={ref}
           role="group"
+          data-slot="input-group"
           data-disabled={disabled ? "" : undefined}
           className={cn(
             "relative w-full cursor-text",
@@ -220,11 +221,9 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
               ? "isolate overflow-visible"
               : [
                   "overflow-hidden",
-                  "has-[[data-slot=input-group-button]]:overflow-visible",
                   // Focus state must come AFTER inputVariants to override ring-kumo-line
                   "focus-within:ring-kumo-ring",
-                  // Native focus outline on container when any child has focus-visible
-                  "has-[:focus-visible]:outline-2 has-[:focus-visible]:-outline-offset-2 has-[:focus-visible]:outline-[-webkit-focus-ring-color] has-[:focus-visible]:ring-transparent",
+                  // The CSS in kumo-binding.css handles the native outline
                 ],
             // Error state must also come after inputVariants
             "has-[input[aria-invalid=true]]:ring-kumo-danger",

@@ -66,7 +66,7 @@ export function Input(props: InputGroupInputProps) {
               "pr-0!",
             )
           : "grow bg-transparent",
-        "ring-0! shadow-none focus:ring-0!",
+        "ring-0! shadow-none outline-none focus:ring-0! focus:outline-none",
         props.className,
       )}
     />
