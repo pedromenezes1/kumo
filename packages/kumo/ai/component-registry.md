@@ -3149,12 +3149,15 @@ Props:
       </InputGroup>
 
       <InputGroup>
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon className="text-kumo-subtle" />
+        </InputGroup.Addon>
         <InputGroup.Input
-          placeholder="example.com"
-          aria-label="Domain"
+          placeholder="Search for a domain name"
+          aria-label="Domain search"
           {...demoInputProps}
         />
-        <InputGroup.Button variant="primary">Submit</InputGroup.Button>
+        <InputGroup.Button variant="primary">Search</InputGroup.Button>
       </InputGroup>
     </div>
 ```
