@@ -1,4 +1,4 @@
-import { useContext, useEffect, type ReactNode } from "react";
+import { useContext, type ReactNode } from "react";
 import { cn } from "../../utils/cn";
 import { InputGroupContext, INPUT_GROUP_SIZE } from "./context";
 
@@ -11,7 +11,7 @@ export interface InputGroupSuffixProps {
 
 /**
  * Inline suffix that flows seamlessly next to the typed input value.
- * Input width adjusts automatically as the user types.
+ * Input width adjusts automatically via CSS `field-sizing: content`.
  */
 export function Suffix({ className, children }: InputGroupSuffixProps) {
   const context = useContext(InputGroupContext);
@@ -19,21 +19,13 @@ export function Suffix({ className, children }: InputGroupSuffixProps) {
   const size = context?.size ?? "base";
   const tokens = INPUT_GROUP_SIZE[size];
 
-  const registerInline = context?.registerInline;
-  const unregisterInline = context?.unregisterInline;
-
-  useEffect(() => {
-    registerInline?.();
-    return () => unregisterInline?.();
-  }, [registerInline, unregisterInline]);
-
   return (
     <div
       data-slot="input-group-suffix"
       className={cn(
-        "flex min-w-0 select-none items-center text-kumo-subtle",
+        "flex min-w-0 grow select-none items-center text-kumo-subtle",
         tokens.fontSize,
-        context?.hasEndAddon ? tokens.suffixReserve : tokens.suffixPad,
+        tokens.suffixPad,
         className,
       )}
     >

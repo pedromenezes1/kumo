@@ -3046,40 +3046,15 @@ Props:
 
 ```tsx
 <div className="flex w-xs flex-col gap-4">
-      <InputGroup>
+      <InputGroup data-focus-scope="proposed">
         <InputGroup.Addon>
-          <LinkIcon className="text-kumo-subtle" />
+          <LinkIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input
           placeholder="Paste a link..."
           aria-label="Link"
           {...demoInputProps}
         />
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Add a tag..."
-          aria-label="Tag"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <TagIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Addon>
-          <AirplaneTakeoffIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="IATA airport code (e.g. GRU, AMS)"
-          aria-label="IATA airport code"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <InfoIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
       </InputGroup>
     </div>
 ```
@@ -3125,41 +3100,62 @@ Props:
           aria-label="Password"
           {...demoInputProps}
         />
-        <InputGroup.Addon align="end">
+        <InputGroup.Addon align="end" className="pr-1">
           <InputGroup.Button
             variant="ghost"
             size="sm"
             aria-label={show ? "Hide password" : "Show password"}
             onClick={() => setShow(!show)}
           >
-            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
+            {show ? <EyeSlashIcon size={16} /> : <EyeIcon size={16} />}
           </InputGroup.Button>
         </InputGroup.Addon>
       </InputGroup>
 
       <InputGroup>
         <InputGroup.Input
-          placeholder="Filter by name..."
-          aria-label="Filter"
+          value={searchValue}
+          placeholder="Search"
+          aria-label="Search"
+          onChange={(e) => setSearchValue(e.target.value)}
           {...demoInputProps}
         />
-        <InputGroup.Addon align="end">
-          <InputGroup.Button variant="secondary">Apply</InputGroup.Button>
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="Search for a domain name"
-          aria-label="Domain search"
-          {...demoInputProps}
-        />
-        <InputGroup.Button variant="primary">Search</InputGroup.Button>
+        {searchValue && (
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Delete search"
+              onClick={() => setSearchValue("")}
+            >
+              <XIcon size={16} />
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        )}
       </InputGroup>
     </div>
+```
+
+```tsx
+<InputGroup className="w-xs">
+      <InputGroup.Addon>
+        <MagnifyingGlassIcon className="text-kumo-subtle" />
+      </InputGroup.Addon>
+      <InputGroup.Input
+        placeholder="Search with query language..."
+        aria-label="Search"
+        {...demoInputProps}
+      />
+      <InputGroup.Addon align="end" className="pr-1">
+        <InputGroup.Button
+          size="sm"
+          tooltip="Query language help"
+          onClick={() => {}}
+        >
+          <QuestionIcon size={16} />
+        </InputGroup.Button>
+      </InputGroup.Addon>
+    </InputGroup>
 ```
 
 ```tsx
@@ -3173,9 +3169,7 @@ Props:
         {...demoInputProps}
       />
       <InputGroup.Addon align="end">
-        <kbd className="rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle">
-          ⌘K
-        </kbd>
+        <kbd className="!bg-none !border-none">⌘K</kbd>
       </InputGroup.Addon>
     </InputGroup>
 ```
@@ -3185,37 +3179,12 @@ Props:
       {/* Spinner at end */}
       <InputGroup>
         <InputGroup.Input
-          placeholder="Searching..."
-          aria-label="Searching"
+          defaultValue="kumo"
+          aria-label="kumo"
           {...demoInputProps}
         />
         <InputGroup.Addon align="end">
-          <Loader />
-        </InputGroup.Addon>
-      </InputGroup>
-
-      {/* Spinner at start */}
-      <InputGroup>
-        <InputGroup.Addon>
-          <SpinnerIcon className="animate-spin" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="Thinking..."
-          aria-label="Thinking"
-          {...demoInputProps}
-        />
-      </InputGroup>
-
-      {/* Text + spinner at end */}
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Saving changes..."
-          aria-label="Saving changes"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <span>Saving...</span>
-          <Loader />
+          <Loader className="fill-kumo-subtle" />
         </InputGroup.Addon>
       </InputGroup>
     </div>
@@ -3223,30 +3192,37 @@ Props:
 
 ```tsx
 <div className="flex w-xs flex-col gap-4">
+      <WorkersSuffixInput defaultValue="kumo" resultState="success" />
+      <WorkersSuffixInput defaultValue="kumo" resultState="error" />
+    </div>
+```
+
+```tsx
+<div className="flex w-xs flex-col gap-4">
       <InputGroup size="xs" label="Extra Small">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Extra small input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup size="sm" label="Small">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Small input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup label="Base (default)">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Base input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup size="lg" label="Large">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Large input" {...demoInputProps} />
       </InputGroup>
@@ -3272,7 +3248,6 @@ Props:
           <MagnifyingGlassIcon className="text-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Search..." {...demoInputProps} />
-        <InputGroup.Button variant="primary">Search</InputGroup.Button>
       </InputGroup>
 
       <InputGroup

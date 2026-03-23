@@ -20,12 +20,8 @@ export interface InputGroupSizeTokens {
   inputOuter: string;
   /** Outer padding for icon/text Addon at the container edge. */
   addonOuter: string;
-  /** pl- for ghost measurement span (matches inputOuter left). */
-  ghostPad: string;
   /** pr- for suffix when no end addon. */
   suffixPad: string;
-  /** pr- for suffix when end addon present (reserves icon space). */
-  suffixReserve: string;
   fontSize: string;
   /** Icon size in px. */
   iconSize: number;
@@ -35,36 +31,28 @@ export const INPUT_GROUP_SIZE: Record<KumoInputSize, InputGroupSizeTokens> = {
   xs: {
     inputOuter: "px-1.5",
     addonOuter: "px-1.5",
-    ghostPad: "pl-1.5",
     suffixPad: "pr-1.5",
-    suffixReserve: "pr-6",
     fontSize: "text-xs",
     iconSize: 10,
   },
   sm: {
     inputOuter: "px-2",
     addonOuter: "px-1.5",
-    ghostPad: "pl-2",
     suffixPad: "pr-2",
-    suffixReserve: "pr-7",
     fontSize: "text-xs",
     iconSize: 13,
   },
   base: {
     inputOuter: "px-3",
     addonOuter: "px-2",
-    ghostPad: "pl-3",
     suffixPad: "pr-3",
-    suffixReserve: "pr-9",
     fontSize: "text-base",
     iconSize: 18,
   },
   lg: {
     inputOuter: "px-4",
     addonOuter: "px-2.5",
-    ghostPad: "pl-4",
     suffixPad: "pr-4",
-    suffixReserve: "pr-11",
     fontSize: "text-base",
     iconSize: 20,
   },
@@ -94,8 +82,6 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
     "has-[[data-slot=input-group-button]]:[&_input]:pr-2.5",
   ].join(" "),
 };
-
-export const MIN_INPUT_WIDTH = 1;
 
 // Derive directional padding from a symmetric "px-N" token.
 export function pl(px: string): string {
@@ -128,16 +114,6 @@ export interface InputGroupContextValue
   > {
   focusMode: "container" | "individual";
   inputId: string;
-  hasStartAddon: boolean;
-  hasEndAddon: boolean;
-  hasSuffix: boolean;
-  insideAddon: boolean;
-  inputValue: string;
-  setInputValue: (value: string) => void;
-  registerAddon: (align: "start" | "end") => void;
-  unregisterAddon: (align: "start" | "end") => void;
-  registerInline: () => void;
-  unregisterInline: () => void;
   disabled: boolean;
   error?: FieldProps["error"];
 }

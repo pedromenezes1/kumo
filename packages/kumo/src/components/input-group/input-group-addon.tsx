@@ -2,8 +2,6 @@ import {
   Children,
   cloneElement,
   useContext,
-  useEffect,
-  useMemo,
   isValidElement,
   type ReactElement,
   type ReactNode,
@@ -34,20 +32,6 @@ export function Addon({
 
   const size = context?.size ?? "base";
   const tokens = INPUT_GROUP_SIZE[size];
-  const hasInline = context?.hasSuffix;
-
-  const registerAddon = context?.registerAddon;
-  const unregisterAddon = context?.unregisterAddon;
-
-  useEffect(() => {
-    registerAddon?.(align);
-    return () => unregisterAddon?.(align);
-  }, [align, registerAddon, unregisterAddon]);
-
-  const addonContext = useMemo(
-    () => (context ? { ...context, insideAddon: true } : null),
-    [context],
-  );
 
   // Inject size into direct icon children that don't already have one set.
   // Skips buttons (which have their own size handling) and non-element nodes.
@@ -61,37 +45,25 @@ export function Addon({
     });
   });
 
-  // In inline mode (Suffix present), addons overlay as absolute elements
-  // since the grid layout is reserved for the input + suffix measurement.
-  // In standard flex mode, addons are flow-based flex items.
+  // Always use flex-based positioning. CSS order controls visual placement.
   return (
-    <InputGroupContext.Provider value={addonContext}>
-      <div
-        data-slot={
-          align === "start"
-            ? "input-group-addon-start"
-            : "input-group-addon-end"
-        }
-        className={cn(
-          "pointer-events-none flex shrink-0 items-center gap-1.5",
-          "text-kumo-subtle",
-          tokens.fontSize,
-          "*:pointer-events-auto",
-          hasInline
-            ? cn(
-                "absolute top-0 bottom-0 z-10",
-                align === "start" ? "left-0" : "right-0",
-                tokens.addonOuter,
-              )
-            : align === "start"
-              ? cn("-order-1", pl(tokens.addonOuter), "pr-0")
-              : cn("order-1", "pl-0", pr(tokens.addonOuter)),
-          className,
-        )}
-      >
-        {sizedChildren}
-      </div>
-    </InputGroupContext.Provider>
+    <div
+      data-slot={
+        align === "start" ? "input-group-addon-start" : "input-group-addon-end"
+      }
+      className={cn(
+        "pointer-events-none flex shrink-0 items-center gap-1.5",
+        "text-kumo-subtle",
+        tokens.fontSize,
+        "*:pointer-events-auto",
+        align === "start"
+          ? cn("-order-1", pl(tokens.addonOuter), "pr-0")
+          : cn("order-1", "pl-0", pr(tokens.addonOuter)),
+        className,
+      )}
+    >
+      {sizedChildren}
+    </div>
   );
 }
 Addon.displayName = "InputGroup.Addon";

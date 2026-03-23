@@ -3,13 +3,12 @@ import { InputGroup, Loader } from "@cloudflare/kumo";
 import {
   MagnifyingGlassIcon,
   CheckCircleIcon,
+  XCircleIcon,
+  XIcon,
   EyeIcon,
   EyeSlashIcon,
   LinkIcon,
-  TagIcon,
-  AirplaneTakeoffIcon,
-  InfoIcon,
-  SpinnerIcon,
+  QuestionIcon,
 } from "@phosphor-icons/react";
 
 /** Common props to disable browser features in demo inputs */
@@ -29,40 +28,15 @@ export function InputGroupHeroDemo() {
 export function InputGroupIconsDemo() {
   return (
     <div className="flex w-xs flex-col gap-4">
-      <InputGroup>
+      <InputGroup data-focus-scope="proposed">
         <InputGroup.Addon>
-          <LinkIcon className="text-kumo-subtle" />
+          <LinkIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input
           placeholder="Paste a link..."
           aria-label="Link"
           {...demoInputProps}
         />
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Add a tag..."
-          aria-label="Tag"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <TagIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Addon>
-          <AirplaneTakeoffIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="IATA airport code (e.g. GRU, AMS)"
-          aria-label="IATA airport code"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <InfoIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
       </InputGroup>
     </div>
   );
@@ -103,9 +77,10 @@ export function InputGroupTextDemo() {
   );
 }
 
-/** Button variations: password toggle, inset button, and flush button */
+/** Button variations: password toggle and clear */
 export function InputGroupButtonsDemo() {
   const [show, setShow] = useState(false);
+  const [searchValue, setSearchValue] = useState("search");
 
   return (
     <div className="flex w-xs flex-col gap-4">
@@ -116,41 +91,65 @@ export function InputGroupButtonsDemo() {
           aria-label="Password"
           {...demoInputProps}
         />
-        <InputGroup.Addon align="end">
+        <InputGroup.Addon align="end" className="pr-1">
           <InputGroup.Button
             variant="ghost"
             size="sm"
             aria-label={show ? "Hide password" : "Show password"}
             onClick={() => setShow(!show)}
           >
-            {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
+            {show ? <EyeSlashIcon size={16} /> : <EyeIcon size={16} />}
           </InputGroup.Button>
         </InputGroup.Addon>
       </InputGroup>
 
       <InputGroup>
         <InputGroup.Input
-          placeholder="Filter by name..."
-          aria-label="Filter"
+          value={searchValue}
+          placeholder="Search"
+          aria-label="Search"
+          onChange={(e) => setSearchValue(e.target.value)}
           {...demoInputProps}
         />
-        <InputGroup.Addon align="end">
-          <InputGroup.Button variant="secondary">Apply</InputGroup.Button>
-        </InputGroup.Addon>
-      </InputGroup>
-
-      <InputGroup>
-        <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="Search for a domain name"
-          aria-label="Domain search"
-          {...demoInputProps}
-        />
-        <InputGroup.Button variant="primary">Search</InputGroup.Button>
+        {searchValue && (
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Delete search"
+              onClick={() => setSearchValue("")}
+            >
+              <XIcon size={16} />
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        )}
       </InputGroup>
     </div>
+  );
+}
+
+/** Search input with a tooltip button — mirrors the "Query language help" pattern */
+export function InputGroupTooltipButtonDemo() {
+  return (
+    <InputGroup className="w-xs">
+      <InputGroup.Addon>
+        <MagnifyingGlassIcon className="text-kumo-subtle" />
+      </InputGroup.Addon>
+      <InputGroup.Input
+        placeholder="Search with query language..."
+        aria-label="Search"
+        {...demoInputProps}
+      />
+      <InputGroup.Addon align="end" className="pr-1">
+        <InputGroup.Button
+          size="sm"
+          tooltip="Query language help"
+          onClick={() => {}}
+        >
+          <QuestionIcon size={16} />
+        </InputGroup.Button>
+      </InputGroup.Addon>
+    </InputGroup>
   );
 }
 
@@ -167,67 +166,53 @@ export function InputGroupKbdDemo() {
         {...demoInputProps}
       />
       <InputGroup.Addon align="end">
-        <kbd className="rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle">
-          ⌘K
-        </kbd>
+        <kbd className="!bg-none !border-none">⌘K</kbd>
       </InputGroup.Addon>
     </InputGroup>
   );
 }
 
-/** Loading variations: spinner at end, spinner at start, text + spinner at end */
+/** Loading variation: spinner at end for domain validation */
 export function InputGroupLoadingDemo() {
   return (
     <div className="flex w-xs flex-col gap-4">
       {/* Spinner at end */}
       <InputGroup>
         <InputGroup.Input
-          placeholder="Searching..."
-          aria-label="Searching"
+          defaultValue="kumo"
+          aria-label="kumo"
           {...demoInputProps}
         />
         <InputGroup.Addon align="end">
-          <Loader />
-        </InputGroup.Addon>
-      </InputGroup>
-
-      {/* Spinner at start */}
-      <InputGroup>
-        <InputGroup.Addon>
-          <SpinnerIcon className="animate-spin" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          placeholder="Thinking..."
-          aria-label="Thinking"
-          {...demoInputProps}
-        />
-      </InputGroup>
-
-      {/* Text + spinner at end */}
-      <InputGroup>
-        <InputGroup.Input
-          placeholder="Saving changes..."
-          aria-label="Saving changes"
-          {...demoInputProps}
-        />
-        <InputGroup.Addon align="end">
-          <span>Saving...</span>
-          <Loader />
+          <Loader className="fill-kumo-subtle" />
         </InputGroup.Addon>
       </InputGroup>
     </div>
   );
 }
 
-/** Inline suffix that follows typed text — shows spinner then success icon on edit */
+/** Inline suffix that follows typed text — shows spinner then success/error icon on edit */
 export function InputGroupSuffixDemo() {
-  return <WorkersSuffixInput defaultValue="kumo" />;
+  return (
+    <div className="flex w-xs flex-col gap-4">
+      <WorkersSuffixInput defaultValue="kumo" resultState="success" />
+      <WorkersSuffixInput defaultValue="kumo" resultState="error" />
+    </div>
+  );
 }
 
 /** Shared Workers suffix input with validation spinner and success icon */
-function WorkersSuffixInput({ defaultValue }: { defaultValue: string }) {
+function WorkersSuffixInput({
+  defaultValue,
+  resultState = "success",
+}: {
+  defaultValue: string;
+  resultState?: "success" | "error";
+}) {
   const [value, setValue] = useState(defaultValue);
-  const [status, setStatus] = useState<"idle" | "loading" | "valid">("valid");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >(resultState);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,14 +223,19 @@ function WorkersSuffixInput({ defaultValue }: { defaultValue: string }) {
 
     if (next.length > 0) {
       setStatus("loading");
-      timerRef.current = setTimeout(() => setStatus("valid"), 1500);
+      timerRef.current = setTimeout(() => setStatus(resultState), 1500);
     } else {
       setStatus("idle");
     }
   };
 
+  const errorState =
+    status === "error"
+      ? { message: "This subdomain is unavailable", match: true as const }
+      : undefined;
+
   return (
-    <InputGroup className="w-xs">
+    <InputGroup className="w-xs" label="Subdomain" error={errorState}>
       <InputGroup.Input
         aria-label="Subdomain"
         maxLength={24}
@@ -256,12 +246,17 @@ function WorkersSuffixInput({ defaultValue }: { defaultValue: string }) {
       <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
       {status === "loading" && (
         <InputGroup.Addon align="end">
-          <Loader />
+          <Loader className="fill-kumo-subtle" />
         </InputGroup.Addon>
       )}
-      {status === "valid" && (
+      {status === "success" && (
         <InputGroup.Addon align="end">
-          <CheckCircleIcon weight="duotone" className="text-kumo-brand" />
+          <CheckCircleIcon weight="duotone" className="fill-kumo-success" />
+        </InputGroup.Addon>
+      )}
+      {status === "error" && (
+        <InputGroup.Addon align="end">
+          <XCircleIcon weight="duotone" className="fill-kumo-danger" />
         </InputGroup.Addon>
       )}
     </InputGroup>
@@ -274,28 +269,28 @@ export function InputGroupSizesDemo() {
     <div className="flex w-xs flex-col gap-4">
       <InputGroup size="xs" label="Extra Small">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Extra small input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup size="sm" label="Small">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Small input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup label="Base (default)">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Base input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup size="lg" label="Large">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon className="fill-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Large input" {...demoInputProps} />
       </InputGroup>
@@ -326,7 +321,6 @@ export function InputGroupStatesDemo() {
           <MagnifyingGlassIcon className="text-kumo-subtle" />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Search..." {...demoInputProps} />
-        <InputGroup.Button variant="primary">Search</InputGroup.Button>
       </InputGroup>
 
       <InputGroup

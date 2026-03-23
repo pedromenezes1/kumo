@@ -20,7 +20,9 @@ describe("InputGroup", () => {
       render(
         <InputGroup>
           <InputGroup.Input aria-label="Search" placeholder="Search..." />
-          <InputGroup.Button>Go</InputGroup.Button>
+          <InputGroup.Addon align="end">
+            <InputGroup.Button>Go</InputGroup.Button>
+          </InputGroup.Addon>
         </InputGroup>,
       );
       expect(screen.getByPlaceholderText("Search...")).toBeTruthy();
@@ -43,13 +45,13 @@ describe("InputGroup", () => {
         <InputGroup>
           <InputGroup.Addon>$</InputGroup.Addon>
           <InputGroup.Input aria-label="Amount" placeholder="0.00" />
-          <InputGroup.Addon align="end">USD</InputGroup.Addon>
-          <InputGroup.Button>Pay</InputGroup.Button>
+          <InputGroup.Addon align="end">
+            <InputGroup.Button>Pay</InputGroup.Button>
+          </InputGroup.Addon>
         </InputGroup>,
       );
       expect(screen.getByText("$")).toBeTruthy();
       expect(screen.getByPlaceholderText("0.00")).toBeTruthy();
-      expect(screen.getByText("USD")).toBeTruthy();
       expect(screen.getByRole("button", { name: "Pay" })).toBeTruthy();
     });
   });
@@ -120,7 +122,9 @@ describe("InputGroup", () => {
       render(
         <InputGroup>
           <InputGroup.Input aria-label="Search" />
-          <InputGroup.Button onClick={handleClick}>Search</InputGroup.Button>
+          <InputGroup.Addon align="end">
+            <InputGroup.Button onClick={handleClick}>Search</InputGroup.Button>
+          </InputGroup.Addon>
         </InputGroup>,
       );
 
@@ -190,7 +194,9 @@ describe("InputGroup", () => {
       render(
         <InputGroup disabled>
           <InputGroup.Input aria-label="Test input" />
-          <InputGroup.Button>Submit</InputGroup.Button>
+          <InputGroup.Addon align="end">
+            <InputGroup.Button>Submit</InputGroup.Button>
+          </InputGroup.Addon>
         </InputGroup>,
       );
 
@@ -280,16 +286,34 @@ describe("InputGroup", () => {
   });
 
   describe("Button", () => {
-    it("renders with specified variant", () => {
+    it("derives aria-label from tooltip string", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Test input" />
-          <InputGroup.Button variant="primary">Search</InputGroup.Button>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button tooltip="Query language help">?</InputGroup.Button>
+          </InputGroup.Addon>
         </InputGroup>,
       );
 
-      const button = screen.getByRole("button", { name: "Search" });
-      expect(button.className).toContain("bg-kumo-brand");
+      expect(
+        screen.getByRole("button", { name: "Query language help" }),
+      ).toBeTruthy();
+    });
+
+    it("prefers explicit aria-label over tooltip-derived label", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button tooltip="Query language help" aria-label="Help">
+              ?
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+
+      expect(screen.getByRole("button", { name: "Help" })).toBeTruthy();
     });
   });
 

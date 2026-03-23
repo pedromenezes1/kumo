@@ -3,10 +3,8 @@ import {
   useCallback,
   useEffect,
   useId,
-  useLayoutEffect,
   useMemo,
   useRef,
-  useState,
   type PropsWithChildren,
 } from "react";
 import { cn } from "../../utils/cn";
@@ -14,9 +12,7 @@ import { inputVariants } from "../input/input";
 import { Field } from "../field/field";
 import {
   InputGroupContext,
-  INPUT_GROUP_SIZE,
   INPUT_GROUP_HAS_CLASSES,
-  MIN_INPUT_WIDTH,
   type InputGroupRootProps,
 } from "./context";
 import { Input } from "./input-group-input";
@@ -87,27 +83,6 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
       [forwardedRef],
     );
 
-    const [addons, setAddons] = useState<{
-      start: number;
-      end: number;
-    }>({ start: 0, end: 0 });
-    const [hasSuffix, setHasSuffix] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-
-    const registerAddon = useCallback((align: "start" | "end") => {
-      setAddons((prev) => ({ ...prev, [align]: prev[align] + 1 }));
-    }, []);
-
-    const unregisterAddon = useCallback((align: "start" | "end") => {
-      setAddons((prev) => ({
-        ...prev,
-        [align]: Math.max(0, prev[align] - 1),
-      }));
-    }, []);
-
-    const registerInline = useCallback(() => setHasSuffix(true), []);
-    const unregisterInline = useCallback(() => setHasSuffix(false), []);
-
     const contextValue = useMemo(
       () => ({
         size,
@@ -115,36 +90,9 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
         inputId,
         disabled,
         error,
-        hasStartAddon: addons.start > 0,
-        hasEndAddon: addons.end > 0,
-        hasSuffix,
-        insideAddon: false,
-        inputValue,
-        setInputValue,
-        registerAddon,
-        unregisterAddon,
-        registerInline,
-        unregisterInline,
       }),
-      [
-        size,
-        focusMode,
-        inputId,
-        disabled,
-        error,
-        addons.start,
-        addons.end,
-        hasSuffix,
-        inputValue,
-        registerAddon,
-        unregisterAddon,
-        registerInline,
-        unregisterInline,
-      ],
+      [size, focusMode, inputId, disabled, error],
     );
-
-    const tokens = INPUT_GROUP_SIZE[size];
-    const ghostRef = useRef<HTMLSpanElement>(null);
 
     // Focus input when clicking empty space in the container.
     // Attached via useEffect to keep the JSX clean for a11y linters.
@@ -167,45 +115,8 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
       return () => el.removeEventListener("mousedown", handleMouseDown);
     }, [disabled, inputId]);
 
-    // Measure ghost and update input width when suffix is present.
-    useLayoutEffect(() => {
-      if (!hasSuffix) return;
-      if (!inputId || !ghostRef.current) return;
-
-      const input = document.getElementById(inputId) as HTMLInputElement | null;
-      if (!input) return;
-
-      // Copy letter-spacing from the actual input so the ghost measurement
-      // matches exactly.
-      ghostRef.current.style.letterSpacing =
-        window.getComputedStyle(input).letterSpacing;
-
-      const value = inputValue !== "" ? inputValue : input.value;
-
-      if (value) {
-        ghostRef.current.textContent = value;
-        const measuredWidth = ghostRef.current.offsetWidth + 1;
-        const width = Math.max(measuredWidth, MIN_INPUT_WIDTH);
-        input.style.width = `${width}px`;
-        input.style.maxWidth = "100%";
-      } else {
-        input.style.width = `${MIN_INPUT_WIDTH}px`;
-        input.style.maxWidth = "";
-      }
-    }, [inputId, inputValue, hasSuffix]);
-
     const container = (
       <InputGroupContext.Provider value={contextValue}>
-        {/* Ghost element for suffix width measurement */}
-        {hasSuffix && (
-          <div className="pointer-events-none invisible absolute grid font-sans">
-            <span
-              ref={ghostRef}
-              className={cn("whitespace-pre", tokens.ghostPad, tokens.fontSize)}
-              aria-hidden="true"
-            />
-          </div>
-        )}
         <div
           ref={ref}
           role="group"
@@ -228,9 +139,11 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
             // Error state must also come after inputVariants
             "has-[input[aria-invalid=true]]:ring-kumo-danger",
             "px-0",
-            hasSuffix
-              ? "grid grid-cols-[auto_1fr] items-center gap-0"
-              : "flex items-center gap-0",
+            "flex items-center gap-0",
+            "has-[[data-slot=input-group-suffix]]:[&_input]:[field-sizing:content]",
+            "has-[[data-slot=input-group-suffix]]:[&_input]:max-w-full",
+            "has-[[data-slot=input-group-suffix]]:[&_input]:grow-0",
+            "has-[[data-slot=input-group-suffix]]:[&_input]:pr-0",
             INPUT_GROUP_HAS_CLASSES[size],
             className,
           )}
