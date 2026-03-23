@@ -10,9 +10,8 @@ New `InputGroup` compound component for building inputs with icons, addons, inli
 ## Features
 
 - Field Integration — InputGroup accepts `label`, `description`, `error`, `required`, and `labelTooltip` props directly; automatically wraps in Field when label is provided
-- Addons — Place icons or text before/after the input using `align="start"` or `align="end"`
-- Compact Button — Small button inside an Addon for secondary actions (copy, clear, toggle visibility)
-- Action Button — Full-height flush button as a direct child for primary actions (submit, search)
+- Addons — Place icons before the input using `align="start"`
+- Compact Button — Icon button inside an Addon for secondary actions (i.e. clear, toggle visibility, tooltip)
 - Inline Suffix — Text that flows seamlessly next to the typed value (e.g., `.workers.dev`); input width adjusts automatically as user types
 - Size Variants — `xs`, `sm`, `base`, `lg` sizes cascade to all children via context
 - Error State — Error flows through context; `InputGroup.Input` auto-sets `aria-invalid="true"` when error is present

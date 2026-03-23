@@ -1,51 +1,74 @@
-import { forwardRef, useContext, type PropsWithChildren } from "react";
+import { forwardRef, useContext, type PropsWithChildren, type ReactNode } from "react";
 import { cn } from "../../utils/cn";
 import { type ButtonProps, Button as ButtonExternal } from "../button/button";
+import { Tooltip, type KumoTooltipSide } from "../tooltip/tooltip";
 import { InputGroupContext } from "./context";
 
-export type InputGroupButtonProps = ButtonProps;
+export type InputGroupButtonProps = Omit<ButtonProps, "variant" | "shape"> & {
+  variant?: "ghost";
+  shape?: "base";
+  /**
+   * When provided, wraps the button in a `Tooltip` showing this content on hover.
+   * Automatically sets `aria-label` from a string value when no `aria-label` is set.
+   *
+   * @example
+   * ```tsx
+   * <InputGroup.Addon align="end">
+   *   <InputGroup.Button tooltip="Query language help" shape="square" aria-label="Query language help">
+   *     <QuestionIcon size={16} />
+   *   </InputGroup.Button>
+   * </InputGroup.Addon>
+   * ```
+   */
+  tooltip?: ReactNode;
+  /**
+   * Preferred side for the tooltip popup.
+   * @default "bottom"
+   */
+  tooltipSide?: KumoTooltipSide;
+};
 
 /**
- * Button that renders differently based on placement:
- * - Inside Addon: compact button for secondary actions (toggle, copy)
- * - Direct child: full-height flush button rendered inside the container
+ * Button for secondary actions rendered inside `InputGroup.Addon`
+ * (toggle, copy, help).
+ *
+ * Pass a `tooltip` prop to show a tooltip on hover.
  */
 export const Button = forwardRef<
   HTMLButtonElement,
   PropsWithChildren<InputGroupButtonProps>
->(({ children, className, size, disabled, ...props }, ref) => {
+>(({ children, className, size, disabled, tooltip, tooltipSide = "bottom", ...props }, ref) => {
   const context = useContext(InputGroupContext);
-  const isInsideAddon = context?.insideAddon ?? false;
   const isDisabled = disabled ?? context?.disabled;
 
-  if (isInsideAddon) {
-    return (
-      <ButtonExternal
-        ref={ref}
-        type="button"
-        disabled={isDisabled}
-        {...props}
-        size={size ?? "sm"}
-        className={cn("pointer-events-auto", className)}
-      >
-        {children}
-      </ButtonExternal>
-    );
-  }
+  // Derive aria-label from tooltip string when the button has no explicit label.
+  // Icon-only buttons (shape="square"|"circle") require an aria-label for a11y.
+  const tooltipAriaLabel =
+    typeof tooltip === "string" && !props["aria-label"] ? tooltip : undefined;
 
-  // Flush button: rendered inside the container
-  return (
+  const btn = (
     <ButtonExternal
       ref={ref}
       type="button"
       disabled={isDisabled}
+      aria-label={tooltipAriaLabel}
       {...props}
-      data-slot="input-group-button"
-      size={size ?? context?.size}
-      className={cn("h-full self-stretch rounded-none ring-0", className)}
+      variant="ghost"
+      size={size ?? "sm"}
+      className={cn("pointer-events-auto", className)}
     >
       {children}
     </ButtonExternal>
   );
+
+  if (tooltip) {
+    return (
+      <Tooltip content={tooltip} side={tooltipSide} asChild>
+        {btn}
+      </Tooltip>
+    );
+  }
+
+  return btn;
 });
 Button.displayName = "InputGroup.Button";

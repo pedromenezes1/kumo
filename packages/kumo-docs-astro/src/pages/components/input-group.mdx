@@ -2,7 +2,7 @@
 layout: ~/layouts/MdxDocLayout.astro
 title: "InputGroup"
 description: "Compose inputs with addons, icons, buttons, and text for rich form fields."
-sourceFile: "components/input"
+sourceFile: "components/input-group"
 ---
 
 import ComponentExample from "~/components/docs/ComponentExample.astro";
@@ -15,6 +15,7 @@ import {
   InputGroupIconsDemo,
   InputGroupTextDemo,
   InputGroupButtonsDemo,
+  InputGroupTooltipButtonDemo,
   InputGroupKbdDemo,
   InputGroupLoadingDemo,
   InputGroupSuffixDemo,
@@ -42,27 +43,7 @@ import {
   />
   <Heading level={3}>Granular</Heading>
   <CodeBlock
-    code={`import { InputGroup } from "@cloudflare/kumo/components/input";`}
-    lang="tsx"
-  />
-</ComponentSection>
-
-<ComponentSection>
-  <Heading level={2}>Usage</Heading>
-  <CodeBlock
-    code={`import { InputGroup } from "@cloudflare/kumo";
-import { MagnifyingGlassIcon } from "@phosphor-icons/react";
-
-export default function Example() {
-  return (
-    <InputGroup>
-      <InputGroup.Addon>
-        <MagnifyingGlassIcon className="text-kumo-subtle" />
-      </InputGroup.Addon>
-      <InputGroup.Input placeholder="Search..." aria-label="Search" />
-    </InputGroup>
-  );
-}`}
+    code={`import { InputGroup } from "@cloudflare/kumo/components/input-group";`}
     lang="tsx"
   />
 </ComponentSection>
@@ -70,44 +51,20 @@ export default function Example() {
 <ComponentSection>
   <Heading level={2}>Examples</Heading>
 
-  <Heading level={3}>Icon</Heading>
-  <p>
-    Use Addon to place icons at the start or end of the input.
-  </p>
-  <ComponentExample
-    code={`<>
-  {/* Start icon */}
-  <InputGroup>
-    <InputGroup.Addon>
-      <LinkIcon className="text-kumo-subtle" />
-    </InputGroup.Addon>
-    <InputGroup.Input placeholder="Paste a link..." aria-label="Link" />
-  </InputGroup>
-
-{/* End icon */}
-
-<InputGroup>
-  <InputGroup.Input placeholder="Add a tag..." aria-label="Tag" />
-  <InputGroup.Addon align="end">
-    <TagIcon className="text-kumo-subtle" />
+<Heading level={3}>Icon</Heading>
+<p>
+  Use Addon to place an icon at the start of the input as a visual identifier.
+</p>
+<ComponentExample
+  code={`<InputGroup>
+  <InputGroup.Addon>
+    <LinkIcon className="fill-kumo-subtle" />
   </InputGroup.Addon>
-</InputGroup>
-
-{/* Both sides */}
-
-  <InputGroup>
-    <InputGroup.Addon>
-      <AirplaneTakeoffIcon className="text-kumo-subtle" />
-    </InputGroup.Addon>
-    <InputGroup.Input placeholder="IATA airport code (e.g. GRU, AMS)" aria-label="IATA airport code" />
-    <InputGroup.Addon align="end">
-      <InfoIcon className="text-kumo-subtle" />
-    </InputGroup.Addon>
-  </InputGroup>
-</>`}
-  >
-    <InputGroupIconsDemo client:visible />
-  </ComponentExample>
+  <InputGroup.Input placeholder="Paste a link..." aria-label="Link" />
+</InputGroup>`}
+>
+  <InputGroupIconsDemo client:visible />
+</ComponentExample>
 
   <Heading level={3}>Text</Heading>
   <p>
@@ -142,118 +99,141 @@ export default function Example() {
 
   <Heading level={3}>Button</Heading>
   <p>
-    Place InputGroup.Button inside an Addon for compact inset buttons, or directly as a child for a full-height flush button.
+    Place InputGroup.Button inside an Addon for actions that operate directly on the input value, such as reveal/hide or clear.
   </p>
   <ComponentExample
-    code={`<>
-  {/* Icon button inside Addon (compact, inset) */}
-  <InputGroup>
-    <InputGroup.Input
-      type={show ? "text" : "password"}
-      defaultValue="password"
-      aria-label="Password"
-    />
-    <InputGroup.Addon align="end">
-      <InputGroup.Button
-        variant="ghost"
-        size="sm"
-        aria-label={show ? "Hide password" : "Show password"}
-        onClick={() => {}}
-      >
-        {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
-      </InputGroup.Button>
-    </InputGroup.Addon>
-  </InputGroup>
-
-{/* Text button inside Addon (compact, inset) */}
-
+    code={`{/* Reveal / hide password */}
 <InputGroup>
-  <InputGroup.Input placeholder="Filter by name..." aria-label="Filter" />
-  <InputGroup.Addon align="end">
-    <InputGroup.Button variant="secondary">Apply</InputGroup.Button>
+  <InputGroup.Input
+    type={show ? "text" : "password"}
+    defaultValue="password"
+    aria-label="Password"
+  />
+  <InputGroup.Addon align="end" className="pr-1">
+    <InputGroup.Button
+      variant="ghost"
+      size="sm"
+      aria-label={show ? "Hide password" : "Show password"}
+      onClick={() => setShow(!show)}
+    >
+      {show ? <EyeSlashIcon size={16} /> : <EyeIcon size={16} />}
+    </InputGroup.Button>
   </InputGroup.Addon>
 </InputGroup>
 
-{/* Button as direct child (full-height, flush) */}
+{/* Clearable search */}
 
-  <InputGroup>
-    <InputGroup.Addon><MagnifyingGlassIcon /></InputGroup.Addon>
-    <InputGroup.Input placeholder="Search for a domain name" aria-label="Domain search" />
-    <InputGroup.Button variant="primary">Search</InputGroup.Button>
-  </InputGroup>
-</>`}
+<InputGroup>
+  <InputGroup.Input
+    value={searchValue}
+    placeholder="Search"
+    aria-label="Search"
+    onChange={(e) => setSearchValue(e.target.value)}
+  />
+  {searchValue && (
+    <InputGroup.Addon align="end" className="pr-1">
+      <InputGroup.Button
+        variant="ghost"
+        size="sm"
+        aria-label="Delete search"
+        onClick={() => setSearchValue("")}
+      >
+        <XIcon size={16} />
+      </InputGroup.Button>
+    </InputGroup.Addon>
+  )}
+</InputGroup>`}
   >
     <InputGroupButtonsDemo client:visible />
   </ComponentExample>
 
-<Heading level={3}>Kbd</Heading>
-<p>Place a keyboard shortcut hint inside an end Addon.</p>
+<Heading level={3}>Button with Tooltip</Heading>
+<p>
+  Pass a `tooltip` prop to `InputGroup.Button` to show a tooltip on hover. When
+  no explicit `aria-label` is provided, the button derives it from a string
+  tooltip value.
+</p>
 <ComponentExample
-  code={`<InputGroup className="w-xs">
+  code={`<InputGroup>
+  <InputGroup.Addon>
+    <MagnifyingGlassIcon className="text-kumo-subtle" />
+  </InputGroup.Addon>
+  <InputGroup.Input
+    placeholder="Search with query language..."
+    aria-label="Search"
+  />
+  <InputGroup.Addon align="end" className="pr-1">
+    <InputGroup.Button
+      size="sm"
+      tooltip="Query language help"
+      onClick={() => setShowHelp(true)}
+    >
+      <QuestionIcon size={16} />
+    </InputGroup.Button>
+  </InputGroup.Addon>
+</InputGroup>`}
+>
+  <InputGroupTooltipButtonDemo client:visible />
+</ComponentExample>
+
+<Heading level={3}>Kbd</Heading>
+<p>
+  Place a keyboard shortcut hint inside an end Addon. Use a bare `kbd` element —
+  no border or background needed.
+</p>
+<ComponentExample
+  code={`<InputGroup>
   <InputGroup.Addon>
     <MagnifyingGlassIcon className="text-kumo-subtle" />
   </InputGroup.Addon>
   <InputGroup.Input placeholder="Search..." aria-label="Search" />
   <InputGroup.Addon align="end">
-    <kbd className="rounded border border-kumo-line bg-kumo-recessed px-1.5 py-0.5 text-xs text-kumo-subtle">
-      ⌘K
-    </kbd>
+    <kbd>⌘K</kbd>
   </InputGroup.Addon>
 </InputGroup>`}
 >
   <InputGroupKbdDemo client:visible />
 </ComponentExample>
 
-  <Heading level={3}>Loading</Heading>
-  <p>
-    Place a Loader inside an Addon at the start or end. Combine with a text span for a status label.
-  </p>
-  <ComponentExample
-    code={`<>
-  {/* Spinner at end */}
-  <InputGroup>
-    <InputGroup.Input placeholder="Searching..." aria-label="Searching" />
-    <InputGroup.Addon align="end">
-      <Loader />
-    </InputGroup.Addon>
-  </InputGroup>
-
-{/* Spinner at start */}
-
-<InputGroup>
-  <InputGroup.Addon>
-    <SpinnerIcon className="animate-spin" />
+<Heading level={3}>Loading</Heading>
+<p>
+  Place a Loader inside an end Addon as a status indicator while validating the
+  input value.
+</p>
+<ComponentExample
+  code={`<InputGroup>
+  <InputGroup.Input defaultValue="kumo" aria-label="kumo" />
+  <InputGroup.Addon align="end">
+    <Loader className="fill-kumo-subtle" />
   </InputGroup.Addon>
-  <InputGroup.Input placeholder="Thinking..." aria-label="Thinking" />
-</InputGroup>
-
-{/* Text + spinner at end */}
-
-  <InputGroup>
-    <InputGroup.Input placeholder="Saving changes..." aria-label="Saving changes" />
-    <InputGroup.Addon align="end">
-      <span>Saving...</span>
-      <Loader />
-    </InputGroup.Addon>
-  </InputGroup>
-</>`}
-  >
-    <InputGroupLoadingDemo client:visible />
-  </ComponentExample>
+</InputGroup>`}
+>
+  <InputGroupLoadingDemo client:visible />
+</ComponentExample>
 
 <Heading level={3}>Inline Suffix</Heading>
 <p>
   Suffix renders text that flows seamlessly next to the typed value — useful for
-  domain inputs like `.workers.dev`. Truncates with ellipsis when space is
-  limited.
+  domain inputs like `.workers.dev`. Pair with a status icon Addon to show
+  validation state.
 </p>
 <ComponentExample
-  code={`<InputGroup className="w-xs">
-  <InputGroup.Input aria-label="Subdomain" maxLength={24} />
+  code={`<InputGroup label="Subdomain" error={errorState}>
+  <InputGroup.Input aria-label="Subdomain" maxLength={24} value={value} onChange={handleChange} />
   <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
-  <InputGroup.Addon align="end">
-    <CheckCircleIcon weight="duotone" className="text-kumo-brand" />
-  </InputGroup.Addon>
+  {status === "loading" && (
+    <InputGroup.Addon align="end"><Loader className="fill-kumo-subtle" /></InputGroup.Addon>
+  )}
+  {status === "success" && (
+    <InputGroup.Addon align="end">
+      <CheckCircleIcon weight="duotone" className="fill-kumo-success" />
+    </InputGroup.Addon>
+  )}
+  {status === "error" && (
+    <InputGroup.Addon align="end">
+      <XCircleIcon weight="duotone" className="fill-kumo-danger" />
+    </InputGroup.Addon>
+  )}
 </InputGroup>`}
 >
   <InputGroupSuffixDemo client:visible />
@@ -329,7 +309,6 @@ export default function Example() {
     <MagnifyingGlassIcon className="text-kumo-subtle" />
   </InputGroup.Addon>
   <InputGroup.Input placeholder="Search..." />
-  <InputGroup.Button variant="primary">Search</InputGroup.Button>
 </InputGroup>
 
 {/* With description and tooltip */}
