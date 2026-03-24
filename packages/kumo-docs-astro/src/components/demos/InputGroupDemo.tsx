@@ -21,7 +21,7 @@ const demoInputProps = {
 
 /** Workers URL with inline suffix — validates on edit with spinner then success */
 export function InputGroupHeroDemo() {
-  return <WorkersSuffixInput defaultValue="kumo" />;
+  return <WorkersSuffixInput defaultValue="kumo" showLabel={false} />;
 }
 
 /** Icon addons in various positions: start-only, end-only, and both */
@@ -205,9 +205,11 @@ export function InputGroupSuffixDemo() {
 function WorkersSuffixInput({
   defaultValue,
   resultState = "success",
+  showLabel = true,
 }: {
   defaultValue: string;
   resultState?: "success" | "error";
+  showLabel?: boolean;
 }) {
   const [value, setValue] = useState(defaultValue);
   const [status, setStatus] = useState<
@@ -235,7 +237,11 @@ function WorkersSuffixInput({
       : undefined;
 
   return (
-    <InputGroup className="w-xs" label="Subdomain" error={errorState}>
+    <InputGroup
+      className="w-xs"
+      label={showLabel ? "Subdomain" : undefined}
+      error={errorState}
+    >
       <InputGroup.Input
         aria-label="Subdomain"
         maxLength={24}
