@@ -15,7 +15,6 @@ import {
   GridItem,
   Input,
   InputArea,
-  InputGroup,
   Label,
   LayerCard,
   Link,
@@ -39,6 +38,7 @@ import {
   useKumoToastManager,
 } from "@cloudflare/kumo";
 import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
+import { InputGroupHeroDemo } from "~/components/demos/InputGroupDemo";
 import {
   MagnifyingGlassIcon,
   PlusIcon,
@@ -423,12 +423,7 @@ export function HomeGrid() {
     {
       name: "InputGroup",
       id: "input-group",
-      Component: (
-        <InputGroup>
-          <InputGroup.Addon>@</InputGroup.Addon>
-          <InputGroup.Input placeholder="username" aria-label="Username" />
-        </InputGroup>
-      ),
+      Component: <InputGroupHeroDemo />,
     },
     {
       name: "Meter",
