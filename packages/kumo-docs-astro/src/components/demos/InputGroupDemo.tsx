@@ -21,7 +21,7 @@ const demoInputProps = {
 
 /** Workers URL with inline suffix — validates on edit with spinner then success */
 export function InputGroupHeroDemo() {
-  return <WorkersSuffixInput defaultValue="kumo" showLabel={false} />;
+  return <WorkersSuffixInput defaultValue="kumo" />;
 }
 
 /** Icon addons in various positions: start-only, end-only, and both */
@@ -202,7 +202,7 @@ export function InputGroupSuffixDemo() {
 }
 
 /** Shared Workers suffix input with validation spinner and success icon */
-function WorkersSuffixInput({
+export function WorkersSuffixInput({
   defaultValue,
   resultState = "success",
   showLabel = true,
