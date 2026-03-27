@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../utils/cn";
-import { InputGroupContext, INPUT_GROUP_SIZE, pl, pr } from "./context";
+import { InputGroupContext, INPUT_GROUP_SIZE } from "./context";
 import { Button } from "./input-group-button";
 
 export interface InputGroupAddonProps {
@@ -57,8 +57,8 @@ export function Addon({
         tokens.fontSize,
         "*:pointer-events-auto",
         align === "start"
-          ? cn("-order-1", pl(tokens.addonOuter), "pr-0")
-          : cn("order-1", "pl-0", pr(tokens.addonOuter)),
+          ? cn("-order-1", tokens.addonOuterStart, "pr-0")
+          : cn("order-1", "pl-0", tokens.addonOuterEnd),
         className,
       )}
     >
