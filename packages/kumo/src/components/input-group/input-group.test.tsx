@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { InputGroup } from "./input-group";
+import { INPUT_GROUP_SIZE } from "./context";
+import type { KumoInputSize } from "../input/input";
 
 describe("InputGroup", () => {
   describe("rendering", () => {
@@ -249,6 +251,50 @@ describe("InputGroup", () => {
       );
       expect(screen.getByRole("textbox")).toBeTruthy();
     });
+
+    // Regression test: addon padding tokens must be static pl-/pr- strings
+    // so Tailwind JIT can detect them. Dynamic "px-N".replace() broke xs/sm.
+    it.each(["xs", "sm", "base", "lg"] as const)(
+      "start addon has correct padding class for size %s",
+      (size: KumoInputSize) => {
+        render(
+          <InputGroup size={size}>
+            <InputGroup.Addon>Icon</InputGroup.Addon>
+            <InputGroup.Input aria-label="Test" />
+          </InputGroup>,
+        );
+
+        const addon = screen.getByText("Icon").closest("[data-slot]")!;
+        const expectedClass = INPUT_GROUP_SIZE[size].addonOuterStart;
+        expect(addon.className).toContain(expectedClass);
+      },
+    );
+
+    it.each(["xs", "sm", "base", "lg"] as const)(
+      "end addon has correct padding class for size %s",
+      (size: KumoInputSize) => {
+        render(
+          <InputGroup size={size}>
+            <InputGroup.Input aria-label="Test" />
+            <InputGroup.Addon align="end">Icon</InputGroup.Addon>
+          </InputGroup>,
+        );
+
+        const addon = screen.getByText("Icon").closest("[data-slot]")!;
+        const expectedClass = INPUT_GROUP_SIZE[size].addonOuterEnd;
+        expect(addon.className).toContain(expectedClass);
+      },
+    );
+
+    // Ensure all addonOuter tokens are static directional classes
+    // (not symmetric px- that would need runtime string replacement)
+    it("all addon tokens use static pl-/pr- classes (not px-)", () => {
+      for (const size of ["xs", "sm", "base", "lg"] as const) {
+        const tokens = INPUT_GROUP_SIZE[size];
+        expect(tokens.addonOuterStart).toMatch(/^pl-/);
+        expect(tokens.addonOuterEnd).toMatch(/^pr-/);
+      }
+    });
   });
 
   describe("accessibility", () => {
@@ -291,7 +337,9 @@ describe("InputGroup", () => {
         <InputGroup>
           <InputGroup.Input aria-label="Search" />
           <InputGroup.Addon align="end">
-            <InputGroup.Button tooltip="Query language help">?</InputGroup.Button>
+            <InputGroup.Button tooltip="Query language help">
+              ?
+            </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
       );

@@ -30,7 +30,7 @@ export function InputGroupIconsDemo() {
     <div className="flex w-xs flex-col gap-4">
       <InputGroup data-focus-scope="proposed">
         <InputGroup.Addon>
-          <LinkIcon className="fill-kumo-subtle" />
+          <LinkIcon />
         </InputGroup.Addon>
         <InputGroup.Input
           placeholder="Paste a link..."
@@ -51,6 +51,7 @@ export function InputGroupTextDemo() {
         <InputGroup.Input
           placeholder="username"
           aria-label="Username"
+          className="keeper-ignore"
           {...demoInputProps}
         />
       </InputGroup>
@@ -59,6 +60,7 @@ export function InputGroupTextDemo() {
         <InputGroup.Input
           placeholder="email"
           aria-label="Email"
+          className="keeper-ignore"
           {...demoInputProps}
         />
         <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
@@ -89,6 +91,7 @@ export function InputGroupButtonsDemo() {
           type={show ? "text" : "password"}
           defaultValue="password"
           aria-label="Password"
+          className="keeper-ignore"
           {...demoInputProps}
         />
         <InputGroup.Addon align="end" className="pr-1">
@@ -133,7 +136,7 @@ export function InputGroupTooltipButtonDemo() {
   return (
     <InputGroup className="w-xs">
       <InputGroup.Addon>
-        <MagnifyingGlassIcon className="text-kumo-subtle" />
+        <MagnifyingGlassIcon />
       </InputGroup.Addon>
       <InputGroup.Input
         placeholder="Search with query language..."
@@ -158,7 +161,7 @@ export function InputGroupKbdDemo() {
   return (
     <InputGroup className="w-xs">
       <InputGroup.Addon>
-        <MagnifyingGlassIcon className="text-kumo-subtle" />
+        <MagnifyingGlassIcon />
       </InputGroup.Addon>
       <InputGroup.Input
         placeholder="Search..."
@@ -184,7 +187,7 @@ export function InputGroupLoadingDemo() {
           {...demoInputProps}
         />
         <InputGroup.Addon align="end">
-          <Loader className="fill-kumo-subtle" />
+          <Loader />
         </InputGroup.Addon>
       </InputGroup>
     </div>
@@ -252,17 +255,17 @@ export function WorkersSuffixInput({
       <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
       {status === "loading" && (
         <InputGroup.Addon align="end">
-          <Loader className="fill-kumo-subtle" />
+          <Loader />
         </InputGroup.Addon>
       )}
       {status === "success" && (
         <InputGroup.Addon align="end">
-          <CheckCircleIcon weight="duotone" className="fill-kumo-success" />
+          <CheckCircleIcon weight="duotone" className="text-kumo-success" />
         </InputGroup.Addon>
       )}
       {status === "error" && (
         <InputGroup.Addon align="end">
-          <XCircleIcon weight="duotone" className="fill-kumo-danger" />
+          <XCircleIcon weight="duotone" className="text-kumo-danger" />
         </InputGroup.Addon>
       )}
     </InputGroup>
@@ -275,28 +278,28 @@ export function InputGroupSizesDemo() {
     <div className="flex w-xs flex-col gap-4">
       <InputGroup size="xs" label="Extra Small">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="fill-kumo-subtle" />
+          <MagnifyingGlassIcon />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Extra small input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup size="sm" label="Small">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="fill-kumo-subtle" />
+          <MagnifyingGlassIcon />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Small input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup label="Base (default)">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="fill-kumo-subtle" />
+          <MagnifyingGlassIcon />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Base input" {...demoInputProps} />
       </InputGroup>
 
       <InputGroup size="lg" label="Large">
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="fill-kumo-subtle" />
+          <MagnifyingGlassIcon />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Large input" {...demoInputProps} />
       </InputGroup>
@@ -324,7 +327,7 @@ export function InputGroupStatesDemo() {
 
       <InputGroup label="Disabled" disabled>
         <InputGroup.Addon>
-          <MagnifyingGlassIcon className="text-kumo-subtle" />
+          <MagnifyingGlassIcon />
         </InputGroup.Addon>
         <InputGroup.Input placeholder="Search..." {...demoInputProps} />
       </InputGroup>
@@ -337,6 +340,7 @@ export function InputGroupStatesDemo() {
         <InputGroup.Input
           type={show ? "text" : "password"}
           placeholder="Enter password"
+          className="keeper-ignore"
           {...demoInputProps}
         />
         <InputGroup.Addon align="end">

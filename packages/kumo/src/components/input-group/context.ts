@@ -9,7 +9,7 @@ import type { FieldProps } from "../field/field";
 //
 //   Input outer:       px-3 (12px base) — full padding when at the edge
 //   Input seam:        pl-2 / pr-2 (8px base) — applied by container has-[]
-//   Addon outer:       px-2 (8px base) — on the container-edge side
+//   Addon outer:       pl-2 / pr-2 (8px base) — on the container-edge side
 //   Addon seam:        nothing — input owns the gap entirely
 //
 // has-[] rules on the container override [&_input]:pl-{seam} when a start
@@ -18,8 +18,16 @@ import type { FieldProps } from "../field/field";
 export interface InputGroupSizeTokens {
   /** Full outer padding — matches standalone Input (e.g. px-3). */
   inputOuter: string;
-  /** Outer padding for icon/text Addon at the container edge. */
-  addonOuter: string;
+  /**
+   * Directional outer padding for Addon at the container edge.
+   *
+   * These MUST be static pl-/pr- strings (not derived at runtime via
+   * `"px-N".replace(…)`) so Tailwind JIT can detect them during its
+   * source-file scan. Dynamic string construction produces class names
+   * that never appear as literals, so Tailwind never generates the CSS.
+   */
+  addonOuterStart: string;
+  addonOuterEnd: string;
   /** pr- for suffix when no end addon. */
   suffixPad: string;
   fontSize: string;
@@ -30,28 +38,32 @@ export interface InputGroupSizeTokens {
 export const INPUT_GROUP_SIZE: Record<KumoInputSize, InputGroupSizeTokens> = {
   xs: {
     inputOuter: "px-1.5",
-    addonOuter: "px-1.5",
+    addonOuterStart: "pl-1.5",
+    addonOuterEnd: "pr-1.5",
     suffixPad: "pr-1.5",
     fontSize: "text-xs",
     iconSize: 10,
   },
   sm: {
     inputOuter: "px-2",
-    addonOuter: "px-1.5",
+    addonOuterStart: "pl-1.5",
+    addonOuterEnd: "pr-1.5",
     suffixPad: "pr-2",
     fontSize: "text-xs",
     iconSize: 13,
   },
   base: {
     inputOuter: "px-3",
-    addonOuter: "px-2",
+    addonOuterStart: "pl-2",
+    addonOuterEnd: "pr-2",
     suffixPad: "pr-3",
     fontSize: "text-base",
     iconSize: 18,
   },
   lg: {
     inputOuter: "px-4",
-    addonOuter: "px-2.5",
+    addonOuterStart: "pl-2.5",
+    addonOuterEnd: "pr-2.5",
     suffixPad: "pr-4",
     fontSize: "text-base",
     iconSize: 20,
@@ -82,14 +94,6 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
     "has-[[data-slot=input-group-button]]:[&_input]:pr-2.5",
   ].join(" "),
 };
-
-// Derive directional padding from a symmetric "px-N" token.
-export function pl(px: string): string {
-  return px.replace("px-", "pl-");
-}
-export function pr(px: string): string {
-  return px.replace("px-", "pr-");
-}
 
 // Context
 

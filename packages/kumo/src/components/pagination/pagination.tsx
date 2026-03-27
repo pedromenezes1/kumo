@@ -6,6 +6,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
+/**
+ * @deprecated Using legacy InputGroup from input folder.
+ * Migrate to: import { InputGroup } from "@cloudflare/kumo";
+ * which uses the new InputGroup component with Addon, Suffix, and Field integration.
+ */
 import { InputGroup } from "../input";
 import {
   CaretDoubleLeftIcon,
