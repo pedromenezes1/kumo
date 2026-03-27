@@ -76,22 +76,18 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
   xs: [
     "has-[[data-slot=input-group-addon-start]]:[&_input]:pl-1",
     "has-[[data-slot=input-group-addon-end]]:[&_input]:pr-1",
-    "has-[[data-slot=input-group-button]]:[&_input]:pr-1",
   ].join(" "),
   sm: [
     "has-[[data-slot=input-group-addon-start]]:[&_input]:pl-1.5",
     "has-[[data-slot=input-group-addon-end]]:[&_input]:pr-1.5",
-    "has-[[data-slot=input-group-button]]:[&_input]:pr-1.5",
   ].join(" "),
   base: [
     "has-[[data-slot=input-group-addon-start]]:[&_input]:pl-2",
     "has-[[data-slot=input-group-addon-end]]:[&_input]:pr-2",
-    "has-[[data-slot=input-group-button]]:[&_input]:pr-2",
   ].join(" "),
   lg: [
     "has-[[data-slot=input-group-addon-start]]:[&_input]:pl-2.5",
     "has-[[data-slot=input-group-addon-end]]:[&_input]:pr-2.5",
-    "has-[[data-slot=input-group-button]]:[&_input]:pr-2.5",
   ].join(" "),
 };
 
