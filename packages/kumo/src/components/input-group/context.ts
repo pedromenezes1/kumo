@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, type ComponentPropsWithoutRef } from "react";
 import type { KumoInputSize } from "../input/input";
 import type { FieldProps } from "../field/field";
 
@@ -94,13 +94,13 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
 // Context
 
 export interface InputGroupRootProps
-  extends Partial<
-    Pick<
-      FieldProps,
-      "label" | "description" | "error" | "required" | "labelTooltip"
-    >
-  > {
-  className?: string;
+  extends ComponentPropsWithoutRef<"label">,
+    Partial<
+      Pick<
+        FieldProps,
+        "label" | "description" | "error" | "required" | "labelTooltip"
+      >
+    > {
   size?: KumoInputSize | undefined;
   disabled?: boolean;
   /** @internal */
@@ -113,7 +113,6 @@ export interface InputGroupContextValue
     "focusMode" | "label" | "description" | "required" | "labelTooltip"
   > {
   focusMode: "container" | "individual";
-  inputId: string;
   disabled: boolean;
   error?: FieldProps["error"];
 }

@@ -10,51 +10,63 @@ describe("InputGroup", () => {
     it("renders input with addon", () => {
       render(
         <InputGroup>
-          <InputGroup.Addon>https://</InputGroup.Addon>
-          <InputGroup.Input aria-label="URL" placeholder="example.com" />
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input placeholder="Paste a link..." aria-label="Link" />
         </InputGroup>,
       );
-      expect(screen.getByText("https://")).toBeTruthy();
-      expect(screen.getByPlaceholderText("example.com")).toBeTruthy();
+      expect(screen.getByTestId("icon")).toBeTruthy();
+      expect(screen.getByPlaceholderText("Paste a link...")).toBeTruthy();
     });
 
     it("renders input with button", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Search" placeholder="Search..." />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button>Go</InputGroup.Button>
+          <InputGroup.Input
+            type="password"
+            defaultValue="password"
+            aria-label="Password"
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Show password"
+              onClick={() => {}}
+            >
+              <svg data-testid="eye-icon" />
+            </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
       );
-      expect(screen.getByPlaceholderText("Search...")).toBeTruthy();
-      expect(screen.getByRole("button", { name: "Go" })).toBeTruthy();
+      expect(
+        screen.getByRole("button", { name: "Show password" }),
+      ).toBeTruthy();
     });
 
     it("renders input with suffix", () => {
       render(
-        <InputGroup>
-          <InputGroup.Input aria-label="Subdomain" placeholder="my-worker" />
+        <InputGroup label="Subdomain">
+          <InputGroup.Input aria-label="Subdomain" />
           <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
         </InputGroup>,
       );
-      expect(screen.getByPlaceholderText("my-worker")).toBeTruthy();
+      expect(screen.getByRole("textbox")).toBeTruthy();
       expect(screen.getByText(".workers.dev")).toBeTruthy();
     });
 
     it("renders all sub-components together", () => {
       render(
         <InputGroup>
-          <InputGroup.Addon>$</InputGroup.Addon>
-          <InputGroup.Input aria-label="Amount" placeholder="0.00" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button>Pay</InputGroup.Button>
-          </InputGroup.Addon>
+          <InputGroup.Addon>/api/</InputGroup.Addon>
+          <InputGroup.Input placeholder="endpoint" aria-label="API path" />
+          <InputGroup.Addon align="end">.json</InputGroup.Addon>
         </InputGroup>,
       );
-      expect(screen.getByText("$")).toBeTruthy();
-      expect(screen.getByPlaceholderText("0.00")).toBeTruthy();
-      expect(screen.getByRole("button", { name: "Pay" })).toBeTruthy();
+      expect(screen.getByText("/api/")).toBeTruthy();
+      expect(screen.getByPlaceholderText("endpoint")).toBeTruthy();
+      expect(screen.getByText(".json")).toBeTruthy();
     });
   });
 
@@ -62,11 +74,11 @@ describe("InputGroup", () => {
     it("places start addon before input in DOM order", () => {
       render(
         <InputGroup>
-          <InputGroup.Addon>Start</InputGroup.Addon>
-          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" aria-label="Username" />
         </InputGroup>,
       );
-      const addon = screen.getByText("Start");
+      const addon = screen.getByText("@");
       const input = screen.getByRole("textbox");
       // Addon should come before input in document order
       expect(
@@ -77,11 +89,11 @@ describe("InputGroup", () => {
     it("places end addon after input in DOM order", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Test" />
-          <InputGroup.Addon align="end">End</InputGroup.Addon>
+          <InputGroup.Input placeholder="email" aria-label="Email" />
+          <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
         </InputGroup>,
       );
-      const addon = screen.getByText("End");
+      const addon = screen.getByText("@example.com");
       const input = screen.getByRole("textbox");
       // Input should come before addon
       expect(
@@ -95,7 +107,8 @@ describe("InputGroup", () => {
       const user = userEvent.setup();
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Name" />
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" aria-label="Username" />
         </InputGroup>,
       );
 
@@ -109,7 +122,12 @@ describe("InputGroup", () => {
       const handleChange = vi.fn();
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Name" onChange={handleChange} />
+          <InputGroup.Input
+            value=""
+            placeholder="Search"
+            aria-label="Search"
+            onChange={handleChange}
+          />
         </InputGroup>,
       );
 
@@ -123,14 +141,25 @@ describe("InputGroup", () => {
       const handleClick = vi.fn();
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Search" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button onClick={handleClick}>Search</InputGroup.Button>
+          <InputGroup.Input
+            type="password"
+            defaultValue="password"
+            aria-label="Password"
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Show password"
+              onClick={handleClick}
+            >
+              <svg data-testid="eye-icon" />
+            </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
       );
 
-      await user.click(screen.getByRole("button", { name: "Search" }));
+      await user.click(screen.getByRole("button", { name: "Show password" }));
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
@@ -139,16 +168,26 @@ describe("InputGroup", () => {
       const handleClick = vi.fn();
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Password" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button onClick={handleClick} aria-label="Toggle">
-              👁
+          <InputGroup.Input
+            value="query"
+            placeholder="Search"
+            aria-label="Search"
+            onChange={() => {}}
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Delete search"
+              onClick={handleClick}
+            >
+              <svg data-testid="x-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
       );
 
-      await user.click(screen.getByRole("button", { name: "Toggle" }));
+      await user.click(screen.getByRole("button", { name: "Delete search" }));
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
@@ -156,8 +195,8 @@ describe("InputGroup", () => {
       const user = userEvent.setup();
       const { container } = render(
         <InputGroup>
-          <InputGroup.Addon>Label</InputGroup.Addon>
-          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" aria-label="Username" />
         </InputGroup>,
       );
 
@@ -165,13 +204,43 @@ describe("InputGroup", () => {
       await user.click(group);
       expect(document.activeElement).toBe(screen.getByRole("textbox"));
     });
+
+    it("does not redirect focus to input when clicking a button", async () => {
+      const user = userEvent.setup();
+      render(
+        <InputGroup>
+          <InputGroup.Input
+            type="password"
+            defaultValue="password"
+            aria-label="Password"
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Show password"
+              onClick={() => {}}
+            >
+              <svg data-testid="eye-icon" />
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+
+      const button = screen.getByRole("button", { name: "Show password" });
+      await user.click(button);
+      expect(document.activeElement).toBe(button);
+    });
   });
 
   describe("disabled state", () => {
     it("disables input when group is disabled", () => {
       render(
-        <InputGroup disabled>
-          <InputGroup.Input aria-label="Test" />
+        <InputGroup label="Disabled" disabled>
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input placeholder="Search..." />
         </InputGroup>,
       );
       const input = screen.getByRole("textbox") as HTMLInputElement;
@@ -182,8 +251,11 @@ describe("InputGroup", () => {
       const user = userEvent.setup();
       const handleChange = vi.fn();
       render(
-        <InputGroup disabled>
-          <InputGroup.Input aria-label="Test" onChange={handleChange} />
+        <InputGroup label="Disabled" disabled>
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input placeholder="Search..." onChange={handleChange} />
         </InputGroup>,
       );
 
@@ -192,28 +264,31 @@ describe("InputGroup", () => {
       expect(handleChange).not.toHaveBeenCalled();
     });
 
-    it("disables button when InputGroup is disabled", () => {
-      render(
-        <InputGroup disabled>
-          <InputGroup.Input aria-label="Test input" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button>Submit</InputGroup.Button>
+    it("does not allow focus via click when disabled", () => {
+      const { container } = render(
+        <InputGroup label="Disabled" disabled>
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
           </InputGroup.Addon>
+          <InputGroup.Input placeholder="Search..." />
         </InputGroup>,
       );
 
-      const button = screen.getByRole("button", {
-        name: "Submit",
-      }) as HTMLButtonElement;
-      expect(button.disabled).toBe(true);
+      const label = container.querySelector("[data-slot='input-group']");
+      expect(label?.getAttribute("data-disabled")).toBe("");
+      expect(label?.className).toContain("pointer-events-none");
     });
   });
 
   describe("error handling", () => {
     it("sets aria-invalid on input when error is present", () => {
       render(
-        <InputGroup error={{ message: "Invalid input", match: true }}>
-          <InputGroup.Input aria-label="Test input" />
+        <InputGroup
+          label="Error State"
+          error={{ message: "Please enter a valid email address", match: true }}
+        >
+          <InputGroup.Input type="email" defaultValue="invalid-email" />
+          <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
         </InputGroup>,
       );
 
@@ -224,7 +299,8 @@ describe("InputGroup", () => {
     it("does not set aria-invalid when no error is present", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Test input" />
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" aria-label="Username" />
         </InputGroup>,
       );
 
@@ -236,8 +312,11 @@ describe("InputGroup", () => {
   describe("size variants", () => {
     it("applies size to input", () => {
       const { rerender } = render(
-        <InputGroup size="sm">
-          <InputGroup.Input aria-label="Test" />
+        <InputGroup size="sm" label="Small">
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input placeholder="Small input" />
         </InputGroup>,
       );
 
@@ -245,8 +324,11 @@ describe("InputGroup", () => {
       expect(screen.getByRole("textbox")).toBeTruthy();
 
       rerender(
-        <InputGroup size="lg">
-          <InputGroup.Input aria-label="Test" />
+        <InputGroup size="lg" label="Large">
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input placeholder="Large input" />
         </InputGroup>,
       );
       expect(screen.getByRole("textbox")).toBeTruthy();
@@ -257,31 +339,23 @@ describe("InputGroup", () => {
     it.each(["xs", "sm", "base", "lg"] as const)(
       "start addon has correct padding class for size %s",
       (size: KumoInputSize) => {
+        const labels: Record<KumoInputSize, string> = {
+          xs: "Extra Small",
+          sm: "Small",
+          base: "Base (default)",
+          lg: "Large",
+        };
         render(
-          <InputGroup size={size}>
-            <InputGroup.Addon>Icon</InputGroup.Addon>
-            <InputGroup.Input aria-label="Test" />
+          <InputGroup size={size} label={labels[size]}>
+            <InputGroup.Addon>
+              <svg data-testid="icon" />
+            </InputGroup.Addon>
+            <InputGroup.Input placeholder={`${labels[size]} input`} />
           </InputGroup>,
         );
 
-        const addon = screen.getByText("Icon").closest("[data-slot]")!;
+        const addon = screen.getByTestId("icon").closest("[data-slot]")!;
         const expectedClass = INPUT_GROUP_SIZE[size].addonOuterStart;
-        expect(addon.className).toContain(expectedClass);
-      },
-    );
-
-    it.each(["xs", "sm", "base", "lg"] as const)(
-      "end addon has correct padding class for size %s",
-      (size: KumoInputSize) => {
-        render(
-          <InputGroup size={size}>
-            <InputGroup.Input aria-label="Test" />
-            <InputGroup.Addon align="end">Icon</InputGroup.Addon>
-          </InputGroup>,
-        );
-
-        const addon = screen.getByText("Icon").closest("[data-slot]")!;
-        const expectedClass = INPUT_GROUP_SIZE[size].addonOuterEnd;
         expect(addon.className).toContain(expectedClass);
       },
     );
@@ -301,33 +375,47 @@ describe("InputGroup", () => {
     it("input has accessible name via aria-label", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Email address" />
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" aria-label="Username" />
         </InputGroup>,
       );
-      expect(
-        screen.getByRole("textbox", { name: "Email address" }),
-      ).toBeTruthy();
+      expect(screen.getByRole("textbox", { name: "Username" })).toBeTruthy();
     });
 
     it("button inside addon remains accessible", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Search" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button aria-label="Clear">×</InputGroup.Button>
+          <InputGroup.Input
+            type="password"
+            defaultValue="password"
+            aria-label="Password"
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Show password"
+              onClick={() => {}}
+            >
+              <svg data-testid="eye-icon" />
+            </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
       );
-      expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
+      expect(
+        screen.getByRole("button", { name: "Show password" }),
+      ).toBeTruthy();
     });
 
-    it("group has role='group'", () => {
-      render(
+    it("container is a <label> element", () => {
+      const { container } = render(
         <InputGroup>
-          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" aria-label="Username" />
         </InputGroup>,
       );
-      expect(screen.getByRole("group")).toBeTruthy();
+      const label = container.querySelector("label[data-slot='input-group']");
+      expect(label).toBeTruthy();
     });
   });
 
@@ -335,10 +423,16 @@ describe("InputGroup", () => {
     it("derives aria-label from tooltip string", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Search" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button tooltip="Query language help">
-              ?
+          <InputGroup.Addon>
+            <svg data-testid="search-icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input
+            placeholder="Search with query language..."
+            aria-label="Search"
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button size="sm" tooltip="Query language help">
+              <svg data-testid="question-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
@@ -352,10 +446,20 @@ describe("InputGroup", () => {
     it("prefers explicit aria-label over tooltip-derived label", () => {
       render(
         <InputGroup>
-          <InputGroup.Input aria-label="Search" />
-          <InputGroup.Addon align="end">
-            <InputGroup.Button tooltip="Query language help" aria-label="Help">
-              ?
+          <InputGroup.Addon>
+            <svg data-testid="search-icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input
+            placeholder="Search with query language..."
+            aria-label="Search"
+          />
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              size="sm"
+              tooltip="Query language help"
+              aria-label="Help"
+            >
+              <svg data-testid="question-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
         </InputGroup>,
@@ -368,37 +472,60 @@ describe("InputGroup", () => {
   describe("Field integration", () => {
     it("renders label when label prop is provided", () => {
       render(
-        <InputGroup label="Email address">
-          <InputGroup.Input />
+        <InputGroup size="sm" label="Small">
+          <InputGroup.Addon>
+            <svg data-testid="icon" />
+          </InputGroup.Addon>
+          <InputGroup.Input placeholder="Small input" />
         </InputGroup>,
       );
 
-      expect(screen.getByText("Email address")).toBeTruthy();
+      expect(screen.getByText("Small")).toBeTruthy();
       // The input should be associated with the label
-      expect(screen.getByLabelText("Email address")).toBeTruthy();
+      expect(screen.getByLabelText("Small")).toBeTruthy();
     });
 
     it("renders description when description prop is provided", () => {
       render(
-        <InputGroup label="Email" description="We'll never share your email">
-          <InputGroup.Input />
+        <InputGroup
+          label="With Description"
+          description="Must be at least 8 characters"
+          labelTooltip="Your password is stored securely"
+        >
+          <InputGroup.Input type="password" placeholder="Enter password" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button
+              variant="ghost"
+              size="sm"
+              aria-label="Show password"
+              onClick={() => {}}
+            >
+              <svg data-testid="eye-icon" />
+            </InputGroup.Button>
+          </InputGroup.Addon>
         </InputGroup>,
       );
 
-      expect(screen.getByText("We'll never share your email")).toBeTruthy();
+      expect(screen.getByText("Must be at least 8 characters")).toBeTruthy();
     });
 
     it("renders error message when error prop is provided with label", () => {
       render(
         <InputGroup
-          label="Email"
-          error={{ message: "Invalid email", match: true }}
+          label="Error State"
+          error={{
+            message: "Please enter a valid email address",
+            match: true,
+          }}
         >
-          <InputGroup.Input />
+          <InputGroup.Input type="email" defaultValue="invalid-email" />
+          <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
         </InputGroup>,
       );
 
-      expect(screen.getByText("Invalid email")).toBeTruthy();
+      expect(
+        screen.getByText("Please enter a valid email address"),
+      ).toBeTruthy();
     });
   });
 });

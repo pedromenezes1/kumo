@@ -26,7 +26,6 @@ export const Input = forwardRef<HTMLInputElement, InputGroupInputProps>(
     return (
       <InputExternal
         ref={ref}
-        id={context?.inputId}
         size={context?.size}
         disabled={context?.disabled || props.disabled}
         aria-invalid={hasError || props["aria-invalid"]}

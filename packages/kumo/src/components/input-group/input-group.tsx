@@ -1,12 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  type PropsWithChildren,
-} from "react";
+import { forwardRef, useMemo, type PropsWithChildren } from "react";
 import { cn } from "../../utils/cn";
 import { inputVariants } from "../input/input";
 import { Field } from "../field/field";
@@ -35,6 +27,9 @@ export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {} as const;
  * suffixes, and action buttons. Accepts Field props and wraps content in
  * Field when label is provided.
  *
+ * Uses a native `<label>` element so clicking anywhere in the container
+ * focuses the wrapped input — no imperative JS needed.
+ *
  * @example
  * ```tsx
  * <InputGroup label="Email" error={{ message: "Invalid", match: true }}>
@@ -51,7 +46,10 @@ export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {} as const;
  * </InputGroup>
  * ```
  */
-const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
+const Root = forwardRef<
+  HTMLLabelElement,
+  PropsWithChildren<InputGroupRootProps>
+>(
   (
     {
       size = "base",
@@ -64,62 +62,24 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
       error,
       required,
       labelTooltip,
+      ...rest
     },
     forwardedRef,
   ) => {
-    const inputId = useId();
-    const localRef = useRef<HTMLDivElement>(null);
-
-    // Merge forwarded ref with local ref
-    const ref = useCallback(
-      (node: HTMLDivElement | null) => {
-        localRef.current = node;
-        if (typeof forwardedRef === "function") {
-          forwardedRef(node);
-        } else if (forwardedRef) {
-          forwardedRef.current = node;
-        }
-      },
-      [forwardedRef],
-    );
-
     const contextValue = useMemo(
       () => ({
         size,
         focusMode,
-        inputId,
         disabled,
         error,
       }),
-      [size, focusMode, inputId, disabled, error],
+      [size, focusMode, disabled, error],
     );
-
-    // Focus input when clicking empty space in the container.
-    // Attached via useEffect to keep the JSX clean for a11y linters.
-    useEffect(() => {
-      const el = localRef.current;
-      if (!el) return;
-
-      const handleMouseDown = (e: MouseEvent) => {
-        if (disabled) return;
-        if (
-          (e.target as HTMLElement).closest(
-            "button, input, textarea, select, a",
-          )
-        )
-          return;
-        setTimeout(() => document.getElementById(inputId)?.focus(), 0);
-      };
-
-      el.addEventListener("mousedown", handleMouseDown);
-      return () => el.removeEventListener("mousedown", handleMouseDown);
-    }, [disabled, inputId]);
 
     const container = (
       <InputGroupContext.Provider value={contextValue}>
-        <div
-          ref={ref}
-          role="group"
+        <label
+          ref={forwardedRef}
           data-slot="input-group"
           data-disabled={disabled ? "" : undefined}
           className={cn(
@@ -147,9 +107,10 @@ const Root = forwardRef<HTMLDivElement, PropsWithChildren<InputGroupRootProps>>(
             INPUT_GROUP_HAS_CLASSES[size],
             className,
           )}
+          {...rest}
         >
           {children}
-        </div>
+        </label>
       </InputGroupContext.Provider>
     );
 
