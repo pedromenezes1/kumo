@@ -18,9 +18,43 @@ export { type InputGroupButtonProps } from "./input-group-button";
 export { type InputGroupAddonProps } from "./input-group-addon";
 export { type InputGroupSuffixProps } from "./input-group-suffix";
 
-export const KUMO_INPUT_GROUP_VARIANTS = {} as const;
+export const KUMO_INPUT_GROUP_VARIANTS = {
+  size: {
+    xs: {
+      classes: "h-6 text-xs",
+      description: "Extra small size.",
+    },
+    sm: {
+      classes: "h-7 text-xs",
+      description: "Small size.",
+    },
+    base: {
+      classes: "h-9 text-base",
+      description: "Default size.",
+    },
+    lg: {
+      classes: "h-11 text-base",
+      description: "Large size.",
+    },
+  },
+  focusMode: {
+    container: {
+      classes: "focus-within:ring-kumo-ring",
+      description:
+        "The entire container shows a single focus ring when any child is focused.",
+    },
+    individual: {
+      classes: "isolate overflow-visible",
+      description:
+        "Each interactive element shows its own focus indicator independently.",
+    },
+  },
+} as const;
 
-export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {} as const;
+export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {
+  size: "base",
+  focusMode: "container",
+} as const;
 
 /**
  * Compound input component for building inputs with icons, addons, inline
@@ -81,6 +115,7 @@ const Root = forwardRef<
         <label
           ref={forwardedRef}
           data-slot="input-group"
+          data-focus-mode={focusMode}
           data-disabled={disabled ? "" : undefined}
           className={cn(
             "relative w-full cursor-text",

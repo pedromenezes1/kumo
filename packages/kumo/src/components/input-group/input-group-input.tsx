@@ -19,6 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputGroupInputProps>(
 
     const size = context?.size ?? "base";
     const tokens = INPUT_GROUP_SIZE[size];
+    const isIndividual = context?.focusMode === "individual";
 
     // Auto-set aria-invalid when error is present in context
     const hasError = Boolean(context?.error);
@@ -36,7 +37,11 @@ export const Input = forwardRef<HTMLInputElement, InputGroupInputProps>(
           // pl/pr to inputSeam on sides that touch an addon.
           tokens.inputOuter,
           "text-ellipsis",
-          "ring-0! shadow-none outline-none focus:ring-0! focus:outline-none",
+          isIndividual
+            ? // Individual mode: use native browser outline for blue focus ring
+              "ring-0 shadow-none focus-visible:outline-auto"
+            : // Container mode: kill all focus indicators — the container handles them
+              "ring-0! shadow-none outline-none focus:ring-0! focus:outline-none",
           props.className,
         )}
       />
