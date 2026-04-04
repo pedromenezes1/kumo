@@ -273,6 +273,10 @@ export {
   useLinkComponent,
   type LinkComponentProps,
 } from "./utils/link-provider";
+export {
+  KumoPortalProvider,
+  type PortalContainer,
+} from "./utils/portal-provider";
 
 // Registry types (for consuming packages to type registry JSON)
 export type {
