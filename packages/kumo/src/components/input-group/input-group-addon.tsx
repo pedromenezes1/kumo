@@ -2,13 +2,12 @@ import {
   Children,
   cloneElement,
   forwardRef,
-  useContext,
   isValidElement,
   type ReactElement,
   type ReactNode,
 } from "react";
 import { cn } from "../../utils/cn";
-import { InputGroupContext, INPUT_GROUP_SIZE } from "./context";
+import { useInputGroupContext, INPUT_GROUP_SIZE } from "./context";
 import { Button } from "./input-group-button";
 
 export interface InputGroupAddonProps {
@@ -26,7 +25,7 @@ export interface InputGroupAddonProps {
  */
 export const Addon = forwardRef<HTMLDivElement, InputGroupAddonProps>(
   ({ align = "start", className, children }, ref) => {
-    const context = useContext(InputGroupContext);
+    const context = useInputGroupContext("Addon");
 
     const size = context?.size ?? "base";
     const tokens = INPUT_GROUP_SIZE[size];
@@ -37,7 +36,7 @@ export const Addon = forwardRef<HTMLDivElement, InputGroupAddonProps>(
       if (!isValidElement(child)) return child;
       const props = child.props as { size?: unknown };
       if (props.size !== undefined) return child;
-      if (child.type === "button" || child.type === Button) return child;
+      if (child.type === Button) return child;
       return cloneElement(child as ReactElement<{ size?: number }>, {
         size: tokens.iconSize,
       });

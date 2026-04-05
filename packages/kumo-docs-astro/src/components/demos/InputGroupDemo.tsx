@@ -28,7 +28,7 @@ export function InputGroupHeroDemo() {
 export function InputGroupIconsDemo() {
   return (
     <div className="flex w-xs flex-col gap-4">
-      <InputGroup data-focus-scope="proposed">
+      <InputGroup>
         <InputGroup.Addon>
           <LinkIcon />
         </InputGroup.Addon>
@@ -96,7 +96,6 @@ export function InputGroupButtonsDemo() {
         />
         <InputGroup.Addon align="end" className="pr-1">
           <InputGroup.Button
-            variant="ghost"
             size="sm"
             aria-label={show ? "Hide password" : "Show password"}
             onClick={() => setShow(!show)}
@@ -117,7 +116,6 @@ export function InputGroupButtonsDemo() {
         {searchValue && (
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Delete search"
               onClick={() => setSearchValue("")}
@@ -345,7 +343,6 @@ export function InputGroupStatesDemo() {
         />
         <InputGroup.Addon align="end">
           <InputGroup.Button
-            variant="ghost"
             size="sm"
             aria-label={show ? "Hide password" : "Show password"}
             onClick={() => setShow(!show)}

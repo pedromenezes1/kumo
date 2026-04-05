@@ -1,7 +1,7 @@
-import { forwardRef, useContext } from "react";
+import { forwardRef } from "react";
 import { cn } from "../../utils/cn";
 import { Input as InputExternal, type InputProps } from "../input/input";
-import { InputGroupContext, INPUT_GROUP_SIZE } from "./context";
+import { useInputGroupContext, INPUT_GROUP_SIZE } from "./context";
 
 /** Props for InputGroup.Input — omits Field props since InputGroup handles them. */
 export type InputGroupInputProps = Omit<
@@ -15,7 +15,7 @@ export type InputGroupInputProps = Omit<
  */
 export const Input = forwardRef<HTMLInputElement, InputGroupInputProps>(
   (props, ref) => {
-    const context = useContext(InputGroupContext);
+    const context = useInputGroupContext("Input");
 
     const size = context?.size ?? "base";
     const tokens = INPUT_GROUP_SIZE[size];

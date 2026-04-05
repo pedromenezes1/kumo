@@ -37,6 +37,7 @@ export const KUMO_INPUT_GROUP_VARIANTS = {
       description: "Large size.",
     },
   },
+  /** @internal */
   focusMode: {
     container: {
       classes: "focus-within:ring-kumo-ring",
@@ -61,8 +62,15 @@ export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {
  * suffixes, and action buttons. Accepts Field props and wraps content in
  * Field when label is provided.
  *
- * Uses a native `<label>` element so clicking anywhere in the container
- * focuses the wrapped input — no imperative JS needed.
+ * The container element is **conditional** to avoid nested `<label>` elements:
+ * - When `label` is provided, the container renders as a `<div>` because Field
+ *   already provides a `<label>` with `htmlFor` that handles click-to-focus.
+ * - When `label` is absent (standalone usage), the container renders as a
+ *   native `<label>` so clicking anywhere focuses the wrapped input — no
+ *   imperative JS needed.
+ *
+ * @note Do not wrap InputGroup inside an external Field without using the `label` prop —
+ * this creates invalid nested `<label>` elements. Use InputGroup's own `label` prop instead.
  *
  * @example
  * ```tsx
@@ -80,10 +88,7 @@ export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {
  * </InputGroup>
  * ```
  */
-const Root = forwardRef<
-  HTMLLabelElement,
-  PropsWithChildren<InputGroupRootProps>
->(
+const Root = forwardRef<HTMLElement, PropsWithChildren<InputGroupRootProps>>(
   (
     {
       size = "base",
@@ -110,42 +115,63 @@ const Root = forwardRef<
       [size, focusMode, disabled, error],
     );
 
+    // When label is provided, Field already renders a <label> with htmlFor
+    // that handles click-to-focus. Using <div> avoids nested <label> elements
+    // (invalid HTML with undefined assistive technology behavior).
+    // When standalone (no label), a native <label> preserves click-to-focus.
+    const containerClassName = cn(
+      "relative w-full cursor-text",
+      // inputVariants provides base ring-kumo-line; must come before state overrides
+      inputVariants({ size }),
+      "shadow-xs",
+      "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      focusMode === "individual"
+        ? "isolate overflow-visible"
+        : [
+            "overflow-hidden",
+            // Focus state must come AFTER inputVariants to override ring-kumo-line
+            "focus-within:ring-kumo-ring",
+            // The CSS in kumo-binding.css handles the native outline
+          ],
+      // Error state must also come after inputVariants
+      "has-[input[aria-invalid=true]]:ring-kumo-danger",
+      "px-0",
+      "flex items-center gap-0",
+      "has-[[data-slot=input-group-suffix]]:[&_input]:[field-sizing:content]",
+      "has-[[data-slot=input-group-suffix]]:[&_input]:max-w-full",
+      "has-[[data-slot=input-group-suffix]]:[&_input]:grow-0",
+      "has-[[data-slot=input-group-suffix]]:[&_input]:pr-0",
+      INPUT_GROUP_HAS_CLASSES[size],
+      className,
+    );
+
+    const dataProps = {
+      "data-slot": "input-group" as const,
+      "data-focus-mode": focusMode,
+      "data-disabled": disabled ? ("" as const) : undefined,
+    };
+
     const container = (
       <InputGroupContext.Provider value={contextValue}>
-        <label
-          ref={forwardedRef}
-          data-slot="input-group"
-          data-focus-mode={focusMode}
-          data-disabled={disabled ? "" : undefined}
-          className={cn(
-            "relative w-full cursor-text",
-            // inputVariants provides base ring-kumo-line; must come before state overrides
-            inputVariants({ size }),
-            "shadow-xs",
-            "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-            focusMode === "individual"
-              ? "isolate overflow-visible"
-              : [
-                  "overflow-hidden",
-                  // Focus state must come AFTER inputVariants to override ring-kumo-line
-                  "focus-within:ring-kumo-ring",
-                  // The CSS in kumo-binding.css handles the native outline
-                ],
-            // Error state must also come after inputVariants
-            "has-[input[aria-invalid=true]]:ring-kumo-danger",
-            "px-0",
-            "flex items-center gap-0",
-            "has-[[data-slot=input-group-suffix]]:[&_input]:[field-sizing:content]",
-            "has-[[data-slot=input-group-suffix]]:[&_input]:max-w-full",
-            "has-[[data-slot=input-group-suffix]]:[&_input]:grow-0",
-            "has-[[data-slot=input-group-suffix]]:[&_input]:pr-0",
-            INPUT_GROUP_HAS_CLASSES[size],
-            className,
-          )}
-          {...rest}
-        >
-          {children}
-        </label>
+        {label ? (
+          <div
+            ref={forwardedRef as React.Ref<HTMLDivElement>}
+            {...dataProps}
+            className={containerClassName}
+            {...rest}
+          >
+            {children}
+          </div>
+        ) : (
+          <label
+            ref={forwardedRef as React.Ref<HTMLLabelElement>}
+            {...dataProps}
+            className={containerClassName}
+            {...rest}
+          >
+            {children}
+          </label>
+        )}
       </InputGroupContext.Provider>
     );
 

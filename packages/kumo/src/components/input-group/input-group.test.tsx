@@ -30,7 +30,6 @@ describe("InputGroup", () => {
           />
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Show password"
               onClick={() => {}}
@@ -148,7 +147,6 @@ describe("InputGroup", () => {
           />
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Show password"
               onClick={handleClick}
@@ -176,7 +174,6 @@ describe("InputGroup", () => {
           />
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Delete search"
               onClick={handleClick}
@@ -216,7 +213,6 @@ describe("InputGroup", () => {
           />
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Show password"
               onClick={() => {}}
@@ -392,7 +388,6 @@ describe("InputGroup", () => {
           />
           <InputGroup.Addon align="end" className="pr-1">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Show password"
               onClick={() => {}}
@@ -407,7 +402,7 @@ describe("InputGroup", () => {
       ).toBeTruthy();
     });
 
-    it("container is a <label> element", () => {
+    it("container is a <label> element when no label prop is provided", () => {
       const { container } = render(
         <InputGroup>
           <InputGroup.Addon>@</InputGroup.Addon>
@@ -416,6 +411,34 @@ describe("InputGroup", () => {
       );
       const label = container.querySelector("label[data-slot='input-group']");
       expect(label).toBeTruthy();
+    });
+
+    it("container is a <div> element when label prop is provided", () => {
+      const { container } = render(
+        <InputGroup label="Username">
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="username" />
+        </InputGroup>,
+      );
+      const div = container.querySelector("div[data-slot='input-group']");
+      expect(div).toBeTruthy();
+      // Should NOT be a <label>
+      const label = container.querySelector("label[data-slot='input-group']");
+      expect(label).toBeFalsy();
+    });
+
+    it("does not produce nested labels when label prop is provided", () => {
+      const { container } = render(
+        <InputGroup label="Email">
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input placeholder="you@example.com" />
+        </InputGroup>,
+      );
+      // Field renders its own <label> for the field label text.
+      // The container should be a <div>, not a <label>, so there are
+      // no nested <label> elements (which is invalid HTML).
+      const nestedLabels = container.querySelectorAll("label label");
+      expect(nestedLabels.length).toBe(0);
     });
   });
 
@@ -469,6 +492,21 @@ describe("InputGroup", () => {
     });
   });
 
+  describe("context misuse warnings", () => {
+    it("warns in development when sub-component used outside InputGroup", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(<InputGroup.Input aria-label="Orphan" />);
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "<InputGroup.Input> must be used within <InputGroup>. Falling back to default values.",
+      );
+
+      warnSpy.mockRestore();
+    });
+  });
+
   describe("Field integration", () => {
     it("renders label when label prop is provided", () => {
       render(
@@ -495,7 +533,6 @@ describe("InputGroup", () => {
           <InputGroup.Input type="password" placeholder="Enter password" />
           <InputGroup.Addon align="end">
             <InputGroup.Button
-              variant="ghost"
               size="sm"
               aria-label="Show password"
               onClick={() => {}}

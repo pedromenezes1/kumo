@@ -1,6 +1,6 @@
-import { forwardRef, useContext, type ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { cn } from "../../utils/cn";
-import { InputGroupContext, INPUT_GROUP_SIZE } from "./context";
+import { useInputGroupContext, INPUT_GROUP_SIZE } from "./context";
 
 export interface InputGroupSuffixProps {
   /** Additional CSS classes. */
@@ -15,7 +15,7 @@ export interface InputGroupSuffixProps {
  */
 export const Suffix = forwardRef<HTMLDivElement, InputGroupSuffixProps>(
   ({ className, children }, ref) => {
-    const context = useContext(InputGroupContext);
+    const context = useInputGroupContext("Suffix");
 
     const size = context?.size ?? "base";
     const tokens = INPUT_GROUP_SIZE[size];

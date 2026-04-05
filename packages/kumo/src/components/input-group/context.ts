@@ -1,4 +1,4 @@
-import { createContext, type ComponentPropsWithoutRef } from "react";
+import { createContext, useContext, type HTMLAttributes } from "react";
 import type { KumoInputSize } from "../input/input";
 import type { FieldProps } from "../field/field";
 
@@ -94,7 +94,7 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
 // Context
 
 export interface InputGroupRootProps
-  extends ComponentPropsWithoutRef<"label">,
+  extends HTMLAttributes<HTMLElement>,
     Partial<
       Pick<
         FieldProps,
@@ -107,11 +107,8 @@ export interface InputGroupRootProps
   focusMode?: "container" | "individual";
 }
 
-export interface InputGroupContextValue
-  extends Omit<
-    InputGroupRootProps,
-    "focusMode" | "label" | "description" | "required" | "labelTooltip"
-  > {
+export interface InputGroupContextValue {
+  size?: KumoInputSize;
   focusMode: "container" | "individual";
   disabled: boolean;
   error?: FieldProps["error"];
@@ -120,3 +117,17 @@ export interface InputGroupContextValue
 export const InputGroupContext = createContext<InputGroupContextValue | null>(
   null,
 );
+
+/**
+ * Reads InputGroupContext and warns in development when the context is null
+ * (i.e. when a sub-component is rendered outside of `<InputGroup>`).
+ */
+export function useInputGroupContext(componentName: string) {
+  const context = useContext(InputGroupContext);
+  if (process.env.NODE_ENV !== "production" && !context) {
+    console.warn(
+      `<InputGroup.${componentName}> must be used within <InputGroup>. Falling back to default values.`,
+    );
+  }
+  return context;
+}

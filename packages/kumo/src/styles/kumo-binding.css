@@ -226,6 +226,5 @@
 
 /* InputGroup focus ring — native browser outline on keyboard focus (container mode only) */
 [data-slot="input-group"][data-focus-mode="container"]:has(:focus-visible) {
-  outline: auto;
   outline: solid 2px -webkit-focus-ring-color;
 }
