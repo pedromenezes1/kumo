@@ -5,7 +5,7 @@ import { Field } from "../field/field";
 import {
   InputGroupContext,
   INPUT_GROUP_HAS_CLASSES,
-  type InputGroupRootProps,
+  type InputGroupRootPropsInternal,
 } from "./context";
 import { Input } from "./input-group-input";
 import { Button } from "./input-group-button";
@@ -37,24 +37,28 @@ export const KUMO_INPUT_GROUP_VARIANTS = {
       description: "Large size.",
     },
   },
-  /** @internal */
-  focusMode: {
-    container: {
-      classes: "focus-within:ring-kumo-ring",
-      description:
-        "The entire container shows a single focus ring when any child is focused.",
-    },
-    individual: {
-      classes: "isolate overflow-visible",
-      description:
-        "Each interactive element shows its own focus indicator independently.",
-    },
-  },
 } as const;
 
 export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {
   size: "base",
-  focusMode: "container",
+} as const;
+
+/**
+ * Internal-only focusMode variant data. Kept out of the exported
+ * KUMO_INPUT_GROUP_VARIANTS so the codegen pipeline doesn't expose it
+ * in the public API reference or component registry.
+ */
+const INTERNAL_FOCUS_MODE_VARIANTS = {
+  container: {
+    classes: "focus-within:ring-kumo-ring",
+    description:
+      "The entire container shows a single focus ring when any child is focused.",
+  },
+  individual: {
+    classes: "isolate overflow-visible",
+    description:
+      "Each interactive element shows its own focus indicator independently.",
+  },
 } as const;
 
 /**
@@ -88,7 +92,10 @@ export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {
  * </InputGroup>
  * ```
  */
-const Root = forwardRef<HTMLElement, PropsWithChildren<InputGroupRootProps>>(
+const Root = forwardRef<
+  HTMLElement,
+  PropsWithChildren<InputGroupRootPropsInternal>
+>(
   (
     {
       size = "base",

@@ -93,8 +93,14 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
 
 // Context
 
-export interface InputGroupRootProps
-  extends HTMLAttributes<HTMLElement>,
+/**
+ * Full internal props including `focusMode`. Used by the component
+ * implementation but NOT exported publicly — consumers and codegen
+ * see `InputGroupRootProps` (which omits `focusMode`).
+ */
+export interface InputGroupRootPropsInternal
+  extends
+    HTMLAttributes<HTMLElement>,
     Partial<
       Pick<
         FieldProps,
@@ -103,9 +109,21 @@ export interface InputGroupRootProps
     > {
   size?: KumoInputSize | undefined;
   disabled?: boolean;
-  /** @internal */
+  /** @internal — hidden from the public type via Omit. */
   focusMode?: "container" | "individual";
 }
+
+/**
+ * Public InputGroup.Root props. `focusMode` is omitted so it doesn't
+ * appear in the generated component registry or public API surface.
+ *
+ * This follows the same pattern as `InputProps` which uses `Pick<>` to
+ * expose only `size` and `variant` from a broader internal type.
+ */
+export type InputGroupRootProps = Omit<
+  InputGroupRootPropsInternal,
+  "focusMode"
+>;
 
 export interface InputGroupContextValue {
   size?: KumoInputSize;
