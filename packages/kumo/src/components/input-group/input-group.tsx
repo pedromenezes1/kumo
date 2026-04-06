@@ -44,24 +44,6 @@ export const KUMO_INPUT_GROUP_DEFAULT_VARIANTS = {
 } as const;
 
 /**
- * Internal-only focusMode variant data. Kept out of the exported
- * KUMO_INPUT_GROUP_VARIANTS so the codegen pipeline doesn't expose it
- * in the public API reference or component registry.
- */
-const INTERNAL_FOCUS_MODE_VARIANTS = {
-  container: {
-    classes: "focus-within:ring-kumo-ring",
-    description:
-      "The entire container shows a single focus ring when any child is focused.",
-  },
-  individual: {
-    classes: "isolate overflow-visible",
-    description:
-      "Each interactive element shows its own focus indicator independently.",
-  },
-} as const;
-
-/**
  * Compound input component for building inputs with icons, addons, inline
  * suffixes, and action buttons. Accepts Field props and wraps content in
  * Field when label is provided.
