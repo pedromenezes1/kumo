@@ -260,13 +260,6 @@ export const ADDITIONAL_COMPONENT_PROPS: Record<
       description: "Callback when checkbox value changes",
     },
   },
-  "InputGroup.Input": {
-    disabled: {
-      type: '"boolean"',
-      description:
-        "Disables the input. Inherited from InputGroup context when not set.",
-    },
-  },
   "InputGroup.Addon": {
     align: {
       type: '"start" | "end"',
@@ -290,9 +283,8 @@ export const ADDITIONAL_COMPONENT_PROPS: Record<
       default: '"bottom"',
     },
     variant: {
-      type: '"ghost"',
-      description:
-        "Button visual style. Only ghost is supported inside InputGroup.",
+      type: '"primary" | "secondary" | "ghost" | "destructive" | "secondary-destructive" | "outline"',
+      description: "Button visual style. Defaults to ghost.",
       default: '"ghost"',
     },
     size: {

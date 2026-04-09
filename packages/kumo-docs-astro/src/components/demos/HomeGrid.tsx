@@ -38,7 +38,7 @@ import {
   useKumoToastManager,
 } from "@cloudflare/kumo";
 import { ShikiProvider, CodeHighlighted } from "@cloudflare/kumo/code";
-import { WorkersSuffixInput } from "~/components/demos/InputGroupDemo";
+import { InputGroupDemo } from "~/components/demos/InputGroupDemo";
 import {
   MagnifyingGlassIcon,
   PlusIcon,
@@ -423,7 +423,7 @@ export function HomeGrid() {
     {
       name: "InputGroup",
       id: "input-group",
-      Component: <WorkersSuffixInput defaultValue="kumo" showLabel={false} />,
+      Component: <InputGroupDemo />,
     },
     {
       name: "Meter",

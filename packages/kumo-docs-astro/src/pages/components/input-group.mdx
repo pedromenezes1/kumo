@@ -11,7 +11,7 @@ import CodeBlock from "~/components/docs/CodeBlock.astro";
 import Heading from "~/components/docs/Heading.astro";
 import PropsTable from "~/components/docs/PropsTable.astro";
 import {
-  InputGroupHeroDemo,
+  InputGroupDemo,
   InputGroupIconsDemo,
   InputGroupTextDemo,
   InputGroupButtonsDemo,
@@ -24,13 +24,8 @@ import {
 } from "~/components/demos/InputGroupDemo";
 
 <ComponentSection>
-  <ComponentExample
-    code={`<InputGroup>
-  <InputGroup.Input aria-label="Subdomain" maxLength={24} />
-  <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
-</InputGroup>`}
-  >
-    <InputGroupHeroDemo client:visible />
+  <ComponentExample demo="InputGroupDemo">
+    <InputGroupDemo client:visible />
   </ComponentExample>
 </ComponentSection>
 
@@ -55,95 +50,24 @@ import {
 <p>
   Use Addon to place an icon at the start of the input as a visual identifier.
 </p>
-<ComponentExample
-  code={`<InputGroup>
-  <InputGroup.Addon>
-    <LinkIcon className="fill-kumo-subtle" />
-  </InputGroup.Addon>
-  <InputGroup.Input placeholder="Paste a link..." aria-label="Link" />
-</InputGroup>`}
->
+<ComponentExample demo="InputGroupIconsDemo">
   <InputGroupIconsDemo client:visible />
 </ComponentExample>
 
-  <Heading level={3}>Text</Heading>
-  <p>
-    Use Addon to place text prefixes or suffixes alongside the input.
-  </p>
-  <ComponentExample
-    code={`<>
-  {/* Start only */}
-  <InputGroup>
-    <InputGroup.Addon>@</InputGroup.Addon>
-    <InputGroup.Input placeholder="username" aria-label="Username" />
-  </InputGroup>
+<Heading level={3}>Text</Heading>
+<p>Use Addon to place text prefixes or suffixes alongside the input.</p>
+<ComponentExample demo="InputGroupTextDemo">
+  <InputGroupTextDemo client:visible />
+</ComponentExample>
 
-{/* End only */}
-
-<InputGroup>
-  <InputGroup.Input placeholder="email" aria-label="Email" />
-  <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
-</InputGroup>
-
-{/* Both sides */}
-
-  <InputGroup>
-    <InputGroup.Addon>/api/</InputGroup.Addon>
-    <InputGroup.Input placeholder="endpoint" aria-label="API path" />
-    <InputGroup.Addon align="end">.json</InputGroup.Addon>
-  </InputGroup>
-</>`}
-  >
-    <InputGroupTextDemo client:visible />
-  </ComponentExample>
-
-  <Heading level={3}>Button</Heading>
-  <p>
-    Place InputGroup.Button inside an Addon for actions that operate directly on the input value, such as reveal/hide or clear.
-  </p>
-  <ComponentExample
-    code={`{/* Reveal / hide password */}
-<InputGroup>
-  <InputGroup.Input
-    type={show ? "text" : "password"}
-    defaultValue="password"
-    aria-label="Password"
-  />
-  <InputGroup.Addon align="end" className="pr-1">
-    <InputGroup.Button
-      size="sm"
-      aria-label={show ? "Hide password" : "Show password"}
-      onClick={() => setShow(!show)}
-    >
-      {show ? <EyeSlashIcon size={16} /> : <EyeIcon size={16} />}
-    </InputGroup.Button>
-  </InputGroup.Addon>
-</InputGroup>
-
-{/* Clearable search */}
-
-<InputGroup>
-  <InputGroup.Input
-    value={searchValue}
-    placeholder="Search"
-    aria-label="Search"
-    onChange={(e) => setSearchValue(e.target.value)}
-  />
-  {searchValue && (
-    <InputGroup.Addon align="end" className="pr-1">
-      <InputGroup.Button
-        size="sm"
-        aria-label="Delete search"
-        onClick={() => setSearchValue("")}
-      >
-        <XIcon size={16} />
-      </InputGroup.Button>
-    </InputGroup.Addon>
-  )}
-</InputGroup>`}
-  >
-    <InputGroupButtonsDemo client:visible />
-  </ComponentExample>
+<Heading level={3}>Button</Heading>
+<p>
+  Place InputGroup.Button inside an Addon for actions that operate directly on
+  the input value, such as reveal/hide or clear.
+</p>
+<ComponentExample demo="InputGroupButtonsDemo">
+  <InputGroupButtonsDemo client:visible />
+</ComponentExample>
 
 <Heading level={3}>Button with Tooltip</Heading>
 <p>
@@ -151,26 +75,7 @@ import {
   no explicit `aria-label` is provided, the button derives it from a string
   tooltip value.
 </p>
-<ComponentExample
-  code={`<InputGroup>
-  <InputGroup.Addon>
-    <MagnifyingGlassIcon className="text-kumo-subtle" />
-  </InputGroup.Addon>
-  <InputGroup.Input
-    placeholder="Search with query language..."
-    aria-label="Search"
-  />
-  <InputGroup.Addon align="end" className="pr-1">
-    <InputGroup.Button
-      size="sm"
-      tooltip="Query language help"
-      onClick={() => setShowHelp(true)}
-    >
-      <QuestionIcon size={16} />
-    </InputGroup.Button>
-  </InputGroup.Addon>
-</InputGroup>`}
->
+<ComponentExample demo="InputGroupTooltipButtonDemo">
   <InputGroupTooltipButtonDemo client:visible />
 </ComponentExample>
 
@@ -179,17 +84,7 @@ import {
   Place a keyboard shortcut hint inside an end Addon. Use a bare `kbd` element —
   no border or background needed.
 </p>
-<ComponentExample
-  code={`<InputGroup>
-  <InputGroup.Addon>
-    <MagnifyingGlassIcon className="text-kumo-subtle" />
-  </InputGroup.Addon>
-  <InputGroup.Input placeholder="Search..." aria-label="Search" />
-  <InputGroup.Addon align="end">
-    <kbd>⌘K</kbd>
-  </InputGroup.Addon>
-</InputGroup>`}
->
+<ComponentExample demo="InputGroupKbdDemo">
   <InputGroupKbdDemo client:visible />
 </ComponentExample>
 
@@ -198,14 +93,7 @@ import {
   Place a Loader inside an end Addon as a status indicator while validating the
   input value.
 </p>
-<ComponentExample
-  code={`<InputGroup>
-  <InputGroup.Input defaultValue="kumo" aria-label="kumo" />
-  <InputGroup.Addon align="end">
-    <Loader className="fill-kumo-subtle" />
-  </InputGroup.Addon>
-</InputGroup>`}
->
+<ComponentExample demo="InputGroupLoadingDemo">
   <InputGroupLoadingDemo client:visible />
 </ComponentExample>
 
@@ -215,123 +103,24 @@ import {
   domain inputs like `.workers.dev`. Pair with a status icon Addon to show
   validation state.
 </p>
-<ComponentExample
-  code={`<InputGroup label="Subdomain" error={errorState}>
-  <InputGroup.Input aria-label="Subdomain" maxLength={24} value={value} onChange={handleChange} />
-  <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
-  {status === "loading" && (
-    <InputGroup.Addon align="end"><Loader className="fill-kumo-subtle" /></InputGroup.Addon>
-  )}
-  {status === "success" && (
-    <InputGroup.Addon align="end">
-      <CheckCircleIcon weight="duotone" className="fill-kumo-success" />
-    </InputGroup.Addon>
-  )}
-  {status === "error" && (
-    <InputGroup.Addon align="end">
-      <XCircleIcon weight="duotone" className="fill-kumo-danger" />
-    </InputGroup.Addon>
-  )}
-</InputGroup>`}
->
+<ComponentExample demo="InputGroupSuffixDemo">
   <InputGroupSuffixDemo client:visible />
 </ComponentExample>
 
-  <Heading level={3}>Sizes</Heading>
-  <p>
-    Four sizes: `xs`, `sm`, `base` (default), and `lg`. The size applies to the entire group. Use the `label` prop on `InputGroup` for built-in Field support.
-  </p>
-  <ComponentExample
-    code={`<>
-  {/* Extra small */}
-  <InputGroup size="xs" label="Extra Small">
-    <InputGroup.Addon>
-      <MagnifyingGlassIcon className="text-kumo-subtle" />
-    </InputGroup.Addon>
-    <InputGroup.Input placeholder="Extra small input" />
-  </InputGroup>
-
-{/* Small */}
-
-<InputGroup size="sm" label="Small">
-  <InputGroup.Addon>
-    <MagnifyingGlassIcon className="text-kumo-subtle" />
-  </InputGroup.Addon>
-  <InputGroup.Input placeholder="Small input" />
-</InputGroup>
-
-{/* Base (default) */}
-
-<InputGroup label="Base (default)">
-  <InputGroup.Addon>
-    <MagnifyingGlassIcon className="text-kumo-subtle" />
-  </InputGroup.Addon>
-  <InputGroup.Input placeholder="Base input" />
-</InputGroup>
-
-{/* Large */}
-
-  <InputGroup size="lg" label="Large">
-    <InputGroup.Addon>
-      <MagnifyingGlassIcon className="text-kumo-subtle" />
-    </InputGroup.Addon>
-    <InputGroup.Input placeholder="Large input" />
-  </InputGroup>
-</>`}
-  >
-    <InputGroupSizesDemo client:visible />
-  </ComponentExample>
+<Heading level={3}>Sizes</Heading>
+<p>
+  Four sizes: `xs`, `sm`, `base` (default), and `lg`. The size applies to the
+  entire group.
+</p>
+<ComponentExample demo="InputGroupSizesDemo">
+  <InputGroupSizesDemo client:visible />
+</ComponentExample>
 
   <Heading level={3}>States</Heading>
   <p>
     Various input states including error, disabled, and with description. Pass `label`, `error`, and `description` props directly to `InputGroup`.
   </p>
-  <ComponentExample
-    code={`<>
-  {/* Error state */}
-  <InputGroup
-    label="Error State"
-    error={{ message: "Please enter a valid email address", match: true }}
-  >
-    <InputGroup.Input
-      type="email"
-      defaultValue="invalid-email"
-    />
-    <InputGroup.Addon align="end">@example.com</InputGroup.Addon>
-  </InputGroup>
-
-{/* Disabled */}
-
-<InputGroup label="Disabled" disabled>
-  <InputGroup.Addon>
-    <MagnifyingGlassIcon className="text-kumo-subtle" />
-  </InputGroup.Addon>
-  <InputGroup.Input placeholder="Search..." />
-</InputGroup>
-
-{/* With description and tooltip */}
-
-  <InputGroup
-    label="With Description"
-    description="Must be at least 8 characters"
-    labelTooltip="Your password is stored securely"
-  >
-    <InputGroup.Input
-      type={show ? "text" : "password"}
-      placeholder="Enter password"
-    />
-    <InputGroup.Addon align="end">
-      <InputGroup.Button
-        size="sm"
-        aria-label={show ? "Hide password" : "Show password"}
-        onClick={() => {}}
-      >
-        {show ? <EyeSlashIcon size={14} /> : <EyeIcon size={14} />}
-      </InputGroup.Button>
-    </InputGroup.Addon>
-  </InputGroup>
-</>`}
-  >
+  <ComponentExample demo="InputGroupStatesDemo">
     <InputGroupStatesDemo client:visible />
   </ComponentExample>
 </ComponentSection>

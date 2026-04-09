@@ -1,9 +1,14 @@
+import React from "react";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { InputGroup } from "./input-group";
 import { INPUT_GROUP_SIZE } from "./context";
 import type { KumoInputSize } from "../input/input";
+
+const MockIcon = (props: { size?: number }) => (
+  <svg data-testid="mock-icon" data-size={props.size ?? "none"} />
+);
 
 describe("InputGroup", () => {
   describe("rendering", () => {
@@ -28,7 +33,7 @@ describe("InputGroup", () => {
             defaultValue="password"
             aria-label="Password"
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button
               size="sm"
               aria-label="Show password"
@@ -145,7 +150,7 @@ describe("InputGroup", () => {
             defaultValue="password"
             aria-label="Password"
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button
               size="sm"
               aria-label="Show password"
@@ -172,7 +177,7 @@ describe("InputGroup", () => {
             aria-label="Search"
             onChange={() => {}}
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button
               size="sm"
               aria-label="Delete search"
@@ -202,6 +207,25 @@ describe("InputGroup", () => {
       expect(document.activeElement).toBe(screen.getByRole("textbox"));
     });
 
+    it("focuses input when clicking on div container (label prop)", async () => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <InputGroup label="Subdomain">
+          <InputGroup.Input placeholder="my-worker" />
+          <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
+        </InputGroup>,
+      );
+
+      // The invisible label overlay inside the container delegates focus
+      // to the input via native htmlFor. We click it directly because
+      // happy-dom doesn't simulate CSS pointer-events-none on the suffix.
+      const overlay = container.querySelector(
+        "label[aria-hidden='true']",
+      ) as HTMLElement;
+      await user.click(overlay);
+      expect(document.activeElement).toBe(screen.getByRole("textbox"));
+    });
+
     it("does not redirect focus to input when clicking a button", async () => {
       const user = userEvent.setup();
       render(
@@ -211,7 +235,7 @@ describe("InputGroup", () => {
             defaultValue="password"
             aria-label="Password"
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button
               size="sm"
               aria-label="Show password"
@@ -386,7 +410,7 @@ describe("InputGroup", () => {
             defaultValue="password"
             aria-label="Password"
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button
               size="sm"
               aria-label="Show password"
@@ -453,7 +477,7 @@ describe("InputGroup", () => {
             placeholder="Search with query language..."
             aria-label="Search"
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button size="sm" tooltip="Query language help">
               <svg data-testid="question-icon" />
             </InputGroup.Button>
@@ -476,7 +500,7 @@ describe("InputGroup", () => {
             placeholder="Search with query language..."
             aria-label="Search"
           />
-          <InputGroup.Addon align="end" className="pr-1">
+          <InputGroup.Addon align="end">
             <InputGroup.Button
               size="sm"
               tooltip="Query language help"
@@ -489,6 +513,71 @@ describe("InputGroup", () => {
       );
 
       expect(screen.getByRole("button", { name: "Help" })).toBeTruthy();
+    });
+
+    it("renders icon component with context-derived size", () => {
+      render(
+        <InputGroup size="base">
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button icon={MockIcon} aria-label="Help" />
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+
+      const icon = screen.getByTestId("mock-icon");
+      expect(icon.getAttribute("data-size")).toBe(
+        String(INPUT_GROUP_SIZE.base.iconSize),
+      );
+    });
+
+    it.each(["xs", "sm", "base", "lg"] as const)(
+      "passes correct icon size for InputGroup size %s",
+      (groupSize: KumoInputSize) => {
+        render(
+          <InputGroup size={groupSize}>
+            <InputGroup.Input aria-label="Test" />
+            <InputGroup.Addon align="end">
+              <InputGroup.Button icon={MockIcon} aria-label="Help" />
+            </InputGroup.Addon>
+          </InputGroup>,
+        );
+
+        const icon = screen.getByTestId("mock-icon");
+        expect(icon.getAttribute("data-size")).toBe(
+          String(INPUT_GROUP_SIZE[groupSize].iconSize),
+        );
+      },
+    );
+
+    it("passes icon through unchanged when already a React element", () => {
+      render(
+        <InputGroup size="base">
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button
+              icon={<svg data-testid="element-icon" data-size={42} />}
+              aria-label="Help"
+            />
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+
+      const icon = screen.getByTestId("element-icon");
+      // Element should pass through with its original size, not the context size
+      expect(icon.getAttribute("data-size")).toBe("42");
+    });
+
+    it("does not inject icon size outside InputGroup context", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(<InputGroup.Button icon={MockIcon} aria-label="Help" />);
+
+      const icon = screen.getByTestId("mock-icon");
+      // Outside context, icon should render without a size prop
+      expect(icon.getAttribute("data-size")).toBe("none");
+
+      warnSpy.mockRestore();
     });
   });
 
@@ -504,6 +593,196 @@ describe("InputGroup", () => {
       );
 
       warnSpy.mockRestore();
+    });
+  });
+
+  describe("dev-mode warnings for misplaced props", () => {
+    it("warns when InputGroup.Input receives size directly", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          {/* @ts-expect-error — size is omitted from InputGroupInputProps but can be passed at runtime */}
+          <InputGroup.Input size="sm" aria-label="Test" />
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "InputGroup.Input: Set `size` on <InputGroup> instead of <InputGroup.Input>.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("warns when InputGroup.Input receives disabled directly", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          <InputGroup.Input disabled aria-label="Test" />
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "InputGroup.Input: Set `disabled` on <InputGroup> instead of <InputGroup.Input>.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("warns when InputGroup.Input receives label directly", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          {/* @ts-expect-error — label is omitted from InputGroupInputProps but can be passed at runtime */}
+          <InputGroup.Input label="Email" aria-label="Test" />
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "InputGroup.Input: Use the `label` prop on <InputGroup> instead of <InputGroup.Input>.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("warns when InputGroup.Input receives description directly", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          {/* @ts-expect-error — description is omitted from InputGroupInputProps but can be passed at runtime */}
+          <InputGroup.Input description="Help text" aria-label="Test" />
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "InputGroup.Input: Use <InputGroup.Suffix> instead of passing `description` to <InputGroup.Input>.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("does not warn for misplaced props when Input is used standalone (no context)", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(<InputGroup.Input disabled aria-label="Standalone" />);
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      // Should warn about being outside InputGroup, but NOT about disabled being misplaced
+      expect(calls).not.toContain(
+        "InputGroup.Input: Set `disabled` on <InputGroup> instead of <InputGroup.Input>.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("does not warn when no misplaced props are present", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          <InputGroup.Input placeholder="Normal usage" aria-label="Test" />
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      const misplacedWarnings = calls.filter((msg: string) =>
+        msg.startsWith("InputGroup.Input:"),
+      );
+      expect(misplacedWarnings).toHaveLength(0);
+
+      warnSpy.mockRestore();
+    });
+  });
+
+  describe("stratus backward compatibility", () => {
+    it("supports legacy search bar pattern with Label", () => {
+      render(
+        <InputGroup className="bg-kumo-base flex-1">
+          <InputGroup.Label>
+            <svg data-testid="search-icon" />
+          </InputGroup.Label>
+          <InputGroup.Input placeholder="Search..." aria-label="Search" />
+        </InputGroup>,
+      );
+      expect(screen.getByTestId("search-icon")).toBeTruthy();
+      expect(screen.getByPlaceholderText("Search...")).toBeTruthy();
+    });
+
+    it("supports legacy Description pattern for domain suffix", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Input placeholder="subdomain" aria-label="Subdomain" />
+          <InputGroup.Description>.example.com</InputGroup.Description>
+        </InputGroup>,
+      );
+      expect(screen.getByText(".example.com")).toBeTruthy();
+    });
+
+    it("allows Button variant override", () => {
+      const onClick = vi.fn();
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Value" />
+          <InputGroup.Button variant="secondary" onClick={onClick}>
+            Action
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      fireEvent.click(screen.getByText("Action"));
+      expect(onClick).toHaveBeenCalled();
+    });
+
+    it("supports pagination pattern with focusMode individual", () => {
+      render(
+        <InputGroup focusMode="individual">
+          <InputGroup.Button variant="secondary" aria-label="Previous">
+            Prev
+          </InputGroup.Button>
+          <InputGroup.Input style={{ width: 50 }} aria-label="Page" />
+          <InputGroup.Button variant="secondary" aria-label="Next">
+            Next
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      expect(screen.getByLabelText("Previous")).toBeTruthy();
+      expect(screen.getByLabelText("Page")).toBeTruthy();
+      expect(screen.getByLabelText("Next")).toBeTruthy();
+    });
+
+    it("forwards ref on InputGroup.Input", () => {
+      const ref = React.createRef<HTMLInputElement>();
+      render(
+        <InputGroup>
+          <InputGroup.Input ref={ref} aria-label="Search" />
+        </InputGroup>,
+      );
+      expect(ref.current).toBeInstanceOf(HTMLInputElement);
+    });
+
+    it("allows explicit id on InputGroup.Input", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Input id="my-custom-id" aria-label="Custom" />
+        </InputGroup>,
+      );
+      expect(screen.getByRole("textbox").id).toBe("my-custom-id");
+    });
+
+    it("renders Button as direct child without Addon wrapper", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Value" />
+          <InputGroup.Button aria-label="Toggle">Toggle</InputGroup.Button>
+        </InputGroup>,
+      );
+      expect(screen.getByLabelText("Toggle")).toBeTruthy();
     });
   });
 

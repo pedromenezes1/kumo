@@ -28,6 +28,13 @@ export interface InputGroupSizeTokens {
    */
   addonOuterStart: string;
   addonOuterEnd: string;
+  /**
+   * Reduced outer padding when the Addon contains a Button.
+   * Buttons have their own internal padding, so the Addon can use
+   * less outer padding to keep the visual gap balanced.
+   */
+  addonButtonOuterStart: string;
+  addonButtonOuterEnd: string;
   /** pr- for suffix when no end addon. */
   suffixPad: string;
   fontSize: string;
@@ -40,6 +47,8 @@ export const INPUT_GROUP_SIZE: Record<KumoInputSize, InputGroupSizeTokens> = {
     inputOuter: "px-1.5",
     addonOuterStart: "pl-1.5",
     addonOuterEnd: "pr-1.5",
+    addonButtonOuterStart: "pl-1",
+    addonButtonOuterEnd: "pr-1",
     suffixPad: "pr-1.5",
     fontSize: "text-xs",
     iconSize: 10,
@@ -48,6 +57,8 @@ export const INPUT_GROUP_SIZE: Record<KumoInputSize, InputGroupSizeTokens> = {
     inputOuter: "px-2",
     addonOuterStart: "pl-1.5",
     addonOuterEnd: "pr-1.5",
+    addonButtonOuterStart: "pl-1",
+    addonButtonOuterEnd: "pr-1",
     suffixPad: "pr-2",
     fontSize: "text-xs",
     iconSize: 13,
@@ -56,6 +67,8 @@ export const INPUT_GROUP_SIZE: Record<KumoInputSize, InputGroupSizeTokens> = {
     inputOuter: "px-3",
     addonOuterStart: "pl-2",
     addonOuterEnd: "pr-2",
+    addonButtonOuterStart: "pl-1",
+    addonButtonOuterEnd: "pr-1",
     suffixPad: "pr-3",
     fontSize: "text-base",
     iconSize: 18,
@@ -64,6 +77,8 @@ export const INPUT_GROUP_SIZE: Record<KumoInputSize, InputGroupSizeTokens> = {
     inputOuter: "px-4",
     addonOuterStart: "pl-2.5",
     addonOuterEnd: "pr-2.5",
+    addonButtonOuterStart: "pl-1.5",
+    addonButtonOuterEnd: "pr-1.5",
     suffixPad: "pr-4",
     fontSize: "text-base",
     iconSize: 20,
@@ -130,6 +145,8 @@ export interface InputGroupContextValue {
   focusMode: "container" | "individual";
   disabled: boolean;
   error?: FieldProps["error"];
+  /** Auto-generated id for the input element; used by the invisible label overlay. */
+  inputId: string;
 }
 
 export const InputGroupContext = createContext<InputGroupContextValue | null>(

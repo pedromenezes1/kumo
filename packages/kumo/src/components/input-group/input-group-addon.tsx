@@ -32,11 +32,16 @@ export const Addon = forwardRef<HTMLDivElement, InputGroupAddonProps>(
 
     // Inject size into direct icon children that don't already have one set.
     // Skips buttons (which have their own size handling) and non-element nodes.
+    // Also tracks whether a Button is present so we can reduce outer padding.
+    let containsButton = false;
     const sizedChildren = Children.map(children, (child) => {
       if (!isValidElement(child)) return child;
+      if (child.type === Button) {
+        containsButton = true;
+        return child;
+      }
       const props = child.props as { size?: unknown };
       if (props.size !== undefined) return child;
-      if (child.type === Button) return child;
       return cloneElement(child as ReactElement<{ size?: number }>, {
         size: tokens.iconSize,
       });
@@ -52,13 +57,25 @@ export const Addon = forwardRef<HTMLDivElement, InputGroupAddonProps>(
             : "input-group-addon-end"
         }
         className={cn(
-          "pointer-events-none flex shrink-0 items-center gap-1.5",
+          "relative z-[1] pointer-events-none flex shrink-0 items-center gap-1.5",
           "text-kumo-subtle",
           tokens.fontSize,
           "*:pointer-events-auto",
           align === "start"
-            ? cn("-order-1", tokens.addonOuterStart, "pr-0")
-            : cn("order-1", "pl-0", tokens.addonOuterEnd),
+            ? cn(
+                "-order-1",
+                containsButton
+                  ? tokens.addonButtonOuterStart
+                  : tokens.addonOuterStart,
+                "pr-0",
+              )
+            : cn(
+                "order-1",
+                "pl-0",
+                containsButton
+                  ? tokens.addonButtonOuterEnd
+                  : tokens.addonOuterEnd,
+              ),
           className,
         )}
       >

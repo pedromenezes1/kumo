@@ -1,4 +1,10 @@
-import { forwardRef, useMemo, type PropsWithChildren } from "react";
+import {
+  forwardRef,
+  useId,
+  useMemo,
+  type ComponentPropsWithoutRef,
+  type PropsWithChildren,
+} from "react";
 import { cn } from "../../utils/cn";
 import { inputVariants } from "../input/input";
 import { Field } from "../field/field";
@@ -94,14 +100,17 @@ const Root = forwardRef<
     },
     forwardedRef,
   ) => {
+    const inputId = useId();
+
     const contextValue = useMemo(
       () => ({
         size,
         focusMode,
         disabled,
         error,
+        inputId,
       }),
-      [size, focusMode, disabled, error],
+      [size, focusMode, disabled, error, inputId],
     );
 
     // When label is provided, Field already renders a <label> with htmlFor
@@ -149,6 +158,12 @@ const Root = forwardRef<
             className={containerClassName}
             {...rest}
           >
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control -- invisible overlay for click-to-focus; the visible Field label handles a11y */}
+            <label
+              htmlFor={inputId}
+              className="absolute inset-0 z-0"
+              aria-hidden="true"
+            />
             {children}
           </div>
         ) : (
@@ -183,9 +198,27 @@ const Root = forwardRef<
 );
 Root.displayName = "InputGroup";
 
+/** @deprecated Use `InputGroup.Addon` instead. */
+const Label = forwardRef<
+  HTMLDivElement,
+  ComponentPropsWithoutRef<typeof Addon>
+>((props, ref) => <Addon ref={ref} align="start" {...props} />);
+Label.displayName = "InputGroup.Label";
+
+/** @deprecated Use `InputGroup.Suffix` instead. */
+const Description = forwardRef<
+  HTMLDivElement,
+  ComponentPropsWithoutRef<typeof Suffix>
+>((props, ref) => <Suffix ref={ref} {...props} />);
+Description.displayName = "InputGroup.Description";
+
 export const InputGroup = Object.assign(Root, {
   Input,
   Button,
   Addon,
   Suffix,
+  /** @deprecated Use `InputGroup.Addon` instead. */
+  Label,
+  /** @deprecated Use `InputGroup.Suffix` instead. */
+  Description,
 });
