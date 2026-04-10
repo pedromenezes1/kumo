@@ -61,13 +61,27 @@ export const Input = forwardRef<HTMLInputElement, InputGroupInputProps>(
         {...props}
         id={inputId}
         className={cn(
+          // Base input layout: fill height, allow shrinking, strip native border/radius
           "flex h-full min-w-0 grow items-center rounded-none border-0 bg-transparent font-sans",
           // Always use full outer padding — the container's has-[] rules reduce
           // pl/pr to inputSeam on sides that touch an addon.
           tokens.inputOuter,
+          // Truncate overflowing text with "…" instead of expanding the input
           "text-ellipsis",
+          // Individual mode: each element owns its own border instead of sharing a container ring
           isIndividual
-            ? "relative z-[1] ring ring-kumo-line first:rounded-l-[inherit] last:rounded-r-[inherit] focus:z-1 focus:outline"
+            ? [
+                // Own border replaces the container's shared ring
+                "relative ring-0 border border-kumo-line",
+                // Inherit border-radius only on outer edges; inner edges are flat
+                "first:rounded-l-[inherit] last:rounded-r-[inherit]",
+                // Collapse double borders between adjacent elements
+                "not-first:border-l-0",
+                // Hovered element renders above idle siblings to show full border
+                "hover:z-[1] hover:border-kumo-line",
+                // Focused element renders above hovered siblings for focus indicator
+                "focus:z-[2] focus:border-kumo-line focus:outline focus:-outline-offset-1",
+              ].join(" ")
             : // Container mode: kill all focus indicators — the container handles them
               // z-[1] lifts the input above the invisible label overlay so cursor/selection work
               "relative z-[1] ring-0! shadow-none outline-none focus:ring-0! focus:outline-none",

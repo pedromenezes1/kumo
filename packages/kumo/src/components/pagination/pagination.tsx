@@ -206,7 +206,7 @@ function PaginationControls({
       className={cn("grow flex flex-col items-end", className)}
     >
       <div>
-        <InputGroup focusMode="individual">
+        <InputGroup>
           {controls === "full" && (
             <InputGroup.Button
               variant="secondary"
@@ -392,7 +392,8 @@ export interface PaginationCompoundProps extends PaginationBaseProps {
  * ```
  */
 export interface PaginationLegacyProps
-  extends PaginationBaseProps, KumoPaginationVariantsProps {
+  extends PaginationBaseProps,
+    KumoPaginationVariantsProps {
   children?: never;
   /** @deprecated Use Pagination.Info with children prop instead */
   text?: (props: {

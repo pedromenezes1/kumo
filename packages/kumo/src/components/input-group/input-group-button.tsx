@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useContext,
   type PropsWithChildren,
   type ReactNode,
 } from "react";
@@ -7,7 +8,11 @@ import { cn } from "../../utils/cn";
 import { type ButtonProps, Button as ButtonExternal } from "../button/button";
 import { Tooltip, type KumoTooltipSide } from "../tooltip/tooltip";
 import type { KumoInputSize } from "../input/input";
-import { INPUT_GROUP_SIZE, useInputGroupContext } from "./context";
+import {
+  INPUT_GROUP_SIZE,
+  InputGroupAddonContext,
+  useInputGroupContext,
+} from "./context";
 
 /**
  * In container mode, buttons render "one size down" so they stay visually
@@ -72,8 +77,32 @@ export const Button = forwardRef<
     ref: React.ForwardedRef<HTMLButtonElement>,
   ) => {
     const context = useInputGroupContext("Button");
+    const isInsideAddon = useContext(InputGroupAddonContext);
     const isDisabled = disabled ?? context?.disabled;
-    const isIndividual = context?.focusMode === "individual";
+    const isIndividual =
+      context?.focusMode === "individual" || context?.focusMode === "hybrid";
+    const effectiveVariant = variant ?? "ghost";
+
+    if (
+      process.env.NODE_ENV !== "production" &&
+      context &&
+      effectiveVariant === "ghost" &&
+      !isInsideAddon
+    ) {
+      console.warn(
+        "InputGroup.Button: Ghost buttons should be wrapped in <InputGroup.Addon> for correct spacing.",
+      );
+    }
+
+    if (
+      process.env.NODE_ENV !== "production" &&
+      context &&
+      size !== undefined
+    ) {
+      console.warn(
+        "InputGroup.Button: Set `size` on <InputGroup> instead of <InputGroup.Button>.",
+      );
+    }
 
     // Derive aria-label from tooltip string when the button has no explicit label.
     // Icon-only buttons require an aria-label for a11y.
@@ -109,6 +138,8 @@ export const Button = forwardRef<
         {...props}
         icon={sizedIcon}
         variant={variant ?? "ghost"}
+        // Individual: use the group's size directly so buttons match the input height.
+        // Container: render one size down so the button stays subordinate to the input.
         size={
           size ??
           (isIndividual
@@ -116,11 +147,23 @@ export const Button = forwardRef<
             : (COMPACT_BUTTON_SIZE[context?.size ?? "base"] ?? "sm"))
         }
         className={cn(
+          // Ensure clicks register even when parent has pointer-events-none (e.g. disabled overlay)
           "pointer-events-auto",
+          // Individual mode: each button owns its own border and focus indicator
           isIndividual && [
-            "relative h-full! rounded-none ring ring-kumo-line",
+            // Own border replaces the container's shared ring; force full height
+            "relative h-full! rounded-none ring-0 border border-kumo-line",
+            // Inherit border-radius only on outer edges; inner edges are flat
             "first:rounded-l-[inherit] last:rounded-r-[inherit]",
-            "focus:z-1 focus:outline",
+            // Collapse double borders between adjacent elements
+            "not-first:border-l-0",
+            // Hovered element renders above idle siblings to show full border
+            "hover:z-[1]",
+            // Focused element renders above hovered siblings for focus indicator
+            "focus:z-[2] focus:border-kumo-line focus:outline focus:-outline-offset-1",
+            // Suppress the base Button's focus ring so only our outline shows
+            "focus-visible:ring-0 focus-visible:shadow-none",
+            // Match the group's disabled visual treatment
             "disabled:bg-kumo-overlay disabled:text-kumo-inactive!",
           ],
           className,

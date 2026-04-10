@@ -11,6 +11,8 @@ import { Field } from "../field/field";
 import {
   InputGroupContext,
   INPUT_GROUP_HAS_CLASSES,
+  detectFocusMode,
+  partitionChildren,
   type InputGroupRootPropsInternal,
 } from "./context";
 import { Input } from "./input-group-input";
@@ -90,7 +92,6 @@ const Root = forwardRef<
       children,
       className,
       disabled = false,
-      focusMode = "container",
       label,
       description,
       error,
@@ -101,6 +102,7 @@ const Root = forwardRef<
     forwardedRef,
   ) => {
     const inputId = useId();
+    const focusMode = detectFocusMode(children);
 
     const contextValue = useMemo(
       () => ({
@@ -118,39 +120,157 @@ const Root = forwardRef<
     // (invalid HTML with undefined assistive technology behavior).
     // When standalone (no label), a native <label> preserves click-to-focus.
     const containerClassName = cn(
+      // Establish positioning context and make the whole area a click target
       "relative w-full cursor-text",
       // inputVariants provides base ring-kumo-line; must come before state overrides
       inputVariants({ size }),
+      // Subtle drop shadow to separate the group from the page surface
       "shadow-xs",
+      // Disabled state: prevent interaction and dim the entire group
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-      focusMode === "individual"
-        ? "isolate overflow-visible"
-        : [
+      // Container mode: clip children to rounded corners and show a shared focus ring
+      // Individual mode: disable container ring/shadow so each child owns its own border
+      focusMode === "container"
+        ? [
             "overflow-hidden",
             // Focus state must come AFTER inputVariants to override ring-kumo-line
-            "focus-within:ring-kumo-ring",
+            "focus-within:ring-kumo-hairline",
             // The CSS in kumo-binding.css handles the native outline
-          ],
+          ]
+        : // isolate creates a new stacking context so z-index in children doesn't leak out
+          "isolate overflow-visible ring-0 shadow-none",
       // Error state must also come after inputVariants
       "has-[input[aria-invalid=true]]:ring-kumo-danger",
+      // Reset horizontal padding — children handle their own spacing
       "px-0",
+      // Horizontal layout with no gap — children control their own internal spacing
       "flex items-center gap-0",
+      // When a suffix is present, let the input shrink to its content width
+      // so the suffix stays visually adjacent
       "has-[[data-slot=input-group-suffix]]:[&_input]:[field-sizing:content]",
       "has-[[data-slot=input-group-suffix]]:[&_input]:max-w-full",
       "has-[[data-slot=input-group-suffix]]:[&_input]:grow-0",
       "has-[[data-slot=input-group-suffix]]:[&_input]:pr-0",
+      // Size-specific padding adjustments when addons or suffixes are present
       INPUT_GROUP_HAS_CLASSES[size],
       className,
     );
 
+    // Data attributes drive CSS selectors in kumo-binding.css (focus outline)
+    // and enable child components to query their parent's state.
     const dataProps = {
       "data-slot": "input-group" as const,
       "data-focus-mode": focusMode,
       "data-disabled": disabled ? ("" as const) : undefined,
     };
 
+    // Hybrid mode: splits children into two rendering zones:
+    // 1. Container zone (Addon + Input + Suffix) — shares a single border/ring
+    // 2. Individual zone (standalone Buttons) — each button owns its own border
+    // This lets inputs and addons look unified while buttons remain independent.
+    if (focusMode === "hybrid") {
+      // Partition children by type: addons/inputs/suffixes → container, buttons → individual
+      const { containerZone, individualZone } = partitionChildren(children);
+
+      // Override focusMode to "container" for children inside the zone
+      // so InputGroup.Input uses container-mode styling (ring-0!, no own border).
+      const containerZoneContext = {
+        ...contextValue,
+        focusMode: "container" as const,
+      };
+
+      const hybridContent = (
+        <>
+          {/* Container zone wrapper — shares a single border/ring */}
+          <InputGroupContext.Provider value={containerZoneContext}>
+            <div
+              data-slot="input-group-container-zone"
+              className={cn(
+                // Base input sizing/shape from shared variant function
+                inputVariants({ size }),
+                // Clip children to rounded corners within the zone
+                "overflow-hidden",
+                // Show red ring on validation error
+                "has-[input[aria-invalid=true]]:ring-kumo-danger",
+                // Reset horizontal padding — children handle their own spacing
+                "px-0",
+                // Fill available width but allow shrinking when sibling buttons are present
+                "flex min-w-0 flex-1 items-center gap-0",
+                // Use a clean 1px CSS border instead of ring+shadow from inputVariants
+                // so the zone matches adjacent individual-mode buttons exactly.
+                "ring-0 shadow-none",
+                "border border-kumo-line",
+                // Collapse double borders between zone and adjacent individual-mode button
+                "not-first:border-l-0",
+                // Inherit border-radius from the outer container on outer edges only;
+                // inner edges are flat so they butt cleanly against sibling buttons
+                "first:rounded-l-[inherit] last:rounded-r-[inherit] rounded-none",
+                // Size-specific padding adjustments when addons or suffixes are present
+                INPUT_GROUP_HAS_CLASSES[size],
+                // When a suffix is present, let the input shrink to its content width
+                "has-[[data-slot=input-group-suffix]]:[&_input]:[field-sizing:content]",
+                "has-[[data-slot=input-group-suffix]]:[&_input]:max-w-full",
+                "has-[[data-slot=input-group-suffix]]:[&_input]:grow-0",
+                "has-[[data-slot=input-group-suffix]]:[&_input]:pr-0",
+              )}
+            >
+              {/* When label exists, an invisible <label> overlay enables click-to-focus
+                  inside the container zone without nesting visible <label> elements */}
+              {label && (
+                // eslint-disable-next-line jsx-a11y/label-has-associated-control -- invisible overlay for click-to-focus; the visible Field label handles a11y
+                <label
+                  htmlFor={inputId}
+                  // Positioned behind children (z-0) so it catches clicks on empty space
+                  className="absolute inset-0 z-0 cursor-text"
+                  aria-hidden="true"
+                />
+              )}
+              {containerZone}
+            </div>
+          </InputGroupContext.Provider>
+          {/* Individual zone — buttons with their own borders */}
+          {individualZone}
+        </>
+      );
+
+      // Hybrid always uses a <div> container (never <label>) because
+      // individual-zone buttons are siblings — wrapping them in a <label>
+      // would be semantically incorrect.
+      const hybridContainer = (
+        <InputGroupContext.Provider value={contextValue}>
+          <div
+            ref={forwardedRef as React.Ref<HTMLDivElement>}
+            {...dataProps}
+            className={containerClassName}
+            {...rest}
+          >
+            {hybridContent}
+          </div>
+        </InputGroupContext.Provider>
+      );
+
+      if (label) {
+        return (
+          <Field
+            label={label}
+            description={description}
+            error={error}
+            required={required}
+            labelTooltip={labelTooltip}
+          >
+            {hybridContainer}
+          </Field>
+        );
+      }
+
+      return hybridContainer;
+    }
+
+    // Container / Individual mode (non-hybrid)
     const container = (
       <InputGroupContext.Provider value={contextValue}>
+        {/* When label is set, use <div> to avoid nested <label> (Field provides one).
+            An invisible <label> overlay handles click-to-focus on empty space. */}
         {label ? (
           <div
             ref={forwardedRef as React.Ref<HTMLDivElement>}
@@ -161,12 +281,14 @@ const Root = forwardRef<
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control -- invisible overlay for click-to-focus; the visible Field label handles a11y */}
             <label
               htmlFor={inputId}
+              // Positioned behind children (z-0) so it catches clicks on empty space
               className="absolute inset-0 z-0"
               aria-hidden="true"
             />
             {children}
           </div>
         ) : (
+          // Standalone (no label): native <label> wraps everything for click-to-focus
           <label
             ref={forwardedRef as React.Ref<HTMLLabelElement>}
             {...dataProps}

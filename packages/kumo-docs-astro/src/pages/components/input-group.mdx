@@ -43,6 +43,55 @@ import {
   />
 </ComponentSection>
 
+{/* Usage */}
+
+<ComponentSection>
+  <Heading level={2}>Usage</Heading>
+  <Heading level={3}>With Built-in Field (Recommended)</Heading>
+  <p>
+    Pass the `label` prop to InputGroup to enable the built-in Field wrapper with label, description, and error support.
+  </p>
+
+```tsx
+import { InputGroup } from "@cloudflare/kumo";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
+
+export default function Example() {
+  return (
+    <InputGroup label="Search" description="Find pages, components, and more">
+      <InputGroup.Addon>
+        <MagnifyingGlassIcon />
+      </InputGroup.Addon>
+      <InputGroup.Input placeholder="Search..." />
+    </InputGroup>
+  );
+}
+```
+
+<Heading level={3}>Bare InputGroup (Custom Layouts)</Heading>
+<p>
+  For custom form layouts, use InputGroup without `label`. Must provide
+  `aria-label` on `InputGroup.Input` for accessibility.
+</p>
+
+```tsx
+import { InputGroup } from "@cloudflare/kumo";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
+
+export default function Example() {
+  return (
+    <InputGroup>
+      <InputGroup.Addon>
+        <MagnifyingGlassIcon />
+      </InputGroup.Addon>
+      <InputGroup.Input placeholder="Search..." aria-label="Search" />
+    </InputGroup>
+  );
+}
+```
+
+</ComponentSection>
+
 <ComponentSection>
   <Heading level={2}>Examples</Heading>
 
@@ -62,7 +111,7 @@ import {
 
 <Heading level={3}>Button</Heading>
 <p>
-  Place InputGroup.Button inside an Addon for actions that operate directly on
+  Place `InputGroup.Button` inside an Addon for actions that operate directly on
   the input value, such as reveal/hide or clear.
 </p>
 <ComponentExample demo="InputGroupButtonsDemo">
@@ -80,10 +129,7 @@ import {
 </ComponentExample>
 
 <Heading level={3}>Kbd</Heading>
-<p>
-  Place a keyboard shortcut hint inside an end Addon. Use a bare `kbd` element —
-  no border or background needed.
-</p>
+<p>Place a keyboard shortcut hint inside an end Addon.</p>
 <ComponentExample demo="InputGroupKbdDemo">
   <InputGroupKbdDemo client:visible />
 </ComponentExample>

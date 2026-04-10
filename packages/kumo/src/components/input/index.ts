@@ -11,12 +11,21 @@ export {
 
 // Backward-compatible type aliases — the old `input-group.tsx` exported these
 // names. External consumers importing from `@cloudflare/kumo/components/input`
-// may reference them, so we keep the aliases pointing to the new equivalents.
+// may reference them, so we keep the aliases to avoid breaking type imports.
 
-/** @deprecated Use `"container" | "individual"` directly. */
+/**
+ * @deprecated `focusMode` is no longer a public prop — it is auto-detected by
+ * `InputGroup` based on its children. This type will be removed in a future
+ * major version.
+ */
 export type KumoInputGroupFocusMode = "container" | "individual";
 
-/** @deprecated Use `InputGroupRootProps` from `@cloudflare/kumo` instead. */
+/**
+ * @deprecated `focusMode` is no longer a public prop — it is auto-detected by
+ * `InputGroup` based on its children. Use `InputGroupRootProps` from
+ * `@cloudflare/kumo` instead. This type will be removed in a future major
+ * version.
+ */
 export interface KumoInputGroupVariantsProps {
   focusMode?: KumoInputGroupFocusMode;
 }

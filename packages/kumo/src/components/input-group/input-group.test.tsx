@@ -1,14 +1,19 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { InputGroup } from "./input-group";
-import { INPUT_GROUP_SIZE } from "./context";
+import { INPUT_GROUP_SIZE, detectFocusMode } from "./context";
 import type { KumoInputSize } from "../input/input";
 
 const MockIcon = (props: { size?: number }) => (
   <svg data-testid="mock-icon" data-size={props.size ?? "none"} />
 );
+
+const FakeButton = (props: {
+  variant?: string;
+  children?: React.ReactNode;
+}) => <button>{props.children}</button>;
 
 describe("InputGroup", () => {
   describe("rendering", () => {
@@ -34,11 +39,7 @@ describe("InputGroup", () => {
             aria-label="Password"
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              aria-label="Show password"
-              onClick={() => {}}
-            >
+            <InputGroup.Button aria-label="Show password" onClick={() => {}}>
               <svg data-testid="eye-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -151,11 +152,7 @@ describe("InputGroup", () => {
             aria-label="Password"
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              aria-label="Show password"
-              onClick={handleClick}
-            >
+            <InputGroup.Button aria-label="Show password" onClick={handleClick}>
               <svg data-testid="eye-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -178,11 +175,7 @@ describe("InputGroup", () => {
             onChange={() => {}}
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              aria-label="Delete search"
-              onClick={handleClick}
-            >
+            <InputGroup.Button aria-label="Delete search" onClick={handleClick}>
               <svg data-testid="x-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -236,11 +229,7 @@ describe("InputGroup", () => {
             aria-label="Password"
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              aria-label="Show password"
-              onClick={() => {}}
-            >
+            <InputGroup.Button aria-label="Show password" onClick={() => {}}>
               <svg data-testid="eye-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -411,11 +400,7 @@ describe("InputGroup", () => {
             aria-label="Password"
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              aria-label="Show password"
-              onClick={() => {}}
-            >
+            <InputGroup.Button aria-label="Show password" onClick={() => {}}>
               <svg data-testid="eye-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -478,7 +463,7 @@ describe("InputGroup", () => {
             aria-label="Search"
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button size="sm" tooltip="Query language help">
+            <InputGroup.Button tooltip="Query language help">
               <svg data-testid="question-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -501,11 +486,7 @@ describe("InputGroup", () => {
             aria-label="Search"
           />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              tooltip="Query language help"
-              aria-label="Help"
-            >
+            <InputGroup.Button tooltip="Query language help" aria-label="Help">
               <svg data-testid="question-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -699,6 +680,103 @@ describe("InputGroup", () => {
 
       warnSpy.mockRestore();
     });
+
+    it("warns when ghost InputGroup.Button is not inside Addon", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Button aria-label="Toggle">Toggle</InputGroup.Button>
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "InputGroup.Button: Ghost buttons should be wrapped in <InputGroup.Addon> for correct spacing.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("does not warn when ghost InputGroup.Button is inside Addon", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button aria-label="Toggle">Toggle</InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).not.toContain(
+        "InputGroup.Button: Ghost buttons should be wrapped in <InputGroup.Addon> for correct spacing.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("does not warn when non-ghost InputGroup.Button is outside Addon", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Button variant="secondary" aria-label="Action">
+            Action
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).not.toContain(
+        "InputGroup.Button: Ghost buttons should be wrapped in <InputGroup.Addon> for correct spacing.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("warns when InputGroup.Button receives size directly", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button size="sm" aria-label="Help">
+              Help
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).toContain(
+        "InputGroup.Button: Set `size` on <InputGroup> instead of <InputGroup.Button>.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("does not warn about Button size when used outside InputGroup", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <InputGroup.Button size="sm" aria-label="Standalone">
+          Standalone
+        </InputGroup.Button>,
+      );
+
+      const calls = warnSpy.mock.calls.map((c) => c[0]);
+      expect(calls).not.toContain(
+        "InputGroup.Button: Set `size` on <InputGroup> instead of <InputGroup.Button>.",
+      );
+
+      warnSpy.mockRestore();
+    });
   });
 
   describe("stratus backward compatibility", () => {
@@ -739,9 +817,9 @@ describe("InputGroup", () => {
       expect(onClick).toHaveBeenCalled();
     });
 
-    it("supports pagination pattern with focusMode individual", () => {
+    it("auto-detects individual focus mode for pagination pattern", () => {
       render(
-        <InputGroup focusMode="individual">
+        <InputGroup>
           <InputGroup.Button variant="secondary" aria-label="Previous">
             Prev
           </InputGroup.Button>
@@ -776,6 +854,7 @@ describe("InputGroup", () => {
     });
 
     it("renders Button as direct child without Addon wrapper", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       render(
         <InputGroup>
           <InputGroup.Input aria-label="Value" />
@@ -783,6 +862,7 @@ describe("InputGroup", () => {
         </InputGroup>,
       );
       expect(screen.getByLabelText("Toggle")).toBeTruthy();
+      warnSpy.mockRestore();
     });
   });
 
@@ -811,11 +891,7 @@ describe("InputGroup", () => {
         >
           <InputGroup.Input type="password" placeholder="Enter password" />
           <InputGroup.Addon align="end">
-            <InputGroup.Button
-              size="sm"
-              aria-label="Show password"
-              onClick={() => {}}
-            >
+            <InputGroup.Button aria-label="Show password" onClick={() => {}}>
               <svg data-testid="eye-icon" />
             </InputGroup.Button>
           </InputGroup.Addon>
@@ -842,6 +918,399 @@ describe("InputGroup", () => {
       expect(
         screen.getByText("Please enter a valid email address"),
       ).toBeTruthy();
+    });
+  });
+
+  describe("detectFocusMode", () => {
+    // NOTE: detectFocusMode receives `children` as passed by React to a
+    // component — multiple JSX children become an array, NOT a Fragment.
+    // Tests use arrays to match this real-world behavior.
+
+    it('returns "container" when there are no Button children', () => {
+      const children = [
+        <InputGroup.Addon key="a">@</InputGroup.Addon>,
+        <InputGroup.Input key="b" aria-label="Test" />,
+      ];
+      expect(detectFocusMode(children)).toBe("container");
+    });
+
+    it('returns "container" when Button is inside an Addon (not a direct child)', () => {
+      // When Button is inside Addon, Addon is the direct child, not Button.
+      // detectFocusMode only sees direct children, so Addon is what it checks.
+      const children = [
+        <InputGroup.Input key="a" aria-label="Test" />,
+        <InputGroup.Addon key="b" align="end">
+          <InputGroup.Button aria-label="Help">Help</InputGroup.Button>
+        </InputGroup.Addon>,
+      ];
+      expect(detectFocusMode(children)).toBe("container");
+    });
+
+    it('returns "container" when a direct-child Button has no variant (defaults to ghost)', () => {
+      const children = [
+        <InputGroup.Input key="a" aria-label="Test" />,
+        <InputGroup.Button key="b" aria-label="Toggle">
+          Toggle
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("container");
+    });
+
+    it('returns "container" when a direct-child Button has variant="ghost"', () => {
+      const children = [
+        <InputGroup.Input key="a" aria-label="Test" />,
+        <InputGroup.Button key="b" variant="ghost" aria-label="Toggle">
+          Toggle
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("container");
+    });
+
+    it('returns "individual" when a direct-child Button has variant="secondary"', () => {
+      const children = [
+        <InputGroup.Button key="a" variant="secondary" aria-label="Prev">
+          Prev
+        </InputGroup.Button>,
+        <InputGroup.Input key="b" aria-label="Page" />,
+        <InputGroup.Button key="c" variant="secondary" aria-label="Next">
+          Next
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("individual");
+    });
+
+    it('returns "individual" when a direct-child Button has variant="primary"', () => {
+      const children = [
+        <InputGroup.Input key="a" aria-label="Search" />,
+        <InputGroup.Button key="b" variant="primary" aria-label="Submit">
+          Go
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("individual");
+    });
+
+    it('returns "container" when children is null', () => {
+      expect(detectFocusMode(null)).toBe("container");
+    });
+
+    it('returns "container" when children is undefined', () => {
+      expect(detectFocusMode(undefined)).toBe("container");
+    });
+
+    it('returns "container" when children is a string', () => {
+      expect(detectFocusMode("hello")).toBe("container");
+    });
+
+    it('returns "individual" with mixed direct Button variants (one non-ghost is enough)', () => {
+      const children = [
+        <InputGroup.Button key="a" aria-label="Ghost">
+          Ghost
+        </InputGroup.Button>,
+        <InputGroup.Input key="b" aria-label="Test" />,
+        <InputGroup.Button key="c" variant="secondary" aria-label="Action">
+          Action
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("individual");
+    });
+
+    it("ignores non-InputGroup.Button elements with variant props", () => {
+      // A random element with a variant prop should not trigger individual mode
+      const children = [
+        <InputGroup.Input key="a" aria-label="Test" />,
+        <FakeButton key="b" variant="secondary">
+          Not a real InputGroup.Button
+        </FakeButton>,
+      ];
+      expect(detectFocusMode(children)).toBe("container");
+    });
+
+    it('returns "container" for a single non-Button child', () => {
+      const children = <InputGroup.Input aria-label="Test" />;
+      expect(detectFocusMode(children)).toBe("container");
+    });
+
+    it('returns "hybrid" when both Addon and non-ghost Button are direct children', () => {
+      const children = [
+        <InputGroup.Addon key="a">@</InputGroup.Addon>,
+        <InputGroup.Input key="b" aria-label="Email" />,
+        <InputGroup.Button key="c" variant="secondary" aria-label="Submit">
+          Go
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("hybrid");
+    });
+
+    it('returns "individual" when non-ghost Button is present but no Addon', () => {
+      const children = [
+        <InputGroup.Input key="a" aria-label="Search" />,
+        <InputGroup.Button key="b" variant="primary" aria-label="Submit">
+          Go
+        </InputGroup.Button>,
+      ];
+      expect(detectFocusMode(children)).toBe("individual");
+    });
+  });
+
+  describe("focus mode auto-detection (rendered)", () => {
+    it('auto-detects "individual" when InputGroup.Button with variant="secondary" is a direct child', () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Button variant="secondary" aria-label="Action">
+            Action
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("individual");
+    });
+
+    it('defaults to "container" when all buttons are inside Addon', () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button aria-label="Help">Help</InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("container");
+    });
+
+    it('defaults to "container" when Button has no variant (defaults to ghost)', () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Button aria-label="Toggle">Toggle</InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("container");
+      warnSpy.mockRestore();
+    });
+
+    it('defaults to "container" when Button has variant="ghost"', () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Test" />
+          <InputGroup.Addon align="end">
+            <InputGroup.Button variant="ghost" aria-label="Toggle">
+              Toggle
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("container");
+    });
+
+    it('auto-detects "individual" for variant="primary"', () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="primary" aria-label="Submit">
+            Go
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("individual");
+    });
+
+    it('auto-detects "individual" for variant="destructive"', () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Input aria-label="Confirm" />
+          <InputGroup.Button variant="destructive" aria-label="Delete">
+            Delete
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("individual");
+    });
+
+    it('auto-detects "hybrid" when Addon and non-ghost Button are both direct children', () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input aria-label="Email" />
+          <InputGroup.Button variant="secondary" aria-label="Submit">
+            Go
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector("[data-slot='input-group']");
+      expect(group).toBeTruthy();
+      expect(group!.getAttribute("data-focus-mode")).toBe("hybrid");
+    });
+
+    it("hybrid mode gets borderless container classes (same as individual)", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input aria-label="Email" />
+          <InputGroup.Button variant="secondary" aria-label="Submit">
+            Go
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector(
+        "[data-slot='input-group']",
+      ) as HTMLElement;
+      expect(group.className).toContain("overflow-visible");
+      expect(group.className).toContain("ring-0");
+      expect(group.className).not.toContain("overflow-hidden");
+      expect(group.className).not.toContain("focus-within:ring-kumo-hairline");
+    });
+
+    it("container mode gets shared focus ring classes", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>@</InputGroup.Addon>
+          <InputGroup.Input aria-label="Username" />
+        </InputGroup>,
+      );
+      const group = container.querySelector(
+        "[data-slot='input-group']",
+      ) as HTMLElement;
+      expect(group.className).toContain("overflow-hidden");
+      expect(group.className).toContain("focus-within:ring-kumo-hairline");
+      expect(group.className).not.toContain("overflow-visible");
+    });
+
+    it("individual mode gets borderless container classes", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Button variant="secondary" aria-label="Prev">
+            Prev
+          </InputGroup.Button>
+          <InputGroup.Input aria-label="Page" />
+          <InputGroup.Button variant="secondary" aria-label="Next">
+            Next
+          </InputGroup.Button>
+        </InputGroup>,
+      );
+      const group = container.querySelector(
+        "[data-slot='input-group']",
+      ) as HTMLElement;
+      expect(group.className).toContain("overflow-visible");
+      expect(group.className).toContain("ring-0");
+      expect(group.className).not.toContain("overflow-hidden");
+      expect(group.className).not.toContain("focus-within:ring-kumo-hairline");
+    });
+  });
+
+  describe("hybrid mode", () => {
+    it("renders container zone wrapper in hybrid mode", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>icon</InputGroup.Addon>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="secondary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+      const containerZone = container.querySelector(
+        "[data-slot='input-group-container-zone']",
+      );
+      expect(containerZone).toBeTruthy();
+    });
+
+    it("places Addon and Input inside container zone", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>icon</InputGroup.Addon>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="secondary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+      const containerZone = container.querySelector(
+        "[data-slot='input-group-container-zone']",
+      ) as HTMLElement;
+      expect(within(containerZone).getByRole("textbox")).toBeTruthy();
+      expect(within(containerZone).getByText("icon")).toBeTruthy();
+    });
+
+    it("places Button outside container zone", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>icon</InputGroup.Addon>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="secondary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+      const containerZone = container.querySelector(
+        "[data-slot='input-group-container-zone']",
+      ) as HTMLElement;
+      const button = screen.getByRole("button", { name: "Search" });
+      // Button should NOT be inside the container zone — it should be a sibling
+      expect(containerZone.contains(button)).toBe(false);
+      // Button should still be inside the input-group root
+      const group = container.querySelector(
+        "[data-slot='input-group']",
+      ) as HTMLElement;
+      expect(group.contains(button)).toBe(true);
+    });
+
+    it("Input inside container zone uses container-mode styling", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Addon>icon</InputGroup.Addon>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="secondary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+      const input = screen.getByRole("textbox");
+      // Container-mode inputs use ring-0! to suppress their own border,
+      // delegating the border to the container zone wrapper instead.
+      expect(input.className).toContain("ring-0!");
+    });
+
+    it("Button outside container zone uses individual-mode styling", () => {
+      render(
+        <InputGroup>
+          <InputGroup.Addon>icon</InputGroup.Addon>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="secondary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+      const button = screen.getByRole("button", { name: "Search" });
+      // Individual-mode buttons should have their own border styling
+      expect(button.className).toContain("border");
+    });
+
+    it("container zone has correct border and overflow styling", () => {
+      const { container } = render(
+        <InputGroup>
+          <InputGroup.Addon>icon</InputGroup.Addon>
+          <InputGroup.Input aria-label="Search" />
+          <InputGroup.Button variant="secondary">Search</InputGroup.Button>
+        </InputGroup>,
+      );
+      const containerZone = container.querySelector(
+        "[data-slot='input-group-container-zone']",
+      ) as HTMLElement;
+      expect(containerZone.className).toContain("overflow-hidden");
+      // Clean 1px CSS border (no ring or shadow stacking)
+      expect(containerZone.className).toContain("border");
+      expect(containerZone.className).toContain("border-kumo-line");
+      expect(containerZone.className).toContain("ring-0");
+      expect(containerZone.className).toContain("shadow-none");
+      // Double-border prevention with adjacent individual-mode buttons
+      expect(containerZone.className).toContain("not-first:border-l-0");
+      // No focus-within ring — CSS outline in kumo-binding.css handles focus
+      expect(containerZone.className).not.toContain(
+        "focus-within:ring-kumo-hairline",
+      );
     });
   });
 });

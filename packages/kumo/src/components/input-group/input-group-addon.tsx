@@ -7,7 +7,11 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../../utils/cn";
-import { useInputGroupContext, INPUT_GROUP_SIZE } from "./context";
+import {
+  useInputGroupContext,
+  INPUT_GROUP_SIZE,
+  InputGroupAddonContext,
+} from "./context";
 import { Button } from "./input-group-button";
 
 export interface InputGroupAddonProps {
@@ -79,7 +83,9 @@ export const Addon = forwardRef<HTMLDivElement, InputGroupAddonProps>(
           className,
         )}
       >
-        {sizedChildren}
+        <InputGroupAddonContext.Provider value={true}>
+          {sizedChildren}
+        </InputGroupAddonContext.Provider>
       </div>
     );
   },

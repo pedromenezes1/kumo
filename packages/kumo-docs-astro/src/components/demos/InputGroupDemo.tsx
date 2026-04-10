@@ -8,23 +8,26 @@ import {
   EyeSlashIcon,
   LinkIcon,
   QuestionIcon,
+  XIcon,
 } from "@phosphor-icons/react";
 
 export function InputGroupDemo() {
+  const [status, setStatus] = useState<"idle" | "loading" | "success">(
+    "success",
+  );
   const [value, setValue] = useState("kumo");
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("success");
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const next = e.target.value;
+
     setValue(next);
 
     if (timerRef.current) clearTimeout(timerRef.current);
 
     if (next.length > 0) {
       setStatus("loading");
+
       timerRef.current = setTimeout(() => setStatus("success"), 1500);
     } else {
       setStatus("idle");
@@ -35,19 +38,18 @@ export function InputGroupDemo() {
     <div className="w-full max-w-2xs">
       <InputGroup>
         <InputGroup.Input
-          maxLength={24}
-          value={value}
+          maxLength={20}
           onChange={handleChange}
+          value={value}
         />
         <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
-        {status === "loading" && (
+        {status !== "idle" && (
           <InputGroup.Addon align="end">
-            <Loader />
-          </InputGroup.Addon>
-        )}
-        {status === "success" && (
-          <InputGroup.Addon align="end">
-            <CheckCircleIcon weight="duotone" className="text-kumo-success" />
+            {status === "loading" ? (
+              <Loader />
+            ) : (
+              <CheckCircleIcon weight="duotone" className="text-kumo-success" />
+            )}
           </InputGroup.Addon>
         )}
       </InputGroup>
@@ -102,7 +104,6 @@ export function InputGroupButtonsDemo() {
         />
         <InputGroup.Addon align="end">
           <InputGroup.Button
-            size="sm"
             className="text-kumo-subtle"
             icon={show ? EyeSlashIcon : EyeIcon}
             aria-label={show ? "Hide password" : "Show password"}
@@ -111,13 +112,26 @@ export function InputGroupButtonsDemo() {
         </InputGroup.Addon>
       </InputGroup>
 
-      <InputGroup focusMode="individual" className="w-full max-w-3xs">
+      <InputGroup className="w-full max-w-3xs">
+        <InputGroup.Addon>
+          <MagnifyingGlassIcon />
+        </InputGroup.Addon>
         <InputGroup.Input
           value={searchValue}
           placeholder="Search"
           aria-label="Search"
           onChange={(e) => setSearchValue(e.target.value)}
         />
+        {searchValue && (
+          <InputGroup.Addon align="end" className="pr-1">
+            <InputGroup.Button
+              aria-label="Clear search"
+              onClick={() => setSearchValue("")}
+            >
+              <XIcon />
+            </InputGroup.Button>
+          </InputGroup.Addon>
+        )}
         <InputGroup.Button variant="secondary" onClick={() => {}}>
           Search
         </InputGroup.Button>
@@ -138,7 +152,6 @@ export function InputGroupTooltipButtonDemo() {
       />
       <InputGroup.Addon align="end">
         <InputGroup.Button
-          size="sm"
           className="text-kumo-subtle"
           icon={QuestionIcon}
           tooltip="Query language help"
@@ -157,7 +170,7 @@ export function InputGroupKbdDemo() {
       </InputGroup.Addon>
       <InputGroup.Input placeholder="Search..." aria-label="Search" />
       <InputGroup.Addon align="end">
-        <kbd className="!bg-none !border-none">⌘K</kbd>
+        <kbd className="bg-none! border-none!">⌘K</kbd>
       </InputGroup.Addon>
     </InputGroup>
   );
@@ -178,7 +191,11 @@ export function InputGroupSuffixDemo() {
   return (
     <div className="flex w-full max-w-2xs flex-col gap-4">
       <InputGroup label="Subdomain">
-        <InputGroup.Input aria-label="Subdomain" defaultValue="kumo" />
+        <InputGroup.Input
+          aria-label="Subdomain"
+          defaultValue="kumo"
+          maxLength={20}
+        />
         <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
         <InputGroup.Addon align="end">
           <CheckCircleIcon weight="duotone" className="text-kumo-success" />
@@ -189,7 +206,11 @@ export function InputGroupSuffixDemo() {
         label="Subdomain"
         error={{ message: "This subdomain is unavailable", match: true }}
       >
-        <InputGroup.Input aria-label="Subdomain" defaultValue="kumo" />
+        <InputGroup.Input
+          aria-label="Subdomain"
+          defaultValue="kumo"
+          maxLength={20}
+        />
         <InputGroup.Suffix>.workers.dev</InputGroup.Suffix>
         <InputGroup.Addon align="end">
           <XCircleIcon weight="duotone" className="text-kumo-danger" />
@@ -285,6 +306,11 @@ export function InputGroupStatesDemo() {
         <InputGroup.Input placeholder="Search..." />
       </InputGroup>
 
+      <InputGroup label="Optional Field" required={false}>
+        <InputGroup.Addon>$</InputGroup.Addon>
+        <InputGroup.Input placeholder="0.00" />
+      </InputGroup>
+
       <InputGroup
         label="With Description"
         description="Must be at least 8 characters"
@@ -292,11 +318,10 @@ export function InputGroupStatesDemo() {
       >
         <InputGroup.Input
           type={show ? "text" : "password"}
-          placeholder="Enter password"
+          placeholder="Password"
         />
         <InputGroup.Addon align="end">
           <InputGroup.Button
-            size="sm"
             className="text-kumo-subtle"
             icon={show ? EyeSlashIcon : EyeIcon}
             aria-label={show ? "Hide password" : "Show password"}

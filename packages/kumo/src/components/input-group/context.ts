@@ -1,4 +1,11 @@
-import { createContext, useContext, type HTMLAttributes } from "react";
+import {
+  Children,
+  createContext,
+  isValidElement,
+  useContext,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import type { KumoInputSize } from "../input/input";
 import type { FieldProps } from "../field/field";
 
@@ -109,13 +116,11 @@ export const INPUT_GROUP_HAS_CLASSES: Record<KumoInputSize, string> = {
 // Context
 
 /**
- * Full internal props including `focusMode`. Used by the component
- * implementation but NOT exported publicly — consumers and codegen
- * see `InputGroupRootProps` (which omits `focusMode`).
+ * Props for `InputGroup.Root`. Focus mode is auto-detected from children
+ * (see `detectFocusMode`), so it is not part of the public or internal API.
  */
 export interface InputGroupRootPropsInternal
-  extends
-    HTMLAttributes<HTMLElement>,
+  extends HTMLAttributes<HTMLElement>,
     Partial<
       Pick<
         FieldProps,
@@ -124,25 +129,14 @@ export interface InputGroupRootPropsInternal
     > {
   size?: KumoInputSize | undefined;
   disabled?: boolean;
-  /** @internal — hidden from the public type via Omit. */
-  focusMode?: "container" | "individual";
 }
 
-/**
- * Public InputGroup.Root props. `focusMode` is omitted so it doesn't
- * appear in the generated component registry or public API surface.
- *
- * This follows the same pattern as `InputProps` which uses `Pick<>` to
- * expose only `size` and `variant` from a broader internal type.
- */
-export type InputGroupRootProps = Omit<
-  InputGroupRootPropsInternal,
-  "focusMode"
->;
+/** Public InputGroup.Root props — identical to the internal type. */
+export type InputGroupRootProps = InputGroupRootPropsInternal;
 
 export interface InputGroupContextValue {
   size?: KumoInputSize;
-  focusMode: "container" | "individual";
+  focusMode: "container" | "individual" | "hybrid";
   disabled: boolean;
   error?: FieldProps["error"];
   /** Auto-generated id for the input element; used by the invisible label overlay. */
@@ -152,6 +146,13 @@ export interface InputGroupContextValue {
 export const InputGroupContext = createContext<InputGroupContextValue | null>(
   null,
 );
+
+/**
+ * Set to `true` by `InputGroup.Addon` so that `InputGroup.Button` can detect
+ * whether it's wrapped in an Addon. Ghost buttons should always live inside
+ * an Addon for correct spacing.
+ */
+export const InputGroupAddonContext = createContext(false);
 
 /**
  * Reads InputGroupContext and warns in development when the context is null
@@ -165,4 +166,92 @@ export function useInputGroupContext(componentName: string) {
     );
   }
   return context;
+}
+
+/**
+ * Partitions InputGroup children for hybrid focus mode.
+ *
+ * Container zone: Addon, Input, Suffix, text nodes — everything that should
+ * share a single container-style border.
+ *
+ * Individual zone: Direct `InputGroup.Button` elements that manage their own
+ * border and focus ring.
+ *
+ * Uses `displayName` comparison to identify elements, avoiding circular
+ * imports between `context.ts` and the sub-component files.
+ */
+export function partitionChildren(children: ReactNode): {
+  containerZone: ReactNode[];
+  individualZone: ReactNode[];
+} {
+  const containerZone: ReactNode[] = [];
+  const individualZone: ReactNode[] = [];
+
+  Children.forEach(children, (child) => {
+    if (
+      isValidElement(child) &&
+      (child.type as { displayName?: string })?.displayName ===
+        "InputGroup.Button"
+    ) {
+      individualZone.push(child);
+    } else {
+      containerZone.push(child);
+    }
+  });
+
+  return { containerZone, individualZone };
+}
+
+/**
+ * Analyzes the direct children of `InputGroup` to determine the focus mode.
+ *
+ * Returns `"hybrid"` when BOTH an `InputGroup.Addon` AND a non-ghost direct
+ * `InputGroup.Button` are present. In hybrid mode, Addon+Input share a
+ * container-style border while Buttons get individual borders.
+ *
+ * Returns `"individual"` when a non-ghost direct `InputGroup.Button` is
+ * present WITHOUT any `InputGroup.Addon`. This signals a toolbar/pagination
+ * layout where each element manages its own focus ring.
+ *
+ * Returns `"container"` (default) in all other cases — the container owns a
+ * single shared focus ring.
+ *
+ * Uses `displayName` comparison to identify elements, avoiding circular
+ * imports between `context.ts` and the sub-component files.
+ */
+export function detectFocusMode(
+  children: ReactNode,
+): "container" | "individual" | "hybrid" {
+  let hasNonGhostDirectButton = false;
+  let hasAddon = false;
+
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child)) return;
+
+    // Identify components by displayName to avoid circular imports.
+    const type = child.type;
+    const displayName =
+      typeof type === "function" || typeof type === "object"
+        ? (type as { displayName?: string }).displayName
+        : undefined;
+
+    if (displayName === "InputGroup.Addon") {
+      hasAddon = true;
+      return;
+    }
+
+    if (displayName !== "InputGroup.Button") return;
+
+    // A direct-child Button is by definition NOT inside an Addon (Addon's
+    // children are children of the Addon element, not of InputGroup).
+    // Check whether the variant is explicitly non-ghost.
+    const variant = (child.props as { variant?: string }).variant;
+    if (variant !== undefined && variant !== "ghost") {
+      hasNonGhostDirectButton = true;
+    }
+  });
+
+  if (hasNonGhostDirectButton && hasAddon) return "hybrid";
+  if (hasNonGhostDirectButton) return "individual";
+  return "container";
 }
