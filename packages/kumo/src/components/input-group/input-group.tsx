@@ -134,7 +134,7 @@ const Root = forwardRef<
         ? [
             "overflow-hidden",
             // Focus state must come AFTER inputVariants to override ring-kumo-line
-            "focus-within:ring-kumo-hairline",
+            "focus-within:ring-kumo-line",
             // The CSS in kumo-binding.css handles the native outline
           ]
         : // isolate creates a new stacking context so z-index in children doesn't leak out

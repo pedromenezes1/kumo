@@ -1170,7 +1170,7 @@ describe("InputGroup", () => {
       expect(group.className).toContain("overflow-visible");
       expect(group.className).toContain("ring-0");
       expect(group.className).not.toContain("overflow-hidden");
-      expect(group.className).not.toContain("focus-within:ring-kumo-hairline");
+      expect(group.className).not.toContain("focus-within:ring-kumo-line");
     });
 
     it("container mode gets shared focus ring classes", () => {
@@ -1184,7 +1184,7 @@ describe("InputGroup", () => {
         "[data-slot='input-group']",
       ) as HTMLElement;
       expect(group.className).toContain("overflow-hidden");
-      expect(group.className).toContain("focus-within:ring-kumo-hairline");
+      expect(group.className).toContain("focus-within:ring-kumo-line");
       expect(group.className).not.toContain("overflow-visible");
     });
 
@@ -1206,7 +1206,7 @@ describe("InputGroup", () => {
       expect(group.className).toContain("overflow-visible");
       expect(group.className).toContain("ring-0");
       expect(group.className).not.toContain("overflow-hidden");
-      expect(group.className).not.toContain("focus-within:ring-kumo-hairline");
+      expect(group.className).not.toContain("focus-within:ring-kumo-line");
     });
   });
 
@@ -1309,7 +1309,7 @@ describe("InputGroup", () => {
       expect(containerZone.className).toContain("not-first:border-l-0");
       // No focus-within ring — CSS outline in kumo-binding.css handles focus
       expect(containerZone.className).not.toContain(
-        "focus-within:ring-kumo-hairline",
+        "focus-within:ring-kumo-line",
       );
     });
   });
