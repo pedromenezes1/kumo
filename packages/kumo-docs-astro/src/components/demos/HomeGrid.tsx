@@ -27,7 +27,6 @@ import {
   Select,
   SensitiveInput,
   SkeletonLine,
-  Surface,
   Switch,
   Table,
   Tabs,
@@ -81,7 +80,6 @@ const componentRoutes: Record<string, string> = {
   select: "/components/select",
   "sensitive-input": "/components/sensitive-input",
   "skeleton-line": "/components/skeleton-line",
-  surface: "/components/surface",
   switch: "/components/switch",
   table: "/components/table",
   tabs: "/components/tabs",
@@ -244,16 +242,23 @@ export function HomeGrid() {
       Component: (
         <TooltipProvider>
           <div className="flex gap-2">
-            <Tooltip content="Add" asChild open>
-              <Button shape="square" icon={PlusIcon} aria-label="Add" />
-            </Tooltip>
-            <Tooltip content="Change language" asChild>
-              <Button
-                shape="square"
-                icon={TranslateIcon}
-                aria-label="Change language"
-              />
-            </Tooltip>
+            <Tooltip
+              content="Add"
+              open
+              render={
+                <Button shape="square" icon={PlusIcon} aria-label="Add" />
+              }
+            />
+            <Tooltip
+              content="Change language"
+              render={
+                <Button
+                  shape="square"
+                  icon={TranslateIcon}
+                  aria-label="Change language"
+                />
+              }
+            />
           </div>
         </TooltipProvider>
       ),
@@ -321,15 +326,6 @@ export function HomeGrid() {
           <SkeletonLine minWidth={100} />
           <SkeletonLine minWidth={50} maxWidth={150} />
         </div>
-      ),
-    },
-    {
-      name: "Surface",
-      id: "surface",
-      Component: (
-        <Surface className="flex h-24 w-40 items-center justify-center rounded-lg bg-kumo-canvas text-sm text-kumo-subtle">
-          <em>To put things over.</em>
-        </Surface>
       ),
     },
     {
@@ -562,7 +558,7 @@ export function HomeGrid() {
       id: "popover",
       Component: (
         <Popover>
-          <Popover.Trigger render={<Button>Open Popover</Button>} />
+          <Popover.Trigger render={<Button />}>Open Popover</Popover.Trigger>
           <Popover.Content>
             <Popover.Title>Popover Title</Popover.Title>
             <Popover.Description>This is a popover.</Popover.Description>
