@@ -5,8 +5,7 @@
  * like Dialog.Root, Dialog.Trigger, etc.
  */
 
-import { readFileSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { readFileSync } from "node:fs";
 import type { SubComponentConfig, PropSchema } from "./types.js";
 import { extractBalancedBraces } from "./utils.js";
 import { shouldSkipProp } from "./props-filter.js";
@@ -200,7 +199,7 @@ export function extractSubComponentProps(
   }
 
   try {
-    let content = readFileSync(filePath, "utf-8");
+    const content = readFileSync(filePath, "utf-8");
     const funcName = subComponent.name;
     // valueName is the resolved variable name from Object.assign (e.g., "TableOfContentsTitle")
     // while funcName is the short sub-component name (e.g., "Title")
