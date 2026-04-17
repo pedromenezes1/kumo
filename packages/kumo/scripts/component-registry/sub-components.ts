@@ -98,6 +98,19 @@ export function detectSubComponents(filePath: string): SubComponentConfig[] {
           propsType = `${value}Props`;
         }
 
+        // Also check for forwardRef pattern:
+        // const Value = forwardRef<HTMLElement, PropsType>(...)
+        // Handles multi-line generics ([\s\S] matches newlines)
+        if (!propsType) {
+          const forwardRefPattern = new RegExp(
+            `const\\s+${value}\\s*=\\s*forwardRef<[\\s\\S]*?,\\s*(\\w+)\\s*>\\s*\\(`,
+          );
+          const forwardRefMatch = content.match(forwardRefPattern);
+          if (forwardRefMatch) {
+            propsType = forwardRefMatch[1];
+          }
+        }
+
         // Generate description
         let description = `${subName} sub-component`;
         if (isPassThrough) {
@@ -112,6 +125,7 @@ export function detectSubComponents(filePath: string): SubComponentConfig[] {
 
         subComponents.push({
           name: subName,
+          valueName: value,
           propsType,
           description,
           isPassThrough,
@@ -151,6 +165,7 @@ export function detectSubComponents(filePath: string): SubComponentConfig[] {
 
       subComponents.push({
         name: subName,
+        valueName: value,
         propsType,
         description: `${subName} sub-component`,
         isPassThrough: false,
@@ -187,71 +202,71 @@ export function extractSubComponentProps(
   try {
     let content = readFileSync(filePath, "utf-8");
     const funcName = subComponent.name;
+    // valueName is the resolved variable name from Object.assign (e.g., "TableOfContentsTitle")
+    // while funcName is the short sub-component name (e.g., "Title")
+    const valueName = subComponent.valueName;
     const props: Record<string, PropSchema> = {};
 
-    // If the sub-component function isn't in the main file (e.g. split into
-    // separate files), read all sibling .ts/.tsx files in the same directory.
-    const funcPattern = new RegExp(`(?:function|const)\\s+${funcName}\\b`);
-    if (!funcPattern.test(content)) {
-      const dir = dirname(filePath);
-      const siblings = readdirSync(dir)
-        .filter((f) => /\.(tsx?|ts)$/.test(f) && join(dir, f) !== filePath)
-        .map((f) => readFileSync(join(dir, f), "utf-8"));
-      content = [content, ...siblings].join("\n");
-    }
+    // Try both the short name and the resolved variable name for pattern matching
+    const namesToTry = [
+      funcName,
+      ...(valueName !== funcName ? [valueName] : []),
+    ];
 
     // Pattern 1: Inline object type in function signature
     // Matches: function Foo({ ... }: { prop: Type }) or ({ ... }: PropsWithChildren<{ prop: Type }>)
     // Also matches arrow functions: const Foo = ({ ... }: { prop: Type }) =>
-    const inlinePropsPatterns = [
-      // function Name({ destructured }: { inline props })
-      new RegExp(
-        `(?:function|const)\\s+${funcName}\\s*=?\\s*\\([^)]*:\\s*(?:PropsWithChildren<)?\\{([^}]+)\\}`,
-      ),
-      // function Name({ destructured }: PropsWithChildren<InterfaceName>)
-      new RegExp(
-        `(?:function|const)\\s+${funcName}\\s*=?\\s*\\([^)]*:\\s*PropsWithChildren<(\\w+)>`,
-      ),
-    ];
+    for (const name of namesToTry) {
+      const inlinePropsPatterns = [
+        // function Name({ destructured }: { inline props })
+        new RegExp(
+          `(?:function|const)\\s+${name}\\s*=?\\s*\\([^)]*:\\s*(?:PropsWithChildren<)?\\{([^}]+)\\}`,
+        ),
+        // function Name({ destructured }: PropsWithChildren<InterfaceName>)
+        new RegExp(
+          `(?:function|const)\\s+${name}\\s*=?\\s*\\([^)]*:\\s*PropsWithChildren<(\\w+)>`,
+        ),
+      ];
 
-    for (const pattern of inlinePropsPatterns) {
-      const match = content.match(pattern);
-      if (match) {
-        const propsBlock = match[1];
+      for (const pattern of inlinePropsPatterns) {
+        const match = content.match(pattern);
+        if (match) {
+          const propsBlock = match[1];
 
-        // Check if it's an interface name (single word) or inline props
-        if (propsBlock.match(/^\w+$/)) {
-          // It's an interface name, try to find and parse it
-          const interfaceProps = extractPropsFromInterface(
-            content,
-            propsBlock,
-            cliFlags,
-          );
-          Object.assign(props, interfaceProps);
-        } else {
-          // Parse inline props: propName?: Type or propName: Type
-          const propPattern = /(\w+)(\?)?:\s*([^;,\n}]+)/g;
-          let propMatch: RegExpExecArray | null;
+          // Check if it's an interface name (single word) or inline props
+          if (propsBlock.match(/^\w+$/)) {
+            // It's an interface name, try to find and parse it
+            const interfaceProps = extractPropsFromInterface(
+              content,
+              propsBlock,
+              cliFlags,
+            );
+            Object.assign(props, interfaceProps);
+          } else {
+            // Parse inline props: propName?: Type or propName: Type
+            const propPattern = /(\w+)(\?)?:\s*([^;,\n}]+)/g;
+            let propMatch: RegExpExecArray | null;
 
-          while ((propMatch = propPattern.exec(propsBlock)) !== null) {
-            const propName = propMatch[1];
-            const isOptional = propMatch[2] === "?";
-            let propType = propMatch[3].trim();
+            while ((propMatch = propPattern.exec(propsBlock)) !== null) {
+              const propName = propMatch[1];
+              const isOptional = propMatch[2] === "?";
+              let propType = propMatch[3].trim();
 
-            // Clean up type
-            propType = propType.replace(/[,;]$/, "").trim();
+              // Clean up type
+              propType = propType.replace(/[,;]$/, "").trim();
 
-            if (shouldSkipProp(propName, cliFlags)) continue;
+              if (shouldSkipProp(propName, cliFlags)) continue;
 
-            props[propName] = {
-              type: propType,
-              ...(isOptional ? { optional: true } : { required: true }),
-            };
+              props[propName] = {
+                type: propType,
+                ...(isOptional ? { optional: true } : { required: true }),
+              };
+            }
           }
-        }
 
-        if (Object.keys(props).length > 0) {
-          return props;
+          if (Object.keys(props).length > 0) {
+            return props;
+          }
         }
       }
     }
@@ -272,12 +287,17 @@ export function extractSubComponentProps(
     if (Object.keys(props).length === 0) {
       // Use a more flexible approach: find the function definition and extract the type annotation
       // This handles multi-line destructuring patterns
-      const funcDefPatterns = [
+      const funcDefPatterns: RegExp[] = [];
+      for (const name of namesToTry) {
         // Arrow function: const Name = (...)
-        new RegExp(`const\\s+${funcName}\\s*=\\s*\\([\\s\\S]*?\\)\\s*=>`),
+        funcDefPatterns.push(
+          new RegExp(`const\\s+${name}\\s*=\\s*\\([\\s\\S]*?\\)\\s*=>`),
+        );
         // Regular function: function Name(...)
-        new RegExp(`function\\s+${funcName}\\s*\\([\\s\\S]*?\\)\\s*\\{`),
-      ];
+        funcDefPatterns.push(
+          new RegExp(`function\\s+${name}\\s*\\([\\s\\S]*?\\)\\s*\\{`),
+        );
+      }
 
       for (const defPattern of funcDefPatterns) {
         const defMatch = content.match(defPattern);
