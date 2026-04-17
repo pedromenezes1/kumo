@@ -8,7 +8,6 @@ sourceFile: "components/input-group"
 import ComponentExample from "~/components/docs/ComponentExample.astro";
 import ComponentSection from "~/components/docs/ComponentSection.astro";
 import CodeBlock from "~/components/docs/CodeBlock.astro";
-import Heading from "~/components/docs/Heading.astro";
 import PropsTable from "~/components/docs/PropsTable.astro";
 import {
   InputGroupDemo,
@@ -30,13 +29,15 @@ import {
 </ComponentSection>
 
 <ComponentSection>
-  <Heading level={2}>Installation</Heading>
-  <Heading level={3}>Barrel</Heading>
-  <CodeBlock
-    code={`import { InputGroup } from "@cloudflare/kumo";`}
-    lang="tsx"
-  />
-  <Heading level={3}>Granular</Heading>
+
+## Installation
+
+### Barrel
+
+<CodeBlock code={`import { InputGroup } from "@cloudflare/kumo";`} lang="tsx" />
+
+### Granular
+
   <CodeBlock
     code={`import { InputGroup } from "@cloudflare/kumo/components/input-group";`}
     lang="tsx"
@@ -46,11 +47,15 @@ import {
 {/* Usage */}
 
 <ComponentSection>
-  <Heading level={2}>Usage</Heading>
-  <Heading level={3}>With Built-in Field (Recommended)</Heading>
-  <p>
-    Pass the `label` prop to InputGroup to enable the built-in Field wrapper with label, description, and error support.
-  </p>
+
+## Usage
+
+### With Built-in Field (Recommended)
+
+<p>
+  Pass the `label` prop to InputGroup to enable the built-in Field wrapper with
+  label, description, and error support.
+</p>
 
 ```tsx
 import { InputGroup } from "@cloudflare/kumo";
@@ -68,7 +73,8 @@ export default function Example() {
 }
 ```
 
-<Heading level={3}>Bare InputGroup (Custom Layouts)</Heading>
+### Bare InputGroup (Custom Layouts)
+
 <p>
   For custom form layouts, use InputGroup without `label`. Must provide
   `aria-label` on `InputGroup.Input` for accessibility.
@@ -93,9 +99,11 @@ export default function Example() {
 </ComponentSection>
 
 <ComponentSection>
-  <Heading level={2}>Examples</Heading>
 
-<Heading level={3}>Icon</Heading>
+## Examples
+
+### Icon
+
 <p>
   Use Addon to place an icon at the start of the input as a visual identifier.
 </p>
@@ -103,13 +111,15 @@ export default function Example() {
   <InputGroupIconsDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Text</Heading>
+### Text
+
 <p>Use Addon to place text prefixes or suffixes alongside the input.</p>
 <ComponentExample demo="InputGroupTextDemo">
   <InputGroupTextDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Button</Heading>
+### Button
+
 <p>
   Place `InputGroup.Button` inside an Addon for actions that operate directly on
   the input value, such as reveal/hide or clear.
@@ -118,7 +128,8 @@ export default function Example() {
   <InputGroupButtonsDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Button with Tooltip</Heading>
+### Button with Tooltip
+
 <p>
   Pass a `tooltip` prop to `InputGroup.Button` to show a tooltip on hover. When
   no explicit `aria-label` is provided, the button derives it from a string
@@ -128,13 +139,15 @@ export default function Example() {
   <InputGroupTooltipButtonDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Kbd</Heading>
+### Kbd
+
 <p>Place a keyboard shortcut hint inside an end Addon.</p>
 <ComponentExample demo="InputGroupKbdDemo">
   <InputGroupKbdDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Loading</Heading>
+### Loading
+
 <p>
   Place a Loader inside an end Addon as a status indicator while validating the
   input value.
@@ -143,7 +156,8 @@ export default function Example() {
   <InputGroupLoadingDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Inline Suffix</Heading>
+### Inline Suffix
+
 <p>
   Suffix renders text that flows seamlessly next to the typed value — useful for
   domain inputs like `.workers.dev`. Pair with a status icon Addon to show
@@ -153,7 +167,8 @@ export default function Example() {
   <InputGroupSuffixDemo client:visible />
 </ComponentExample>
 
-<Heading level={3}>Sizes</Heading>
+### Sizes
+
 <p>
   Four sizes: `xs`, `sm`, `base` (default), and `lg`. The size applies to the
   entire group.
@@ -162,19 +177,22 @@ export default function Example() {
   <InputGroupSizesDemo client:visible />
 </ComponentExample>
 
-  <Heading level={3}>States</Heading>
-  <p>
-    Various input states including error, disabled, and with description. Pass `label`, `error`, and `description` props directly to `InputGroup`.
-  </p>
-  <ComponentExample demo="InputGroupStatesDemo">
-    <InputGroupStatesDemo client:visible />
-  </ComponentExample>
+### States
+
+<p>
+  Various input states including error, disabled, and with description. Pass `label`, `error`, and `description` props directly to `InputGroup`.
+</p>
+<ComponentExample demo="InputGroupStatesDemo">
+  <InputGroupStatesDemo client:visible />
+</ComponentExample>
 </ComponentSection>
 
 <ComponentSection>
-  <Heading level={2}>API Reference</Heading>
 
-<Heading level={3}>`InputGroup`</Heading>
+## API Reference
+
+### `InputGroup`
+
 <p>
   The root container that provides context to all child components. Accepts
   Field props (`label`, `description`, `error`) and wraps content in a Field
@@ -182,7 +200,8 @@ export default function Example() {
 </p>
 <PropsTable component="InputGroup" />
 
-<Heading level={3}>`InputGroup.Input`</Heading>
+### `InputGroup.Input`
+
 <p>
   The text input element. Inherits `size`, `disabled`, and `error` from
   InputGroup context. Accepts all standard input attributes except Field-related
@@ -190,86 +209,94 @@ export default function Example() {
 </p>
 <PropsTable component="InputGroup.Input" />
 
-<Heading level={3}>`InputGroup.Addon`</Heading>
+### `InputGroup.Addon`
+
 <p>
   Container for icons, text, or compact buttons positioned at the start or end
   of the input.
 </p>
 <PropsTable component="InputGroup.Addon" />
 
-<Heading level={3}>`InputGroup.Button`</Heading>
+### `InputGroup.Button`
+
 <p>
   Button for secondary actions like toggle, copy, or help. Renders inside an
   Addon. Pass a `tooltip` prop to show a tooltip on hover.
 </p>
 <PropsTable component="InputGroup.Button" />
 
-<Heading level={3}>`InputGroup.Suffix`</Heading>
+### `InputGroup.Suffix`
+
 <p>
   Inline text that flows seamlessly next to the typed value (e.g.,
   `.workers.dev`). The input width adjusts automatically as the user types.
 </p>
 <PropsTable component="InputGroup.Suffix" />
 
-  <Heading level={3}>Validation Error Types</Heading>
-  <p>
-    When using `error` as an object, the `match` property corresponds to HTML5 ValidityState values:
-  </p>
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-kumo-line">
-          <th class="px-4 py-3 text-left font-semibold">Match</th>
-          <th class="px-4 py-3 text-left font-semibold">Description</th>
-        </tr>
-      </thead>
-      <tbody class="text-kumo-strong">
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">valueMissing</td>
-          <td class="px-4 py-3 text-xs">Required field is empty</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">typeMismatch</td>
-          <td class="px-4 py-3 text-xs">Value doesn't match type (e.g., invalid email)</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">patternMismatch</td>
-          <td class="px-4 py-3 text-xs">Value doesn't match pattern attribute</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">tooShort</td>
-          <td class="px-4 py-3 text-xs">Value shorter than minLength</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">tooLong</td>
-          <td class="px-4 py-3 text-xs">Value longer than maxLength</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">rangeUnderflow</td>
-          <td class="px-4 py-3 text-xs">Value less than min</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">rangeOverflow</td>
-          <td class="px-4 py-3 text-xs">Value greater than max</td>
-        </tr>
-        <tr class="border-b border-kumo-line">
-          <td class="px-4 py-3 font-mono text-xs">true</td>
-          <td class="px-4 py-3 text-xs">Always show error (for server-side validation)</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+### Validation Error Types
+
+<p>
+  When using `error` as an object, the `match` property corresponds to HTML5 ValidityState values:
+</p>
+<div class="overflow-hidden rounded-lg border border-kumo-hairline">
+  <table class="w-full text-sm">
+    <thead class="bg-kumo-elevated">
+      <tr>
+        <th class="px-4 py-3 text-left font-medium">Match</th>
+        <th class="px-4 py-3 text-left font-medium">Description</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-kumo-hairline">
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">valueMissing</td>
+        <td class="px-4 py-3 text-xs">Required field is empty</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">typeMismatch</td>
+        <td class="px-4 py-3 text-xs">Value doesn't match type (e.g., invalid email)</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">patternMismatch</td>
+        <td class="px-4 py-3 text-xs">Value doesn't match pattern attribute</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">tooShort</td>
+        <td class="px-4 py-3 text-xs">Value shorter than minLength</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">tooLong</td>
+        <td class="px-4 py-3 text-xs">Value longer than maxLength</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">rangeUnderflow</td>
+        <td class="px-4 py-3 text-xs">Value less than min</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">rangeOverflow</td>
+        <td class="px-4 py-3 text-xs">Value greater than max</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-mono text-xs">true</td>
+        <td class="px-4 py-3 text-xs">Always show error (for server-side validation)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </ComponentSection>
 
 <ComponentSection>
-  <Heading level={2}>Accessibility</Heading>
+
+## Accessibility
+
   <div class="space-y-4 text-sm">
     <div>
-      <h3 class="mb-2 font-semibold">Label Requirement</h3>
-      <p class="text-kumo-strong">
+
+      ### Label Requirement
+
+      <p>
         InputGroup requires an accessible name via one of:
       </p>
-      <ul class="mt-2 ml-4 list-disc space-y-1 text-kumo-strong">
+      <ul class="mt-2 ml-4 list-disc space-y-1">
         <li>
           `label` prop on InputGroup (renders a visible label with built-in
           Field support)
@@ -281,16 +308,19 @@ export default function Example() {
           `aria-labelledby` on InputGroup.Input for custom label association
         </li>
       </ul>
-      <p class="mt-2 text-kumo-strong">
+      <p class="mt-2">
         Missing accessible names trigger console warnings in development.
       </p>
     </div>
     <div>
-      <h3 class="mb-2 font-semibold">Group Role</h3>
-      <p class="text-kumo-strong">
+
+      ### Group Role
+
+      <p>
         InputGroup automatically renders with `role="group"`, which semantically
         associates the input with its addons for assistive technologies.
       </p>
     </div>
+
   </div>
 </ComponentSection>
